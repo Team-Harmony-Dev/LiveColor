@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.harmony.livecolor.dummy.DummyContent;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -15,7 +17,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 // -- Switch between the two with a radio button for each (styled like Instagram)
 // -- Color picking feature (we can probably use a bitmap to obtain the pixel and then grab the data)
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements BottomNavigationView.OnNavigationItemSelectedListener,
+        ColorPickerFragment.OnFragmentInteractionListener,
+        SavedColorsFragment.OnListFragmentInteractionListener,
+        PalettesFragment.OnListFragmentInteractionListener {
 
     //random number to help differentiate between permissions for different contexts
     private int REQUEST_CODE_PERMISSIONS = 101;
@@ -54,15 +60,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch(menuItem.getItemId()) {
             case R.id.navigation_color_picker:
-                fragment = new ColorPickerFragment();
+                fragment = ColorPickerFragment.newInstance();
                 break;
             case R.id.navigation_saved_colors:
-                fragment = new SavedColorsFragment();
+                fragment = SavedColorsFragment.newInstance();
                 break;
             case R.id.navigation_palettes:
-                fragment = new PalettesFragment();
+                fragment = PalettesFragment.newInstance();
                 break;
         }
         return loadFragment(fragment);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
     }
 }
