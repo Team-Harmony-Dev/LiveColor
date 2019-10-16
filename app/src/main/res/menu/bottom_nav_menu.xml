@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_color_picker"
         android:icon="@drawable/ic_picker"
         android:title="@string/title_color_picker" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_saved_colors"
         android:icon="@drawable/ic_saved"
         android:title="@string/title_saved_colors" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_palettes"
         android:icon="@drawable/ic_palette"
         android:title="@string/title_my_palettes" />
 
