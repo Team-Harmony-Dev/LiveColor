@@ -40,11 +40,11 @@ public class SavedColorsFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static SavedColorsFragment newInstance(int columnCount) {
+    public static SavedColorsFragment newInstance(/*int columnCount*/) {
         SavedColorsFragment fragment = new SavedColorsFragment();
-        Bundle args = new Bundle();
+        /*Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
