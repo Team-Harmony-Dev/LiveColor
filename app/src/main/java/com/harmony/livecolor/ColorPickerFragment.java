@@ -35,7 +35,7 @@ public class ColorPickerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
+    /*
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
@@ -44,12 +44,12 @@ public class ColorPickerFragment extends Fragment {
      * @return A new instance of fragment ColorPickerFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ColorPickerFragment newInstance(String param1, String param2) {
+    public static ColorPickerFragment newInstance(/*String param1, String param2*/) {
         ColorPickerFragment fragment = new ColorPickerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM1, param1);
+        //args.putString(ARG_PARAM2, param2);
+        //fragment.setArguments(args);
         return fragment;
     }
 

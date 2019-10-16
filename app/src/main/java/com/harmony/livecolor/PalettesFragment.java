@@ -40,11 +40,11 @@ public class PalettesFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static PalettesFragment newInstance(int columnCount) {
+    public static PalettesFragment newInstance(/*int columnCount*/) {
         PalettesFragment fragment = new PalettesFragment();
-        Bundle args = new Bundle();
+        /*Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
