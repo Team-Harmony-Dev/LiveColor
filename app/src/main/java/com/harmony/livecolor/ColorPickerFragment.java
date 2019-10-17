@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -30,6 +32,8 @@ public class ColorPickerFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -66,8 +70,23 @@ public class ColorPickerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_color_picker, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+
+        Button button = (Button) rootView.findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CameraColorPicker.class);
+                startActivity(intent);
+            }
+        });
+
+        return rootView;
     }
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
