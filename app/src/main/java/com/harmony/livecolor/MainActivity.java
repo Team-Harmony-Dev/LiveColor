@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d("Lifecycles", "onCreate: MainActivity created");
 
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -80,5 +83,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
+    }
+
+    //Overwritten Lifecycle methods for debugging purposes
+    @Override
+    protected void onStart() {
+        Log.d("Lifecycles", "onStart: MainActivity started");
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("Lifecycles", "onPause: MainActivity paused");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("Lifecycles", "onResume: MainActivity resumed");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("Lifecycles", "onStop: MainActivity stopped");
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("Lifecycles", "onRestart: MainActivity restarted");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("Lifecycles", "onDestroy: MainActivity destroyed");
+        super.onDestroy();
     }
 }

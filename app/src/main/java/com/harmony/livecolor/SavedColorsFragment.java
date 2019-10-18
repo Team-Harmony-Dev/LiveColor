@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class SavedColorsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
 
+        Log.d("Lifecycles", "onCreateView: SavedColorsFragment created");
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
