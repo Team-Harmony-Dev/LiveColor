@@ -65,6 +65,12 @@ public class PalettesFragment extends Fragment {
 
         Log.d("Lifecycles", "onCreateView: PaletteFragment created");
 
+        //Set title on action bar to match current fragment
+        getActivity().setTitle(
+                getResources().getText(R.string.app_name) +
+                        " - " + getResources().getText(R.string.title_my_palettes)
+        );
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

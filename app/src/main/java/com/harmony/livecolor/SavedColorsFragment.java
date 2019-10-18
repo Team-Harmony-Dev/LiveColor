@@ -64,6 +64,13 @@ public class SavedColorsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
 
         Log.d("Lifecycles", "onCreateView: SavedColorsFragment created");
+
+        //Set title on action bar to match current fragment
+        getActivity().setTitle(
+                getResources().getText(R.string.app_name) +
+                        " - " + getResources().getText(R.string.title_saved_colors)
+        );
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

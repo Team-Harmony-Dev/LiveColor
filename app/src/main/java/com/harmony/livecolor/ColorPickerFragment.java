@@ -80,6 +80,13 @@ public class ColorPickerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("Lifecycles", "onCreateView: ColorPickerFragment created");
+
+        //Set title on action bar to match current fragment
+        getActivity().setTitle(
+                getResources().getText(R.string.app_name) +
+                        " - " + getResources().getText(R.string.title_color_picker)
+        );
+
         // Inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
