@@ -73,7 +73,7 @@ public class ColorPickerFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button = (Button) rootView.findViewById(R.id.button1);
+        Button button = rootView.findViewById(R.id.button1);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
