@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
@@ -80,5 +81,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
+    }
+
+    //By Dustin. For Sprint 2 User Story 2 task 1.
+    //Function for capturing x, y of tap.
+    //TODO how do we treat different actions?
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        float x = event.getX();
+        float y = event.getY();
+        //TODO use that to get color of an image.
+        //TODO Maybe zoom in so that they can select a single color, or suggest several nearby colors.
+        //((TextView) findViewById(R.id.helloWorldBox)).setText("Detected press at x="+x+" y="+y);
+        return true;
     }
 }
