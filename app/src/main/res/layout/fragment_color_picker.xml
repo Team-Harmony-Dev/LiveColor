@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical"
+    android:weightSum="10"
     tools:context=".ColorPickerFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="9.5">
 
         <Button
             android:id="@+id/button1"
@@ -31,9 +33,10 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:text="Color Values:"
-        android:textSize="18sp" />
+        android:layout_weight="0.5"
+        android:text="Color Values\nRBG:\nHEX:\nHSV:"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 
 </LinearLayout>
