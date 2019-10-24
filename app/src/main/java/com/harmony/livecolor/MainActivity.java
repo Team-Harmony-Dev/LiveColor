@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //By Dustin. For Sprint 2 User Story 2 task 1.
+    //By Dustin. For Sprint 2 User Story 2
     //Function for capturing x, y of tap.
     //TODO how do we treat different actions?
     @Override
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity
         //TODO use that to get color of an image.
         //TODO Maybe zoom in so that they can select a single color, or suggest several nearby colors.
         //((TextView) findViewById(R.id.helloWorldBox)).setText("Detected press at x="+x+" y="+y);
+        Log.d("S2US2", "Detected tap at x="+x+" y="+y);
         return true;
     }
 }
