@@ -9,7 +9,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="opencamera">Open Camera</string>
     <string name="photogallery">View Photo Gallery</string>
-    <string name="colorValues">Color Values</string>
+    <string name="colorValues"> Color Values</string>
+    <string name="colorHEX"> HEX: </string>
+    <string name="colorRGB"> RGB: </string>
+    <string name="colorHSV"> HSV: </string>
 
 
 </resources>
