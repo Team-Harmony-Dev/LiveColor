@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
@@ -147,17 +148,25 @@ public class ColorPickerFragment extends Fragment {
         int RV = red(colorNew);
         int GV = green(colorNew);
         int BV = blue(colorNew);
+
         //update the RGB value displayed
-        String format = getString(R.string.colorRGB); //get "RGB: "
-        String rgb = String.format("( %1$d, %2$d, %3$d )",RV,GV,BV);
-        String fullRGB = String.format(format,rgb);  //add "RGB: " and rgb together
+        String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
+        String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
         TextView temp = (TextView)view.findViewById(R.id.RGBText);//get the textview that displays the RGB value
         temp.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+
         //update the HEX value displayed
-        //String hexValue = Integer.toHexString(colorNew);
-        String hexValue = String.format("#%06X", (0xFFFFFF & colorNew));
-        String fullHEX = String.format("Hex: %1$s",hexValue);
+        String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
+        String fullHEX = String.format("HEX: %1$s",hexValue);
         TextView temp2 = (TextView)view.findViewById(R.id.HEXText);
         temp2.setText(fullHEX);
+
+        //update the HSV value displayed
+        float[] hsvArray = new float[3];
+        RGBToHSV(RV,GV,BV,hsvArray);
+        int hue = Math.round(hsvArray[0]);
+        String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+        TextView temp3 = (TextView)view.findViewById(R.id.HSVText);
+        temp3.setText(fullHSV);
     }
 }
