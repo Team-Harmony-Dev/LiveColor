@@ -2,15 +2,23 @@ package com.harmony.livecolor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import static android.graphics.Color.blue;
+import static android.graphics.Color.green;
+import static android.graphics.Color.red;
+import static android.graphics.Color.toArgb;
 
 
 /**
@@ -82,6 +90,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+
         return rootView;
     }
 
@@ -125,5 +134,30 @@ public class ColorPickerFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        updateColorValues(getView());
+    }
+
+    public void updateColorValues(View view){
+        //fetch the color from colorPicked
+        int colorNew = getResources().getColor(R.color.colorPicked);
+        int RV = red(colorNew);
+        int GV = green(colorNew);
+        int BV = blue(colorNew);
+        //update the RGB value displayed
+        String format = getString(R.string.colorRGB); //get "RGB: "
+        String rgb = String.format("( %1$d, %2$d, %3$d )",RV,GV,BV);
+        String fullRGB = String.format(format,rgb);  //add "RGB: " and rgb together
+        TextView temp = (TextView)view.findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        temp.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+        //update the HEX value displayed
+        //String hexValue = Integer.toHexString(colorNew);
+        String hexValue = String.format("#%06X", (0xFFFFFF & colorNew));
+        String fullHEX = String.format("Hex: %1$s",hexValue);
+        TextView temp2 = (TextView)view.findViewById(R.id.HEXText);
+        temp2.setText(fullHEX);
     }
 }
