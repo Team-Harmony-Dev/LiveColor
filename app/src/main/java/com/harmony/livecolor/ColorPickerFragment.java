@@ -86,7 +86,7 @@ public class ColorPickerFragment extends Fragment {
         //onClickListener for
         ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
         //Adds a listener to get the x and y coordinates of taps
-        pickingImage.setOnClickListener(new View.OnClickListener() {
+        /*pickingImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //retrieve image from view
@@ -108,22 +108,25 @@ public class ColorPickerFragment extends Fragment {
                 //updateColorValues(view, pixel);
             }
         });
+        */
         //TODO I think this is taking priority over the other click listener.
-        //pickingImage.setOnTouchListener(handleTouch);
+        pickingImage.setOnTouchListener(handleTouch);
 
         return rootView;
     }
     // TODO What's the best way to pass this information?
-    int lastTapX = 0;
-    int lastTapY = 0;
+    //TODO redundant, remove
+    //int lastTapX = 0;
+    //int lastTapY = 0;
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            lastTapX = (int) event.getX();
-            lastTapY = (int) event.getY();
+        public boolean onTouch(View view, MotionEvent event) {
+            //TODO redundant, remove
+            int lastTapX = (int) event.getX();
+            int lastTapY = (int) event.getY();
             Log.d("S2US2", "lastTaps are x="+lastTapX+" y="+lastTapY);
             /*
             switch (event.getAction()) {
@@ -138,6 +141,23 @@ public class ColorPickerFragment extends Fragment {
                     break;
             }
             */
+            //retrieve image from view
+            ImageView pickedImage = view.findViewById(R.id.pickingImage);
+            //get image as bitmap to get color data
+            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+            //retrieve pixel coordinates for selected pixel, using dustin's script
+            //TODO: get x and y values from dustin's script
+            int x = lastTapX;
+            int y = lastTapY;
+            //get color int from said pixel coordinates
+            int pixel = bitmap.getPixel(x,y);
+            Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
+            //send to Gabby's script to updated the displayed values on screen
+            //if android doesn't like us sending the whole color object we can send the color string
+            //and use Color.valueOf() on Gabby's end
+            //TODO: delete current update call and uncomment other once Dustin's script is incorporated //Done
+            //updateColorValues(view,Color.BLUE);
+            updateColorValues(view, pixel);
             return true;
         }
     };
@@ -202,14 +222,16 @@ public class ColorPickerFragment extends Fragment {
         String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
         String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
         Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
-        TextView rgbDisplay = view.findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
+        //Is the view argument to updateColorValues needed?
+        TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
         rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
         //update the HEX value displayed
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
         String fullHEX = String.format("HEX: %1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
-        TextView hexDisplay = view.findViewById(R.id.HEXText);
+        TextView hexDisplay = getActivity().findViewById(R.id.HEXText);
         hexDisplay.setText(fullHEX);
 
         //update the HSV value displayed
@@ -217,10 +239,13 @@ public class ColorPickerFragment extends Fragment {
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-        TextView hsvDisplay = view.findViewById(R.id.HSVText);
+        TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
 
         //TODO: programmatically change the displayed square's color to the new color
         //this can be done in a very similar way to how the text is changed
+
+        ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
+        colorDisplay.setBackgroundColor(colorNew);
     }
 }
