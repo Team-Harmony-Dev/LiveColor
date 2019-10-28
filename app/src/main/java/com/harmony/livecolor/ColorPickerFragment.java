@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,7 +24,6 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
-import static android.graphics.Color.toArgb;
 
 
 /**
@@ -35,37 +35,18 @@ import static android.graphics.Color.toArgb;
  * create an instance of this fragment.
  */
 public class ColorPickerFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
-
 
     public ColorPickerFragment() {
         // Required empty public constructor
     }
 
-    /*
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ColorPickerFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static ColorPickerFragment newInstance(/*String param1, String param2*/) {
+    public static ColorPickerFragment newInstance() {
         ColorPickerFragment fragment = new ColorPickerFragment();
         //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
+        //args can be bundled and sent through here if needed
         //fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +55,7 @@ public class ColorPickerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            //if arguments are needed ever, use this to set them to static values in the class
         }
     }
 
@@ -105,6 +85,7 @@ public class ColorPickerFragment extends Fragment {
 
         //onClickListener for
         ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
+        //Adds a listener to get the x and y coordinates of taps
         pickingImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,21 +95,52 @@ public class ColorPickerFragment extends Fragment {
                 Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
                 //retrieve pixel coordinates for selected pixel, using dustin's script
                 //TODO: get x and y values from dustin's script
-                int x = 0;
-                int y = 0;
+                int x = lastTapX;
+                int y = lastTapY;
                 //get color int from said pixel coordinates
                 int pixel = bitmap.getPixel(x,y);
-                Log.d("DEBUG", "onClick: color int = " + pixel);
+                Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
                 //send to Gabby's script to updated the displayed values on screen
-                updateColorValues(view, pickedColor);
+                //if android doesn't like us sending the whole color object we can send the color string
+                //and use Color.valueOf() on Gabby's end
+                //TODO: delete current update call and uncomment other once Dustin's script is incorporated
+                updateColorValues(view,Color.BLUE);
+                //updateColorValues(view, pixel);
             }
         });
+        //TODO I think this is taking priority over the other click listener.
+        //pickingImage.setOnTouchListener(handleTouch);
 
         return rootView;
     }
+    // TODO What's the best way to pass this information?
+    int lastTapX = 0;
+    int lastTapY = 0;
+    // https://stackoverflow.com/a/39588899
+    // For Sprint 2 User Story 2.
+    private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
-
-
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            lastTapX = (int) event.getX();
+            lastTapY = (int) event.getY();
+            Log.d("S2US2", "lastTaps are x="+lastTapX+" y="+lastTapY);
+            /*
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    Log.i("TAG", "touched down");
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    Log.i("TAG", "moving: (" + x + ", " + y + ")");
+                    break;
+                case MotionEvent.ACTION_UP:
+                    Log.i("TAG", "touched up");
+                    break;
+            }
+            */
+            return true;
+        }
+    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -171,34 +183,44 @@ public class ColorPickerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        updateColorValues(getView(),Color.valueOf(Color.WHITE));
+        Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
+        updateColorValues(getView(),Color.WHITE);
     }
 
-    public void updateColorValues(View view, Color pickedColor){
-        //fetch the color from colorPicked
-        int colorNew = getResources().getColor(R.color.colorPicked);
-        int RV = red(colorNew);
-        int GV = green(colorNew);
-        int BV = blue(colorNew);
+    public void updateColorValues(View view, int colorNew){
+        Log.d("DEBUG", "updateColorValues: called");
+        Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
+
+        //fetch the color from pickedColor
+        int RV = Color.red(colorNew);
+        int GV = Color.green(colorNew);
+        int BV = Color.blue(colorNew);
+
+        Log.d("DEBUG", "updateColorValues: red = " + RV + ", blue = " + GV + ", blue = " + BV);
 
         //update the RGB value displayed
         String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
         String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
-        TextView temp = (TextView)view.findViewById(R.id.RGBText);//get the textview that displays the RGB value
-        temp.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+        Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
+        TextView rgbDisplay = view.findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
         //update the HEX value displayed
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
         String fullHEX = String.format("HEX: %1$s",hexValue);
-        TextView temp2 = (TextView)view.findViewById(R.id.HEXText);
-        temp2.setText(fullHEX);
+        Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
+        TextView hexDisplay = view.findViewById(R.id.HEXText);
+        hexDisplay.setText(fullHEX);
 
         //update the HSV value displayed
         float[] hsvArray = new float[3];
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-        TextView temp3 = (TextView)view.findViewById(R.id.HSVText);
-        temp3.setText(fullHSV);
+        TextView hsvDisplay = view.findViewById(R.id.HSVText);
+        hsvDisplay.setText(fullHSV);
+
+        //TODO: programmatically change the displayed square's color to the new color
+        //this can be done in a very similar way to how the text is changed
     }
 }
