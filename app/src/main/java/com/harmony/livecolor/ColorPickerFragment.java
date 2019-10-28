@@ -114,21 +114,16 @@ public class ColorPickerFragment extends Fragment {
 
         return rootView;
     }
-    // TODO What's the best way to pass this information?
-    //TODO redundant, remove
-    //int lastTapX = 0;
-    //int lastTapY = 0;
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
+    //TODO there's clearly some sort of error in either getting the coordinates or turning them into a color. Not quite sure where.
+    //TODO maybe the image view's size is changing or something, I dunno.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            //TODO redundant, remove
-            int lastTapX = (int) event.getX();
-            int lastTapY = (int) event.getY();
-            Log.d("S2US2", "lastTaps are x="+lastTapX+" y="+lastTapY);
-            /*
+            /* Handle different click types differently?
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     Log.i("TAG", "touched down");
@@ -145,18 +140,21 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
             //get image as bitmap to get color data
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
-            //retrieve pixel coordinates for selected pixel, using dustin's script
-            //TODO: get x and y values from dustin's script
-            int x = lastTapX;
-            int y = lastTapY;
+            //This should get us x and y with respect to the ImageView we click on.
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            //If you click and drag outside the image this function still fires, but with
+            //  negative x,y, causing a crash on bitmap.getPixel()
+            //There seems to be no problem with x and y being greater than the image width/height?
+            //  Or if there is, it results in a bad color value but not a crash.
+            if(x < 0 || y < 0)
+                return true; //I'm not sure if our return value really matters.
             //get color int from said pixel coordinates
             int pixel = bitmap.getPixel(x,y);
             Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
-            //TODO: delete current update call and uncomment other once Dustin's script is incorporated //Done
-            //updateColorValues(view,Color.BLUE);
             updateColorValues(view, pixel);
             return true;
         }
@@ -241,9 +239,6 @@ public class ColorPickerFragment extends Fragment {
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
         TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
-
-        //TODO: programmatically change the displayed square's color to the new color
-        //this can be done in a very similar way to how the text is changed
 
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         colorDisplay.setBackgroundColor(colorNew);
