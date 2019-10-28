@@ -33,11 +33,12 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/pickingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="8.9"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/limbo_giraffe"
+        app:layout_constraintDimensionRatio="1:1" />
 
     <LinearLayout
         android:layout_width="match_parent"

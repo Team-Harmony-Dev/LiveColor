@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -103,27 +102,23 @@ public class ColorPickerFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        ImageView image = rootView.findViewById(R.id.imageView2);
-        //Adds a listener to get the x and y coordinates of taps
-        image.setOnTouchListener(handleTouch);
-        image.setOnClickListener(new View.OnClickListener() {
+
+        //onClickListener for
+        ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
+        pickingImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //retrieve image from view
-                ImageView pickedImage = view.findViewById(R.id.imageView2);
-                //TODO get coords of tap with respect to the whole screen
-                //Get top left coords of view with respect to the whole screen
-                //int[] coords = getCordsOfView(pickedImage);
-                //Calculate coords of tap with respect to the image
-                //coords[0] = x-coords[0];
-                //coords[1] = y-coords[0];
-
+                ImageView pickedImage = view.findViewById(R.id.pickingImage);
                 //get image as bitmap to get color data
                 Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
-                //retrieve the selected pixel based on dustin's script
-                int thisPixel = bitmap.getPixel(lastTapX, lastTapY); //get x and y values from dustin's script
-                //get this as a color object
-                Color pickedColor = Color.valueOf(thisPixel);
+                //retrieve pixel coordinates for selected pixel, using dustin's script
+                //TODO: get x and y values from dustin's script
+                int x = 0;
+                int y = 0;
+                //get color int from said pixel coordinates
+                int pixel = bitmap.getPixel(x,y);
+                Log.d("DEBUG", "onClick: color int = " + pixel);
                 //send to Gabby's script to updated the displayed values on screen
                 updateColorValues(view, pickedColor);
             }
@@ -131,60 +126,9 @@ public class ColorPickerFragment extends Fragment {
 
         return rootView;
     }
-    // TODO What's the best way to pass the information?
-    int lastTapX = 0;
-    int lastTapY = 0;
-    // https://stackoverflow.com/a/39588899
-    // For Sprint 2 User Story 2.
-    private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            lastTapX = (int) event.getX();
-            lastTapY = (int) event.getY();
-            Log.d("S2US2", "lastTaps are x="+lastTapX+" y="+lastTapY);
-            /*
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    Log.i("TAG", "touched down");
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    Log.i("TAG", "moving: (" + x + ", " + y + ")");
-                    break;
-                case MotionEvent.ACTION_UP:
-                    Log.i("TAG", "touched up");
-                    break;
-            }
-            */
-            return true;
-        }
-    };
-    //By Dustin. For Sprint 2 User Story 2
-    //Function for getting the coordinates of a view.
-    /* May not need this anymore
-    public int[] getCordsOfView(View view){
-        int[] arr = new int[]{0,0};
-        view.getLocationOnScreen(arr);
-        Log.d("S2US2","View is at x="+arr[0]+" y="+arr[1]);
-        return arr;
-    }
-    */
-    //By Dustin. For Sprint 2 User Story 2
-    //Function for capturing x, y of tap.
-    //TODO how do we treat different actions?
-    /* Can't do this like this here. Probably don't need it anyway.
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        float x = event.getX();
-        float y = event.getY();
-        //TODO use that to get color of an image.
-        //TODO Maybe zoom in so that they can select a single color, or suggest several nearby colors.
-        //((TextView) findViewById(R.id.helloWorldBox)).setText("Detected press at x="+x+" y="+y);
-        Log.d("S2US2", "Detected tap at x="+x+" y="+y);
 
-        return true;
-    }
-    */
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
