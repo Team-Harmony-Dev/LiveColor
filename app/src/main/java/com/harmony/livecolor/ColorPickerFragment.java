@@ -104,6 +104,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
         ImageView image = rootView.findViewById(R.id.imageView2);
+        //Adds a listener to get the x and y coordinates of taps
         image.setOnTouchListener(handleTouch);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,36 +115,34 @@ public class ColorPickerFragment extends Fragment {
                 //Get top left coords of view with respect to the whole screen
                 //int[] coords = getCordsOfView(pickedImage);
                 //Calculate coords of tap with respect to the image
-                //coords[0] = 1-coords[0];
-                //coords[1] = 1-coords[0];
+                //coords[0] = x-coords[0];
+                //coords[1] = y-coords[0];
 
-
-                return;
-                /*
                 //get image as bitmap to get color data
                 Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
                 //retrieve the selected pixel based on dustin's script
-                int thisPixel = bitmap.getPixel(coords[0],coords[1]); //get x and y values from dustin's script
+                int thisPixel = bitmap.getPixel(lastTapX, lastTapY); //get x and y values from dustin's script
                 //get this as a color object
                 Color pickedColor = Color.valueOf(thisPixel);
                 //send to Gabby's script to updated the displayed values on screen
                 updateColorValues(view, pickedColor);
-
-                 */
             }
         });
 
         return rootView;
     }
+    // TODO What's the best way to pass the information?
+    int lastTapX = 0;
+    int lastTapY = 0;
     // https://stackoverflow.com/a/39588899
+    // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-            Log.d("S2US2", "Cords are x="+x+" y="+y);
+            lastTapX = (int) event.getX();
+            lastTapY = (int) event.getY();
+            Log.d("S2US2", "lastTaps are x="+lastTapX+" y="+lastTapY);
             /*
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -162,17 +161,18 @@ public class ColorPickerFragment extends Fragment {
     };
     //By Dustin. For Sprint 2 User Story 2
     //Function for getting the coordinates of a view.
+    /* May not need this anymore
     public int[] getCordsOfView(View view){
         int[] arr = new int[]{0,0};
         view.getLocationOnScreen(arr);
         Log.d("S2US2","View is at x="+arr[0]+" y="+arr[1]);
         return arr;
     }
-
+    */
     //By Dustin. For Sprint 2 User Story 2
     //Function for capturing x, y of tap.
     //TODO how do we treat different actions?
-/*
+    /* Can't do this like this here. Probably don't need it anyway.
     @Override
     public boolean onTouchEvent(MotionEvent event){
         float x = event.getX();
@@ -184,7 +184,7 @@ public class ColorPickerFragment extends Fragment {
 
         return true;
     }
-*/
+    */
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
