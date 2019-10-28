@@ -2,7 +2,9 @@ package com.harmony.livecolor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import static android.graphics.Color.RGBToHSV;
@@ -100,6 +103,22 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        ImageView image = rootView.findViewById(R.id.imageView2);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //retrieve image from view
+                ImageView pickedImage = view.findViewById(R.id.imageView2);
+                //get image as bitmap to get color data
+                Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+                //retrieve the selected pixel based on dustin's script
+                int thisPixel = bitmap.getPixel(0,0); //get x and y values from dustin's script
+                //get this as a color object
+                Color pickedColor = Color.valueOf(thisPixel);
+                //send to Gabby's script to updated the displayed values on screen
+                updateColorValues(view, pickedColor);
+            }
+        });
 
         return rootView;
     }
@@ -148,10 +167,10 @@ public class ColorPickerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        updateColorValues(getView());
+        updateColorValues(getView(),Color.valueOf(Color.WHITE));
     }
 
-    public void updateColorValues(View view){
+    public void updateColorValues(View view, Color pickedColor){
         //fetch the color from colorPicked
         int colorNew = getResources().getColor(R.color.colorPicked);
         int RV = red(colorNew);
