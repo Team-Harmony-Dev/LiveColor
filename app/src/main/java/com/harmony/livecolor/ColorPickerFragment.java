@@ -103,8 +103,8 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //The horizontal space we have to display it in, in pixels.
-            int newImageWidth = pickedImage.getMeasuredWidth();
-            int newImageHeight = pickedImage.getMeasuredHeight();
+            int newImageWidth = pickedImage.getWidth();
+            int newImageHeight = pickedImage.getHeight();
             //Our x y coordinates seem to match up with this
             Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageWidth+" "+newImageHeight);
 
@@ -124,9 +124,23 @@ public class ColorPickerFragment extends Fragment {
             //  using pixels based on the original image size.
             double rescaleX = (double) originalImageWidth / (double) newImageWidth;
             double rescaleY = (double) originalImageHeight / (double) newImageHeight;
+
+
             x = (int) ((double) x * rescaleX);
             y = (int) ((double) y * rescaleY);
-            //TODO It looks like it's fixed vertically but not horizontally.
+            /* No, this's really not right
+            if( x < newImageWidth / 2){
+                x = (int) ((double) x * rescaleX);
+            } else {
+                x = (int) ((double) x / rescaleX);
+            }
+            if( y < newImageHeight / 2){
+                y = (int) ((double) y * rescaleY);
+            } else {
+                y = (int) ((double) y / rescaleY);
+            }
+            */
+            //TODO It looks like it's fixed vertically but not horizontally?
             //  On the left half of the image it displays colors to the right of the click,
             //  and on the right half of the image, it displays colors to the left of the click.
 
