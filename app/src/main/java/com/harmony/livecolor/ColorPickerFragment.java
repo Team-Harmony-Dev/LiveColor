@@ -101,18 +101,43 @@ public class ColorPickerFragment extends Fragment {
         public boolean onTouch(View view, MotionEvent event) {
             //retrieve image from view
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
+
+            //The horizontal space we have to display it in, in pixels.
+            int newImageWidth = pickedImage.getMeasuredWidth();
+            int newImageHeight = pickedImage.getMeasuredHeight();
+            //Our x y coordinates seem to match up with this
+            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageWidth+" "+newImageHeight);
+
             //get image as bitmap to get color data
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
-            //This should get us x and y with respect to the ImageView we click on.
+
+            int originalImageWidth = bitmap.getWidth();
+            int originalImageHeight = bitmap.getHeight();
+
+            Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
+            //This should get us x and y with respect to the ImageView we click on, not the whole screen.
             int x = (int) event.getX();
             int y = (int) event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
+
+            //Now we need to change the coordinates because when we get stuff from the bitmap it's
+            //  using pixels based on the original image size.
+            double rescaleX = (double) originalImageWidth / (double) newImageWidth;
+            double rescaleY = (double) originalImageHeight / (double) newImageHeight;
+            x = (int) ((double) x * rescaleX);
+            y = (int) ((double) y * rescaleY);
+            //TODO It looks like it's fixed vertically but not horizontally.
+            //  On the left half of the image it displays colors to the right of the click,
+            //  and on the right half of the image, it displays colors to the left of the click.
+
+            Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
+
             //If you click and drag outside the image this function still fires, but with
-            //  negative x,y, causing a crash on bitmap.getPixel()
-            //There seems to be no problem with x and y being greater than the image width/height?
-            //  Or if there is, it results in a bad color value but not a crash.
-            if(x < 0 || y < 0)
+            //  invalid x & y, causing a crash on bitmap.getPixel()
+            if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
+                Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 return true; //I'm not sure if our return value really matters.
+            }
             //get color int from said pixel coordinates
             int pixel = bitmap.getPixel(x,y);
             Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
