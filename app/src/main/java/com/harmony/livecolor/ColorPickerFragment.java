@@ -103,31 +103,29 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //The horizontal space we have to display it in, in pixels.
-            int newImageWidth = pickedImage.getWidth();
-            int newImageHeight = pickedImage.getHeight();
+            double newImageWidth = pickedImage.getWidth();
+            double newImageHeight = pickedImage.getHeight();
             //Our x y coordinates seem to match up with this
             Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageWidth+" "+newImageHeight);
 
             //get image as bitmap to get color data
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
 
-            int originalImageWidth = bitmap.getWidth();
-            int originalImageHeight = bitmap.getHeight();
+            double originalImageWidth = bitmap.getWidth();
+            double originalImageHeight = bitmap.getHeight();
 
             Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
             //This should get us x and y with respect to the ImageView we click on, not the whole screen.
-            int x = (int) event.getX();
-            int y = (int) event.getY();
+            double x = event.getX();
+            double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
 
             //Now we need to change the coordinates because when we get stuff from the bitmap it's
             //  using pixels based on the original image size.
-            double rescaleX = (double) originalImageWidth / (double) newImageWidth;
-            double rescaleY = (double) originalImageHeight / (double) newImageHeight;
-
-
-            x = (int) ((double) x * rescaleX);
-            y = (int) ((double) y * rescaleY);
+            double rescaleX = originalImageWidth / newImageWidth;
+            double rescaleY = originalImageHeight / newImageHeight;
+            x = x * rescaleX;
+            y = y * rescaleY;
             /* No, this's really not right
             if( x < newImageWidth / 2){
                 x = (int) ((double) x * rescaleX);
@@ -143,6 +141,8 @@ public class ColorPickerFragment extends Fragment {
             //TODO It looks like it's fixed vertically but not horizontally?
             //  On the left half of the image it displays colors to the right of the click,
             //  and on the right half of the image, it displays colors to the left of the click.
+            //  How far off it is seems to be based on how far from the center of the image we are.
+            //  Might be a rounding error maybe? But that should only be off by 1 pixel at most, shaving off the decimal.
 
             Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
 
@@ -153,7 +153,7 @@ public class ColorPickerFragment extends Fragment {
                 return true; //I'm not sure if our return value really matters.
             }
             //get color int from said pixel coordinates
-            int pixel = bitmap.getPixel(x,y);
+            int pixel = bitmap.getPixel((int) x, (int) y);
             Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
