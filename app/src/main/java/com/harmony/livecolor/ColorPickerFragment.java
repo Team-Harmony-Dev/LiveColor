@@ -85,31 +85,7 @@ public class ColorPickerFragment extends Fragment {
 
         //onClickListener for
         ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
-        //Adds a listener to get the x and y coordinates of taps
-        /*pickingImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //retrieve image from view
-                ImageView pickedImage = view.findViewById(R.id.pickingImage);
-                //get image as bitmap to get color data
-                Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
-                //retrieve pixel coordinates for selected pixel, using dustin's script
-                //TODO: get x and y values from dustin's script
-                int x = lastTapX;
-                int y = lastTapY;
-                //get color int from said pixel coordinates
-                int pixel = bitmap.getPixel(x,y);
-                Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
-                //send to Gabby's script to updated the displayed values on screen
-                //if android doesn't like us sending the whole color object we can send the color string
-                //and use Color.valueOf() on Gabby's end
-                //TODO: delete current update call and uncomment other once Dustin's script is incorporated
-                updateColorValues(view,Color.BLUE);
-                //updateColorValues(view, pixel);
-            }
-        });
-        */
-        //TODO I think this is taking priority over the other click listener.
+        //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
 
         return rootView;
@@ -118,24 +94,11 @@ public class ColorPickerFragment extends Fragment {
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     //TODO there's clearly some sort of error in either getting the coordinates or turning them into a color. Not quite sure where.
-    //TODO maybe the image view's size is changing or something, I dunno.
+    //TODO maybe the image view's size is changing, maybe the image dimensions do not match the imageview size (stretched/compressed to fit)
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            /* Handle different click types differently?
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    Log.i("TAG", "touched down");
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    Log.i("TAG", "moving: (" + x + ", " + y + ")");
-                    break;
-                case MotionEvent.ACTION_UP:
-                    Log.i("TAG", "touched up");
-                    break;
-            }
-            */
             //retrieve image from view
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
             //get image as bitmap to get color data
@@ -143,6 +106,7 @@ public class ColorPickerFragment extends Fragment {
             //This should get us x and y with respect to the ImageView we click on.
             int x = (int) event.getX();
             int y = (int) event.getY();
+            Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
             //If you click and drag outside the image this function still fires, but with
             //  negative x,y, causing a crash on bitmap.getPixel()
             //There seems to be no problem with x and y being greater than the image width/height?
