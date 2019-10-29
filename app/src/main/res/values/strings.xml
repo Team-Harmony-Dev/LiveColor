@@ -9,6 +9,8 @@
     <string name="title_notifications">Notifications</string>
     <string name="opencamera">Open Camera</string>
     <string name="photogallery">View Photo Gallery</string>
+    <string name="photo">Photo</string>
+    <string name="takepicture">Take Picture</string>
 
 
 </resources>
