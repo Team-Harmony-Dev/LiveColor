@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="8.9"
-        android:src="@drawable/limbo_giraffe"
+        android:src="@drawable/livecolor_logo"
         app:layout_constraintDimensionRatio="1:1" />
 
     <LinearLayout
