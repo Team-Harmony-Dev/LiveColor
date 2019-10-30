@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(this);
 
         loadFragment(new ColorPickerFragment());
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     //checks if given fragment exists, and loads it if possible

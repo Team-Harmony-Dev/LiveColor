@@ -263,6 +263,7 @@ public class ColorPickerFragment extends Fragment {
         TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
 
+        //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         colorDisplay.setBackgroundColor(colorNew);
     }
