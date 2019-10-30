@@ -1,5 +1,6 @@
 package com.harmony.livecolor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
 
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
@@ -59,6 +63,11 @@ public class ColorPickerFragment extends Fragment {
         }
     }
 
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1888;
+    ImageView mImageView;
+    Uri image_uri;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,20 +84,33 @@ public class ColorPickerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
         Button button = rootView.findViewById(R.id.button1);
+        mImageView = rootView.findViewById(R.id.pickingImage);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CameraColorPicker.class);
-                startActivity(intent);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent,
+                        CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
 
         //onClickListener for
-        ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
+        mImageView = rootView.findViewById(R.id.pickingImage);
         //Adds a listener to get the x and y coordinates of taps and update the display
-        pickingImage.setOnTouchListener(handleTouch);
+        mImageView.setOnTouchListener(handleTouch);
 
         return rootView;
+    }
+
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Bitmap bmp = (Bitmap) data.getExtras().get("data");
+                mImageView.setImageBitmap(bmp);
+            }
+        }
     }
 
     // https://stackoverflow.com/a/39588899
