@@ -126,23 +126,24 @@ public class ColorPickerFragment extends Fragment {
             //Retrieve image from view
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
+            //get image as bitmap to get color data
+            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+
             //The horizontal space we have to display it in, in pixels.
             //double newImageMaxWidth = pickedImage.getWidth(); //Image doesn't necessarily take the entire imageview!
             //double newImageMaxHeight = pickedImage.getHeight();
             double newImageWidth = pickedImage.getWidth();
             double newImageHeight = pickedImage.getHeight();
-            //The space that it actually uses, in pixels.
-            //double newImageWidth = pickedImage.getDrawable().getIntrinsicWidth(); //No, that's its original sizing.
-            //double newImageHeight = pickedImage.getDrawable().getIntrinsicHeight();
-            //Our x y coordinates seem to match up with this
-            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
-                    +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
-
-            //get image as bitmap to get color data
-            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
-
+            //The original image size, before it was scaled to our screen.
             double originalImageWidth = bitmap.getWidth();
             double originalImageHeight = bitmap.getHeight();
+            //The space that it actually uses, in pixels.
+            //TODO fix this
+            //double newImageWidth = pickedImage.getDrawable().getIntrinsicWidth();
+            //double newImageHeight = pickedImage.getDrawable().getIntrinsicHeight();
+            //Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
+            //        +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
+
 
             Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
             //This should get us x and y with respect to the ImageView we click on, not the whole screen.
