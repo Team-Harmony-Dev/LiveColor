@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -37,7 +39,8 @@ import static android.graphics.Color.red;
 public class ColorPickerFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
+    public static final int RESULT_LOAD_IMAGE = 1;
+    ImageView pickingImage;
     public ColorPickerFragment() {
         // Required empty public constructor
     }
@@ -71,11 +74,10 @@ public class ColorPickerFragment extends Fragment {
         );
 
         // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button = rootView.findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button button1 = rootView.findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CameraColorPicker.class);
@@ -83,13 +85,35 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        Button button2 = rootView.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+            }
+        });
+
         //onClickListener for
-        ImageView pickingImage = rootView.findViewById(R.id.pickingImage);
+        pickingImage = rootView.findViewById(R.id.pickingImage);
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
 
+
         return rootView;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            pickingImage.setImageURI(selectedImage);
+        }
+    }
+
+
+
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
