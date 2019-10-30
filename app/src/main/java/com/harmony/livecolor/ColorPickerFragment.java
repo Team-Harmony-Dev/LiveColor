@@ -127,10 +127,16 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //The horizontal space we have to display it in, in pixels.
+            //double newImageMaxWidth = pickedImage.getWidth(); //Image doesn't necessarily take the entire imageview!
+            //double newImageMaxHeight = pickedImage.getHeight();
             double newImageWidth = pickedImage.getWidth();
             double newImageHeight = pickedImage.getHeight();
+            //The space that it actually uses, in pixels.
+            //double newImageWidth = pickedImage.getDrawable().getIntrinsicWidth(); //No, that's its original sizing.
+            //double newImageHeight = pickedImage.getDrawable().getIntrinsicHeight();
             //Our x y coordinates seem to match up with this
-            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageWidth+" "+newImageHeight);
+            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
+                    +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
 
             //get image as bitmap to get color data
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
@@ -221,6 +227,7 @@ public class ColorPickerFragment extends Fragment {
         updateColorValues(getView(),Color.WHITE);
     }
 
+    //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
     public void updateColorValues(View view, int colorNew){
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
