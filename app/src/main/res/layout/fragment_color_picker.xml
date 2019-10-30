@@ -16,7 +16,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/openCameraButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:text="@string/opencamera" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/viewGalleryButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,11 +97,41 @@
                 android:text="@string/colorHSV"
                 android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/button3"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/infoButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="#9C27B0"
+                    android:padding="5dp"
+                    android:src="@android:drawable/ic_menu_info_details" />
+
+                <ImageButton
+                    android:id="@+id/editButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="#03A9F4"
+                    android:padding="5dp"
+                    android:src="@android:drawable/ic_menu_edit" />
+
+                <ImageButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorAccent"
+                    android:padding="5dp"
+                    android:src="@android:drawable/ic_menu_save" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

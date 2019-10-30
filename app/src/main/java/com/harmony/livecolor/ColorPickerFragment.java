@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -77,7 +76,7 @@ public class ColorPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button1 = rootView.findViewById(R.id.button1);
+        Button button1 = rootView.findViewById(R.id.openCameraButton);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +85,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.button2);
+        Button button2 = rootView.findViewById(R.id.viewGalleryButton);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
