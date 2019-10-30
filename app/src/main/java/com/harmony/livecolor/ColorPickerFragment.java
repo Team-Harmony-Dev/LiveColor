@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -130,7 +131,7 @@ public class ColorPickerFragment extends Fragment {
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
 
             //The horizontal space we have to display it in, in pixels.
-            //Image doesn't necessarily take the entire space!
+            //Image doesn't necessarily take the entire ImageView!
             double newImageMaxWidth = pickedImage.getWidth();
             double newImageMaxHeight = pickedImage.getHeight();
             //The original image size, before it was scaled to our screen.
@@ -141,35 +142,53 @@ public class ColorPickerFragment extends Fragment {
             double newImageHeight = 0.0;
 
             // https://stackoverflow.com/a/13318469
+            // Gets the actual size of the image inside the imageview, since it might not take
+            //   up the entire space.
             if (newImageMaxHeight * originalImageWidth <= newImageMaxWidth * originalImageHeight) {
                 newImageWidth = originalImageWidth * newImageMaxHeight / originalImageHeight;
                 newImageHeight = newImageMaxHeight;
             } else {
-                newImageWidth = originalImageHeight * newImageMaxWidth / originalImageWidth;
-                newImageHeight = newImageMaxWidth;
+                newImageWidth = newImageMaxWidth;
+                newImageHeight = originalImageHeight * newImageMaxWidth / originalImageWidth;
             }
+
+            //TODO delete this frame resize if the other fix (translating x y at line 185) worked.
+
+            //TODO For some reason, the image gets smaller when the ImageView resizes.
+            //  The ImageView seems to perfectly contain the image though.
+            //TODO Actually we'd want to do this when loading the image or the first click would be off
+            //TODO We want to be able to undo this as well for when we select a new image. Save the coordinates somewhere?
+            //TODO This, and many other things, should be in their own functions
+            //If you delete this, also delete the FrameLayout import.
+            // https://stackoverflow.com/a/8233084
+            // Now change ImageView's dimensions to match the scaled image
+            //FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) pickedImage.getLayoutParams();
+            //params.width = (int) newImageWidth;
+            //params.height = (int) newImageHeight;
+            //pickedImage.setLayoutParams(params);
+
             Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
                     +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
 
 
             Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
-            //This should get us x and y with respect to the ImageView we click on, not the whole screen.
+            //This should get us x and y with respect to the ImageView we click on,
+            //  not the whole screen, and not the image itself.
             double x = event.getX();
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
 
+            //The image might not take the whole imageview. We could try to resize the imageview, or
+            //  we could translate the x y coordinates like this:
+            x = x - (newImageMaxWidth/2 - newImageWidth/2);
+            //For some reason this doesn't work? Maybe newImageHeight contains the wrong values?
+            y = y - (newImageMaxHeight/2 - newImageHeight/2);
             //Now we need to change the coordinates because when we get stuff from the bitmap it's
             //  using pixels based on the original image size.
             double rescaleX = originalImageWidth / newImageWidth;
             double rescaleY = originalImageHeight / newImageHeight;
             x = x * rescaleX;
             y = y * rescaleY;
-
-            //TODO It looks like it's fixed vertically but not horizontally?
-            //  On the left half of the image it displays colors to the right of the click,
-            //  and on the right half of the image, it displays colors to the left of the click.
-            //  How far off it is seems to be based on how far from the center of the image we are.
-            //  Might be a rounding error maybe? But that should only be off by 1 pixel at most, shaving off the decimal.
 
             Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
 
@@ -179,9 +198,8 @@ public class ColorPickerFragment extends Fragment {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 return true; //I'm not sure if our return value really matters.
             }
-            //get color int from said pixel coordinates
+            //get color int from said pixel coordinates using the source image
             int pixel = bitmap.getPixel((int) x, (int) y);
-            //Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
