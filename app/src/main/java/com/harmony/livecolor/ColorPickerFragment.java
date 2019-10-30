@@ -99,7 +99,7 @@ public class ColorPickerFragment extends Fragment {
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            //retrieve image from view
+            //Retrieve image from view
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //The horizontal space we have to display it in, in pixels.
@@ -126,18 +126,7 @@ public class ColorPickerFragment extends Fragment {
             double rescaleY = originalImageHeight / newImageHeight;
             x = x * rescaleX;
             y = y * rescaleY;
-            /* No, this's really not right
-            if( x < newImageWidth / 2){
-                x = (int) ((double) x * rescaleX);
-            } else {
-                x = (int) ((double) x / rescaleX);
-            }
-            if( y < newImageHeight / 2){
-                y = (int) ((double) y * rescaleY);
-            } else {
-                y = (int) ((double) y / rescaleY);
-            }
-            */
+
             //TODO It looks like it's fixed vertically but not horizontally?
             //  On the left half of the image it displays colors to the right of the click,
             //  and on the right half of the image, it displays colors to the left of the click.
@@ -146,15 +135,15 @@ public class ColorPickerFragment extends Fragment {
 
             Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
 
-            //If you click and drag outside the image this function still fires, but with
-            //  invalid x & y, causing a crash on bitmap.getPixel()
+            //If you click in the image and then drag outside the image this function still fires,
+            //  but with invalid x & y, causing a crash on bitmap.getPixel()
             if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 return true; //I'm not sure if our return value really matters.
             }
             //get color int from said pixel coordinates
             int pixel = bitmap.getPixel((int) x, (int) y);
-            Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
+            //Log.d("DEBUG S2US2", "onClick: color int = " + pixel);
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
