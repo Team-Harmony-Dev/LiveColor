@@ -130,19 +130,26 @@ public class ColorPickerFragment extends Fragment {
             Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
 
             //The horizontal space we have to display it in, in pixels.
-            //double newImageMaxWidth = pickedImage.getWidth(); //Image doesn't necessarily take the entire imageview!
-            //double newImageMaxHeight = pickedImage.getHeight();
-            double newImageWidth = pickedImage.getWidth();
-            double newImageHeight = pickedImage.getHeight();
+            //Image doesn't necessarily take the entire space!
+            double newImageMaxWidth = pickedImage.getWidth();
+            double newImageMaxHeight = pickedImage.getHeight();
             //The original image size, before it was scaled to our screen.
             double originalImageWidth = bitmap.getWidth();
             double originalImageHeight = bitmap.getHeight();
             //The space that it actually uses, in pixels.
-            //TODO fix this
-            //double newImageWidth = pickedImage.getDrawable().getIntrinsicWidth();
-            //double newImageHeight = pickedImage.getDrawable().getIntrinsicHeight();
-            //Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
-            //        +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
+            double newImageWidth = 0.0;
+            double newImageHeight = 0.0;
+
+            // https://stackoverflow.com/a/13318469
+            if (newImageMaxHeight * originalImageWidth <= newImageMaxWidth * originalImageHeight) {
+                newImageWidth = originalImageWidth * newImageMaxHeight / originalImageHeight;
+                newImageHeight = newImageMaxHeight;
+            } else {
+                newImageWidth = originalImageHeight * newImageMaxWidth / originalImageWidth;
+                newImageHeight = newImageMaxWidth;
+            }
+            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
+                    +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
 
 
             Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
