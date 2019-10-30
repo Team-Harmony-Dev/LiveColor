@@ -148,8 +148,8 @@ public class ColorPickerFragment extends Fragment {
                 newImageWidth = originalImageWidth * newImageMaxHeight / originalImageHeight;
                 newImageHeight = newImageMaxHeight;
             } else {
-                newImageWidth = originalImageHeight * newImageMaxWidth / originalImageWidth;
-                newImageHeight = newImageMaxWidth;
+                newImageWidth = newImageMaxWidth;
+                newImageHeight = originalImageHeight * newImageMaxWidth / originalImageWidth;
             }
 
             //TODO delete this frame resize if the other fix (translating x y at line 185) worked.
@@ -181,8 +181,8 @@ public class ColorPickerFragment extends Fragment {
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
             x = x - (newImageMaxWidth/2 - newImageWidth/2);
+            //For some reason this doesn't work? Maybe newImageHeight contains the wrong values?
             y = y - (newImageMaxHeight/2 - newImageHeight/2);
-
             //Now we need to change the coordinates because when we get stuff from the bitmap it's
             //  using pixels based on the original image size.
             double rescaleX = originalImageWidth / newImageWidth;
