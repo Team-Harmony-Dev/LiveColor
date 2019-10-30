@@ -35,12 +35,13 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7">
+        android:layout_weight="6.5">
 
         <ImageView
             android:id="@+id/pickingImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/newtransparent"
             android:src="@drawable/livecolor_logo"
             app:layout_constraintDimensionRatio="1:1" />
     </FrameLayout>
@@ -48,8 +49,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="25dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:weightSum="10">
@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/colorValues"
-                android:textSize="24sp"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -81,26 +81,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/colorRGB"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/HEXText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/colorHEX"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/HSVText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/colorHSV"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/button3"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Button" />
         </LinearLayout>
 
