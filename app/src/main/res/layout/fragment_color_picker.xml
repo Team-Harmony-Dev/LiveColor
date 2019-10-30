@@ -108,7 +108,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:background="#9C27B0"
                     android:padding="5dp"
                     android:src="@android:drawable/ic_menu_info_details" />
 
@@ -118,7 +117,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:background="#03A9F4"
                     android:padding="5dp"
                     android:src="@android:drawable/ic_menu_edit" />
 
@@ -127,7 +125,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:background="@color/colorAccent"
                     android:padding="5dp"
                     android:src="@android:drawable/ic_menu_save" />
             </LinearLayout>
