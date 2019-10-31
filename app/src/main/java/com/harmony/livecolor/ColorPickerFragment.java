@@ -25,6 +25,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -243,47 +246,61 @@ public class ColorPickerFragment extends Fragment {
 
     // Lets get some color names!
     // Takes the color int, returns a string of the color name
-    // https://github.com/meodai/color-names
-    // Code based on a CSE 118 example. (nanorouz, Lecture 11)
-    public String getColorName(int color){
-        final String baseColorNameUrl = "https://api.color.pizza/v1/";
-        //TODO turn int color into string hex
-        String hex = "FFFFFF";
-        String colorNameUrl = baseColorNameUrl + hex;
-        final String defaultColorName = "Your Color";
-        String colorName = "Test";
-        try {
-            URL url = new URL(colorNameUrl);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setConnectTimeout(500);
-            httpURLConnection.setReadTimeout(500);
-            Log.d("colorname", "beforeConnect");
-            httpURLConnection.connect();
-            Log.d("colorname", "afterConnect");
-            InputStream is = httpURLConnection.getInputStream();
-            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
-            //TODO read the name property.
-
-            //Is this needed?
-            /*
-            StringBuilder sb = new StringBuilder();
-            String line = "";
-            while((line = bf.readLine()) != null){
-                sb.append(line);
+    // Retrieves names from https://github.com/meodai/color-names
+    // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
+    // https://stackoverflow.com/a/31775646
+    //TODO clean this up and either make it a combined get and set thing, or return the proper value.
+    public String getColorName(final int color) {
+        Thread background = new Thread(new Runnable() {
+            public void run() {
+                final String baseColorNameUrl = "https://api.color.pizza/v1/";
+                //TODO maybe stick this in a function since it's shared with the hex text display.
+                String hex = String.format("%06X", (0xFFFFFF & color)); //get the hex representation minus the first ff
+                String colorNameUrl = baseColorNameUrl + hex;
+                final String defaultColorName = "Your Color";
+                String colorName = "Error";
+                try {
+                    URL url = new URL(colorNameUrl);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("GET");
+                    httpURLConnection.setConnectTimeout(500);
+                    httpURLConnection.setReadTimeout(500);
+                    Log.d("colorname", "Attempting to connect with url=" + url);
+                    httpURLConnection.connect();
+                    Log.d("colorname", "afterConnect");
+                    InputStream is = httpURLConnection.getInputStream();
+                    BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+                    StringBuilder sb = new StringBuilder();
+                    String line = "";
+                    while((line = bf.readLine()) != null){
+                        sb.append(line);
+                    }
+                    bf.close();
+                    is.close();
+                    // https://stackoverflow.com/a/26358942
+                    JSONObject json = new JSONObject(sb.toString());
+                    Log.d("colorname", "json: "+json);
+                    JSONArray jsonArray = new JSONArray(json.getString("colors"));
+                    Log.d("colorname", "jsonarray("+jsonArray.length()+"): "+jsonArray);
+                    json = jsonArray.getJSONObject(0);
+                    Log.d("colorname", "json now: "+json);
+                    colorName = json.getString("name");
+                    //return sb.toString();
+                    //return colorName;
+                } catch (Exception e) {
+                    Log.w("DEBUG colorname", "Problem fetching color name.");
+                    e.printStackTrace();
+                    //return defaultColorName;
+                    colorName = defaultColorName;
+                }
+                TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
+                colorNameDisplay.setText(colorName);
             }
-            */
-            bf.close();
-            is.close();
-            //return sb.toString();
-            return colorName;
-        } catch (Exception e) {
-            Log.w("DEBUG colorname", "Problem fetching color name.");
-            e.printStackTrace();
-            return defaultColorName;
-        }
-    }
+        });
 
+     background.start();
+     return "";
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -369,7 +386,7 @@ public class ColorPickerFragment extends Fragment {
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         colorDisplay.setBackgroundColor(colorNew);
-        TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
-        colorNameDisplay.setText(getColorName(colorNew));
+
+        getColorName(colorNew);
     }
 }
