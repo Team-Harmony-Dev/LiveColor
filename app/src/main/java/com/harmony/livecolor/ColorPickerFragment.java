@@ -1,7 +1,9 @@
 package com.harmony.livecolor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -26,6 +29,7 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import static androidx.core.content.ContextCompat.getColorStateList;
 
 
 /**
@@ -93,6 +97,16 @@ public class ColorPickerFragment extends Fragment {
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
             }
         });
+
+        /*final Button saveColorB = rootView.findViewById(R.id.saveButton);
+        saveColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveColorB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_text)));
+            }
+        });*/
+
+
 
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
