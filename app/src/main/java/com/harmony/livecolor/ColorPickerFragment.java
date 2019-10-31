@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +24,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
@@ -64,6 +72,8 @@ public class ColorPickerFragment extends Fragment {
     }
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1888;
+    static final int REQUEST_TAKE_PHOTO = 1;
+
     ImageView mImageView;
     Uri image_uri;
 
@@ -88,9 +98,24 @@ public class ColorPickerFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,
-                        CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity()
+                                ,                      "com.harmony.livecolor.fileprovider", photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    }
+                }
             }
         });
 
@@ -107,10 +132,78 @@ public class ColorPickerFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Bitmap bmp = (Bitmap) data.getExtras().get("data");
-                mImageView.setImageBitmap(bmp);
+
+                galleryAddPic();
+
+
+                setPic();
+
             }
         }
+    }
+
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+
+        // A seperate Method to get the timestamp ina formatted manner
+        String timeStamp = getCurrentTimeStamp();
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES);
+        String imgStore = storageDir.getAbsolutePath()
+                + File.separator + "SurveyPhotos";
+        storageDir = new File(imgStore);
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+        File imageFile = null;
+        try {
+            imageFile = File.createTempFile(imageFileName,
+                    ".jpg", storageDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        currentPhotoPath = imageFile.getAbsolutePath();
+        return imageFile;
+    }
+
+    public static String getCurrentTimeStamp() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+        return timeStamp;
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        mImageView.setImageBitmap(bitmap);
     }
 
     // https://stackoverflow.com/a/39588899
