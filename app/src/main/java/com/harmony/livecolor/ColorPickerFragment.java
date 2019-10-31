@@ -24,6 +24,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
@@ -221,6 +227,50 @@ public class ColorPickerFragment extends Fragment {
         }
     };
 
+    // Lets get some color names!
+    // Takes the color int, returns a string of the color name
+    // https://github.com/meodai/color-names
+    // Code based on a CSE 118 example. (nanorouz, Lecture 11)
+    public String getColorName(int color){
+        final String baseColorNameUrl = "https://api.color.pizza/v1/";
+        //TODO turn int color into string hex
+        String hex = "FFFFFF";
+        String colorNameUrl = baseColorNameUrl + hex;
+        final String defaultColorName = "Your Color";
+        String colorName = "Test";
+        try {
+            URL url = new URL(colorNameUrl);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setConnectTimeout(500);
+            httpURLConnection.setReadTimeout(500);
+            Log.d("colorname", "beforeConnect");
+            httpURLConnection.connect();
+            Log.d("colorname", "afterConnect");
+            InputStream is = httpURLConnection.getInputStream();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+            //TODO read the name property.
+
+            //Is this needed?
+            /*
+            StringBuilder sb = new StringBuilder();
+            String line = "";
+            while((line = bf.readLine()) != null){
+                sb.append(line);
+            }
+            */
+            bf.close();
+            is.close();
+            //return sb.toString();
+            return colorName;
+        } catch (Exception e) {
+            Log.w("DEBUG colorname", "Problem fetching color name.");
+            e.printStackTrace();
+            return defaultColorName;
+        }
+    }
+
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -305,5 +355,7 @@ public class ColorPickerFragment extends Fragment {
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         colorDisplay.setBackgroundColor(colorNew);
+        TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
+        colorNameDisplay.setText(getColorName(colorNew));
     }
 }
