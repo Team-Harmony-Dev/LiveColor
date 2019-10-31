@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -51,6 +52,7 @@ public class ColorPickerFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public static final int RESULT_LOAD_IMAGE = 1;
     ImageView pickingImage;
+
     public ColorPickerFragment() {
         // Required empty public constructor
     }
@@ -71,7 +73,9 @@ public class ColorPickerFragment extends Fragment {
             //if arguments are needed ever, use this to set them to static values in the class
         }
     }
-
+    private static final int IMAGE_CAPTURE_CODE = 1001;
+    ImageView mImageView;
+    Uri image_uri;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,12 +90,19 @@ public class ColorPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button1 = rootView.findViewById(R.id.openCameraButton);
-        button1.setOnClickListener(new View.OnClickListener() {
+        Button button = rootView.findViewById(R.id.openCameraButton);
+        mImageView = rootView.findViewById(R.id.pickingImage);
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CameraColorPicker.class);
-                startActivity(intent);
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+                image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
             }
         });
 
@@ -126,6 +137,9 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK){
+            mImageView.setImageURI(image_uri);
+        }
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             pickingImage.setImageURI(selectedImage);
