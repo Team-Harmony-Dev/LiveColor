@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import static androidx.constraintlayout.motion.widget.MotionScene.TAG;
 
 
 /**
@@ -71,6 +73,8 @@ public class ColorPickerFragment extends Fragment {
         }
     }
 
+    private static final int PERMISSION_CODE = 1000;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1888;
     static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -98,24 +102,13 @@ public class ColorPickerFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(getActivity()
-                                ,                      "com.harmony.livecolor.fileprovider", photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                    }
-                }
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+                image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
             }
         });
 
@@ -129,82 +122,13 @@ public class ColorPickerFragment extends Fragment {
 
 
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                galleryAddPic();
-
-
-                setPic();
-
-            }
+        if (resultCode == Activity.RESULT_OK){
+            mImageView.setImageURI(image_uri);
         }
     }
 
-    String currentPhotoPath;
-
-    private File createImageFile() throws IOException {
-
-        // A seperate Method to get the timestamp ina formatted manner
-        String timeStamp = getCurrentTimeStamp();
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES);
-        String imgStore = storageDir.getAbsolutePath()
-                + File.separator + "SurveyPhotos";
-        storageDir = new File(imgStore);
-        if (!storageDir.exists()) {
-            storageDir.mkdirs();
-        }
-        File imageFile = null;
-        try {
-            imageFile = File.createTempFile(imageFileName,
-                    ".jpg", storageDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        currentPhotoPath = imageFile.getAbsolutePath();
-        return imageFile;
-    }
-
-    public static String getCurrentTimeStamp() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        return timeStamp;
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
-    }
-
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-        mImageView.setImageBitmap(bitmap);
-    }
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
