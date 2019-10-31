@@ -20,17 +20,21 @@
             android:id="@+id/openCameraButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:drawableBottom="@android:drawable/ic_menu_camera" />
+            android:drawableBottom="@drawable/camera_white_filled"
+            android:adjustViewBounds="true"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            />
 
         <Button
             android:id="@+id/viewGalleryButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:drawableBottom="@android:drawable/ic_menu_gallery" />
+            android:drawableBottom="@drawable/image_white_filled" />
     </LinearLayout>
 
     <FrameLayout
