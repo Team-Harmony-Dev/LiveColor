@@ -250,6 +250,7 @@ public class ColorPickerFragment extends Fragment {
     // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
     // https://stackoverflow.com/a/31775646
     //TODO clean this up and either make it a combined get and set thing, or return the proper value.
+    //TODO Is there any limit on how many calls we can send them? Click-dragging will spam. 
     public String getColorName(final int color) {
         Thread background = new Thread(new Runnable() {
             public void run() {
@@ -280,6 +281,7 @@ public class ColorPickerFragment extends Fragment {
                     // https://stackoverflow.com/a/26358942
                     JSONObject json = new JSONObject(sb.toString());
                     Log.d("colorname", "json: "+json);
+                    //TODO is this middle step actually necessary?
                     JSONArray jsonArray = new JSONArray(json.getString("colors"));
                     Log.d("colorname", "jsonarray("+jsonArray.length()+"): "+jsonArray);
                     json = jsonArray.getJSONObject(0);
