@@ -91,12 +91,15 @@
 
                 <ImageButton
                     android:id="@+id/infoButton"
-                    style="@style/Widget.AppCompat.ImageButton"
+                    style="@android:style/Widget.DeviceDefault.ImageButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:padding="5dp"
-                    android:src="@android:drawable/ic_menu_info_details" />
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/info_filled" />
 
                 <ImageButton
                     android:id="@+id/editButton"
@@ -104,17 +107,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:padding="5dp"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/edit_filled" />
 
                 <ImageButton
                     android:id="@+id/saveButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_saved"
-                    android:tint="#FBFBFC" />
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_name" />
             </LinearLayout>
 
         </LinearLayout>

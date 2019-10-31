@@ -263,7 +263,7 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
-        updateColorValues(getView(),Color.WHITE);
+        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
     //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
@@ -271,7 +271,7 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
 
-        //fetch the color from pickedColor
+        //fetch the color components from colorNew
         int RV = Color.red(colorNew);
         int GV = Color.green(colorNew);
         int BV = Color.blue(colorNew);
