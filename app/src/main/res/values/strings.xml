@@ -13,5 +13,8 @@
     <string name="colorHEX"> HEX: </string>
     <string name="colorRGB">RGB: </string>
     <string name="colorHSV"> HSV: </string>
+    <string name="photo">Photo</string>
+    <string name="takepicture">Take Picture</string>
+
 
 </resources>
