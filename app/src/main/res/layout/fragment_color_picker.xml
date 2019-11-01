@@ -16,25 +16,28 @@
         android:orientation="horizontal"
         >
 
-        <Button
+        <ImageButton
             android:id="@+id/openCameraButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:drawableBottom="@drawable/camera_white_filled"
+            android:src="@drawable/camera_white_filled"
             android:adjustViewBounds="true"
             android:padding="10dp"
             android:scaleType="fitCenter"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/viewGalleryButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:drawableBottom="@drawable/image_white_filled" />
+            android:src="@drawable/image_white_filled"
+            android:adjustViewBounds="true"
+            android:padding="10dp"
+            android:scaleType="fitCenter"/>
     </LinearLayout>
 
     <FrameLayout
@@ -123,7 +126,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
+                    android:background="@color/ic_launcher_background"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_action_name" />

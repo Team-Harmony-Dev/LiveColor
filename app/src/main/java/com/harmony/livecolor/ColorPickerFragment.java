@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -22,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +45,8 @@ import static androidx.core.content.ContextCompat.getColorStateList;
  * create an instance of this fragment.
  */
 public class ColorPickerFragment extends Fragment {
+
+    private boolean isButtonClicked = false;
 
     private OnFragmentInteractionListener mListener;
     public static final int RESULT_LOAD_IMAGE = 1;
@@ -84,7 +89,7 @@ public class ColorPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button = rootView.findViewById(R.id.openCameraButton);
+        ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
         mImageView = rootView.findViewById(R.id.pickingImage);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +105,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.viewGalleryButton);
+        ImageButton button2 = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,13 +114,15 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        /*final Button saveColorB = rootView.findViewById(R.id.saveButton);
+        final ImageButton saveColorB = (ImageButton) rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveColorB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_text)));
+                //saveColorB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_text)));
+                isButtonClicked = !isButtonClicked;
+                saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
             }
-        });*/
+        });
 
 
 
