@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -24,6 +25,9 @@ public class ColorInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_info);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         // FETCH PICKED COLOR FROM PREFERENCES
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
