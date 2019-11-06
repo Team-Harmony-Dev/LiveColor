@@ -250,7 +250,7 @@ public class ColorPickerFragment extends Fragment {
     // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
     // https://stackoverflow.com/a/31775646
     //TODO clean this up and either make it a combined get and set thing, or return the proper value.
-    //TODO Is there any limit on how many calls we can send them? Click-dragging will spam. 
+    //TODO Is there any limit on how many calls we can send them? Click-dragging will spam.
     public String getColorName(final int color) {
         Thread background = new Thread(new Runnable() {
             public void run() {
@@ -295,12 +295,16 @@ public class ColorPickerFragment extends Fragment {
                     //return defaultColorName;
                     colorName = defaultColorName;
                 }
+                //android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
                 TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
                 colorNameDisplay.setText(colorName);
             }
         });
 
      background.start();
+     //Doing it like this with a global variable causes it to lag a color or more behind since the call takes time.
+     //TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
+     //colorNameDisplay.setText(colorName);
      return "";
     }
 
