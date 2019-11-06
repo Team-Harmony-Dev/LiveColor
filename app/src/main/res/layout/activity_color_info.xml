@@ -29,21 +29,21 @@
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/HexText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="HEX: "
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/RGBText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="RGB: "
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/HSVText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="HSV: "

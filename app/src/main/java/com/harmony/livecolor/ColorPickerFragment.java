@@ -316,8 +316,6 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
         //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
         //Is the view argument to updateColorValues needed?
-        //TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
-        //rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
         //update the HEX value displayed
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
