@@ -240,7 +240,14 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
-            //colorNameGetter(pixel);
+            //Get the color name from an API call
+            //It takes a second to load and I don't want to spam the API so lets only call it when we releast
+            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+                Log.d("S3US5", "Release detected");
+                MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
+                colorNameGetter tmp = new colorNameGetter();
+                tmp.execute(pixel);
+            }
             return true;
         }
     };
