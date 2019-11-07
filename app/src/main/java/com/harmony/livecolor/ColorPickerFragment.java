@@ -124,7 +124,12 @@ public class ColorPickerFragment extends Fragment {
                 isButtonClicked = !isButtonClicked;
                 saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
-                saveButton.setColorFilter(isButtonClicked ? colorT : R.color.empty);
+                if(isButtonClicked){
+                    saveButton.setColorFilter(colorT);
+                }else{
+                    saveButton.setColorFilter(null);
+                }
+
             }
         });
 
