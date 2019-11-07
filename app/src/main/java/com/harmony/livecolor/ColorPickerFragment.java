@@ -143,6 +143,16 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        final ImageButton editColorB = (ImageButton) rootView.findViewById(R.id.editButton);
+        infoColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
+                startCIA.putExtra("get_hex", Integer.toString(colorT));
+                startActivity(startCIA);
+            }
+        });
+
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
         //Adds a listener to get the x and y coordinates of taps and update the display
