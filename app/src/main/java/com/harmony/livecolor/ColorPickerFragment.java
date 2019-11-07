@@ -248,8 +248,8 @@ public class ColorPickerFragment extends Fragment {
                 MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
                 colorNameGetter tmp = new colorNameGetter();
                 tmp.execute(pixel);
-            } else {
-                //Wipe the color name until we get a new one.
+            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
             }
             return true;
@@ -339,7 +339,7 @@ public class ColorPickerFragment extends Fragment {
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
-        //This doesn't work, commenting out for now.
+        //This doesn't work, commenting out for now. Remove if other one is confirmed working.
         //Get transparency: https://stackoverflow.com/a/23045917
         //int transparency = (colorNew & 0xff000000) >> 24;
         //Remove transparency from the color we're displaying, because the hex/rgb/hsv and name
