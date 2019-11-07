@@ -20,6 +20,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import static android.graphics.Color.RGBToHSV;
 
 public class ColorInfoActivity extends AppCompatActivity {
@@ -84,6 +86,8 @@ public class ColorInfoActivity extends AppCompatActivity {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
                 clipboard.setPrimaryClip(clip);
+
+                Snackbar.make(view, "HEX value copied to clipboard!", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -94,6 +98,8 @@ public class ColorInfoActivity extends AppCompatActivity {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)",RV,GV,BV));
                 clipboard.setPrimaryClip(clip);
+
+                Snackbar.make(view, "RGB values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -104,6 +110,8 @@ public class ColorInfoActivity extends AppCompatActivity {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]));
                 clipboard.setPrimaryClip(clip);
+
+                Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
