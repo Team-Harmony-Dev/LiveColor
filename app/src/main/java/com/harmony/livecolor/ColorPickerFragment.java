@@ -240,17 +240,12 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
+            //colorNameGetter(pixel);
             return true;
         }
     };
 
-    // Lets get some color names!
-    // Takes the color int, returns a string of the color name
-    // Retrieves names from https://github.com/meodai/color-names
-    // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
-    // https://stackoverflow.com/a/31775646
-    //TODO clean this up and either make it a combined get and set thing, or return the proper value.
-    //TODO Is there any limit on how many calls we can send them? Click-dragging will spam.
+    /*
     public String getColorName(final int color) {
         Thread background = new Thread(new Runnable() {
             public void run() {
@@ -264,7 +259,7 @@ public class ColorPickerFragment extends Fragment {
                     URL url = new URL(colorNameUrl);
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("GET");
-                    httpURLConnection.setConnectTimeout(500);
+                    httpURLConnection.setConnectTimeout(500);//500 is arbitary, should name
                     httpURLConnection.setReadTimeout(500);
                     Log.d("colorname", "Attempting to connect with url=" + url);
                     httpURLConnection.connect();
@@ -307,6 +302,7 @@ public class ColorPickerFragment extends Fragment {
      //colorNameDisplay.setText(colorName);
      return "";
     }
+    */
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -392,7 +388,5 @@ public class ColorPickerFragment extends Fragment {
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         colorDisplay.setBackgroundColor(colorNew);
-
-        getColorName(colorNew);
     }
 }
