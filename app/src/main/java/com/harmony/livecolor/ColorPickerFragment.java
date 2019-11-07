@@ -241,6 +241,7 @@ public class ColorPickerFragment extends Fragment {
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
             //Get the color name from an API call
+            //TODO if the name is very long it may go to a new line and shrink the buttons.
             //It takes a second to load and I don't want to spam the API so lets only call it when we releast
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
@@ -251,65 +252,6 @@ public class ColorPickerFragment extends Fragment {
             return true;
         }
     };
-
-    /*
-    public String getColorName(final int color) {
-        Thread background = new Thread(new Runnable() {
-            public void run() {
-                final String baseColorNameUrl = "https://api.color.pizza/v1/";
-                //TODO maybe stick this in a function since it's shared with the hex text display.
-                String hex = String.format("%06X", (0xFFFFFF & color)); //get the hex representation minus the first ff
-                String colorNameUrl = baseColorNameUrl + hex;
-                final String defaultColorName = "Your Color";
-                String colorName = "Error";
-                try {
-                    URL url = new URL(colorNameUrl);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setRequestMethod("GET");
-                    httpURLConnection.setConnectTimeout(500);//500 is arbitary, should name
-                    httpURLConnection.setReadTimeout(500);
-                    Log.d("colorname", "Attempting to connect with url=" + url);
-                    httpURLConnection.connect();
-                    Log.d("colorname", "afterConnect");
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader bf = new BufferedReader(new InputStreamReader(is));
-                    StringBuilder sb = new StringBuilder();
-                    String line = "";
-                    while((line = bf.readLine()) != null){
-                        sb.append(line);
-                    }
-                    bf.close();
-                    is.close();
-                    // https://stackoverflow.com/a/26358942
-                    JSONObject json = new JSONObject(sb.toString());
-                    Log.d("colorname", "json: "+json);
-                    //TODO is this middle step actually necessary?
-                    JSONArray jsonArray = new JSONArray(json.getString("colors"));
-                    Log.d("colorname", "jsonarray("+jsonArray.length()+"): "+jsonArray);
-                    json = jsonArray.getJSONObject(0);
-                    Log.d("colorname", "json now: "+json);
-                    colorName = json.getString("name");
-                    //return sb.toString();
-                    //return colorName;
-                } catch (Exception e) {
-                    Log.w("DEBUG colorname", "Problem fetching color name.");
-                    e.printStackTrace();
-                    //return defaultColorName;
-                    colorName = defaultColorName;
-                }
-                //android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
-                TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
-                colorNameDisplay.setText(colorName);
-            }
-        });
-
-     background.start();
-     //Doing it like this with a global variable causes it to lag a color or more behind since the call takes time.
-     //TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
-     //colorNameDisplay.setText(colorName);
-     return "";
-    }
-    */
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -394,6 +336,11 @@ public class ColorPickerFragment extends Fragment {
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
+        //Get transparency: https://stackoverflow.com/a/23045917
+        int transparency = (colorNew & 0xff000000) >> 24;
+        //Remove transparency from the color we're displaying, because the hex/rgb/hsv and name
+        //  don't take transparency into account.
+        colorNew = colorNew - transparency;
         colorDisplay.setBackgroundColor(colorNew);
     }
 }
