@@ -339,11 +339,16 @@ public class ColorPickerFragment extends Fragment {
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
+        //This doesn't work, commenting out for now.
         //Get transparency: https://stackoverflow.com/a/23045917
-        int transparency = (colorNew & 0xff000000) >> 24;
+        //int transparency = (colorNew & 0xff000000) >> 24;
         //Remove transparency from the color we're displaying, because the hex/rgb/hsv and name
         //  don't take transparency into account.
-        colorNew = colorNew - transparency;
+        //colorNew = colorNew - transparency;
+
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
     }
 }
