@@ -31,7 +31,7 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
@@ -61,6 +61,8 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/lato_bold"
             android:text="Color Name"
@@ -75,16 +77,18 @@
                 android:id="@+id/HexText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="0.8"
                 android:fontFamily="@font/lato_regular"
                 android:text="HEX: "
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/copyHEX"
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0.2"
                 android:fontFamily="@font/lato_regular"
                 android:text="@android:string/copy" />
@@ -99,15 +103,17 @@
                 android:id="@+id/RGBText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="0.8"
                 android:fontFamily="@font/lato_regular"
                 android:text="RGB: "
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/copyRGB"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0.2"
                 android:fontFamily="@font/lato_regular"
                 android:text="@android:string/copy" />
@@ -123,15 +129,17 @@
                 android:id="@+id/HSVText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="0.8"
                 android:fontFamily="@font/lato_regular"
                 android:text="HSV: "
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/copyHSV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0.2"
                 android:fontFamily="@font/lato_regular"
                 android:text="@android:string/copy" />
@@ -141,6 +149,7 @@
             android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:fontFamily="@font/lato_bold"
             android:text="Palettes this color is in:"
             android:textSize="27sp" />

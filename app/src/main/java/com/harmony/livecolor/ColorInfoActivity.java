@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +24,8 @@ import static android.graphics.Color.RGBToHSV;
 
 public class ColorInfoActivity extends AppCompatActivity {
 
-    int colorValue;
+    int colorValue, RV, GV, BV, hue;
+    float[] hsvArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +61,51 @@ public class ColorInfoActivity extends AppCompatActivity {
         hexDisplay.setText(hexValue);
 
         //RGB
-        int RV = Color.red(colorValue);
-        int GV = Color.green(colorValue);
-        int BV = Color.blue(colorValue);
+        RV = Color.red(colorValue);
+        GV = Color.green(colorValue);
+        BV = Color.blue(colorValue);
 
         String rgb = String.format("RGB: (%1$d, %2$d, %3$d)",RV,GV,BV);
         TextView rgbDisplay = (TextView) findViewById(R.id.RGBText);//get the textview that displays the RGB value
         rgbDisplay.setText(rgb); //set the textview to the new RGB: rgbvalue
 
         //HSV
-        float[] hsvArray = new float[3];
+        hsvArray = new float[3];
         RGBToHSV(RV,GV,BV,hsvArray);
-        int hue = Math.round(hsvArray[0]);
+        hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
         TextView hsvDisplay = (TextView) findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
+
+        Button copy1 = findViewById(R.id.copyHEX);
+        copy1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+
+        Button copy2 = findViewById(R.id.copyRGB);
+        copy2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)",RV,GV,BV));
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+
+        Button copy3 = findViewById(R.id.copyHSV);
+        copy3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]));
+                clipboard.setPrimaryClip(clip);
+            }
+        });
     }
 
 }
