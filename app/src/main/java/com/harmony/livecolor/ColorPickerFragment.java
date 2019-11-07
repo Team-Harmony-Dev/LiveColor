@@ -90,7 +90,7 @@ public class ColorPickerFragment extends Fragment {
         );
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
         ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
         mImageView = rootView.findViewById(R.id.pickingImage);
@@ -123,6 +123,8 @@ public class ColorPickerFragment extends Fragment {
             public void onClick(View view) {
                 isButtonClicked = !isButtonClicked;
                 saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
+                ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
+                saveButton.setColorFilter(isButtonClicked ? colorT : R.color.empty);
             }
         });
 
@@ -248,6 +250,10 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_action_name);
+            saveColorB.setColorFilter(null);
             return true;
         }
     };
