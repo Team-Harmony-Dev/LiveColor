@@ -248,6 +248,9 @@ public class ColorPickerFragment extends Fragment {
                 MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
                 colorNameGetter tmp = new colorNameGetter();
                 tmp.execute(pixel);
+            } else {
+                //Wipe the color name until we get a new one.
+                ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
             }
             return true;
         }
