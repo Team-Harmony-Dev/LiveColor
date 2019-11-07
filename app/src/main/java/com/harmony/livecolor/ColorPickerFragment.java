@@ -25,6 +25,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
@@ -231,6 +240,18 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
+            //Get the color name from an API call
+            //TODO if the name is very long it may go to a new line and shrink the buttons.
+            //It takes a second to load and I don't want to spam the API so lets only call it when we releast
+            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+                Log.d("S3US5", "Release detected");
+                MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
+                colorNameGetter tmp = new colorNameGetter();
+                tmp.execute(pixel);
+            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                //Wipe the color name until we get a new one during drags.
+                ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
+            }
             return true;
         }
     };
@@ -318,6 +339,16 @@ public class ColorPickerFragment extends Fragment {
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
+        //This doesn't work, commenting out for now. Remove if other one is confirmed working.
+        //Get transparency: https://stackoverflow.com/a/23045917
+        //int transparency = (colorNew & 0xff000000) >> 24;
+        //Remove transparency from the color we're displaying, because the hex/rgb/hsv and name
+        //  don't take transparency into account.
+        //colorNew = colorNew - transparency;
+
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
     }
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity
             "android.permission.CAMERA",
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
+    //colorNameGetter changes the text in this view
+    static TextView colorNameView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        colorNameView = findViewById(R.id.colorName);
     }
 
     //checks if given fragment exists, and loads it if possible
