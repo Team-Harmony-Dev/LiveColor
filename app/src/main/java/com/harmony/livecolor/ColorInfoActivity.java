@@ -1,5 +1,6 @@
 package com.harmony.livecolor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -28,6 +30,15 @@ public class ColorInfoActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        ImageButton button2 = (ImageButton) findViewById(R.id.backButton);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         // FETCH PICKED COLOR FROM PREFERENCES
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
@@ -62,4 +73,5 @@ public class ColorInfoActivity extends AppCompatActivity {
         TextView hsvDisplay = (TextView) findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
     }
+
 }
