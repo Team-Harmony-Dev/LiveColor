@@ -49,6 +49,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         // FETCH PICKED COLOR FROM PREFERENCES
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
         String colorString = preferences.getString("nameKey","Default");
+        String colorNameT = preferences.getString("colorName","Default");
 
         Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
@@ -56,6 +57,9 @@ public class ColorInfoActivity extends AppCompatActivity {
         // UPDATE VALUES
         ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
+
+        TextView colorNameView = findViewById(R.id.colorNameCIA);
+        colorNameView.setText(colorNameT);
 
         //HEX
         String hexValue = String.format("HEX: #%06X", (0xFFFFFF & colorValue)); //get the hex representation minus the first ff

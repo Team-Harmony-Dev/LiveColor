@@ -59,6 +59,7 @@ public class ColorPickerFragment extends Fragment {
 
     private boolean isButtonClicked = false;
     int colorT;
+    String colorNamePass;
 
     private OnFragmentInteractionListener mListener;
     public static final int RESULT_LOAD_IMAGE = 1;
@@ -153,7 +154,7 @@ public class ColorPickerFragment extends Fragment {
         });
 
         final ImageButton editColorB = (ImageButton) rootView.findViewById(R.id.editButton);
-        infoColorB.setOnClickListener(new View.OnClickListener() {
+        editColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
@@ -371,8 +372,6 @@ public class ColorPickerFragment extends Fragment {
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-        //TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
-        //hsvDisplay.setText(fullHSV);
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
@@ -388,9 +387,15 @@ public class ColorPickerFragment extends Fragment {
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
 
+        //Put the color in SharedPreferences as a String with key nameKey
         SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("nameKey", Integer.toString(colorNew));
+        editor.apply();
+
+        TextView colorNameView = getActivity().findViewById(R.id.colorName);
+        String input = colorNameView.getText().toString();
+        editor.putString("colorName", input);
         editor.apply();
     }
 }
