@@ -61,17 +61,11 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             json = jsonArray.getJSONObject(0);
             Log.d("S3US5 colorname", "json now: "+json);
             colorName = json.getString("name");
-            //return sb.toString();
-            //return colorName;
         } catch (Exception e) {
             Log.w("DEBUG S3US5 colorname", "Problem fetching color name.");
             e.printStackTrace();
-            //return defaultColorName;
             colorName = defaultColorName;
         }
-        //android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
-        //TextView colorNameDisplay = getActivity().findViewById(R.id.colorName);
-        //colorNameDisplay.setText(colorName);
         Log.d("S3US5 colorname", "Found name: "+colorName);
         return colorName;
     }
