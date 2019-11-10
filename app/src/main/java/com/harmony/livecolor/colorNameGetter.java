@@ -17,13 +17,14 @@ import java.net.URL;
 // Takes the color int, returns a string of the color name
 // Retrieves names from https://github.com/meodai/color-names
 // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
+// Relies on ColorPickerFragment.colorToHex()
 //TODO simplify using this. Currently it needs you to make sure the
 //  textView colorNameView is set properly because apparently onCreate can't.
 //Example of use:
 //MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
 //colorNameGetter tmp = new colorNameGetter();
 //tmp.execute(pixel);
-//TODO maybe return the value
+//TODO maybe return the value in some way? Save it somewhere?
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     @Override
     protected String doInBackground(Integer... colorButArray){
@@ -32,8 +33,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         String colorName = "Error";
         try {
             int color = colorButArray[0];
-            //TODO maybe stick this in a function since it's shared with the hex text display.
-            String hex = String.format("%06X", (0xFFFFFF & color)); //get the hex representation minus the first ff
+            String hex = ColorPickerFragment.colorToHex(color);
             String colorNameUrl = baseColorNameUrl + hex;
 
 
