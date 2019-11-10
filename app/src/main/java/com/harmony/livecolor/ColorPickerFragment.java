@@ -164,7 +164,13 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
-            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+            Bitmap bitmap;
+            try {
+                bitmap = ((BitmapDrawable) pickedImage.getDrawable()).getBitmap();
+            } catch (Exception e){
+                Log.w("onTouch() possible error", "(Probably unable to retrieve image and/or turn it into a bitmap): "+e);
+                return true;
+            }
 
             //The horizontal space we have to display it in, in pixels.
             //Image doesn't necessarily take the entire ImageView!
