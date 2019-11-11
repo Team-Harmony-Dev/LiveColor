@@ -55,7 +55,7 @@ import static androidx.core.content.ContextCompat.getColorStateList;
  */
 public class ColorPickerFragment extends Fragment {
 
-    TextView editName, editHex;
+    TextView editName, editHex, editRgb, editHsv;
     ColorDatabase colorDB;
 
     private OnFragmentInteractionListener mListener;
@@ -104,8 +104,10 @@ public class ColorPickerFragment extends Fragment {
 
         colorDB = new ColorDatabase(getActivity());
 
-        editName = rootView.findViewById(R.id.textView);
+        editName = rootView.findViewById(R.id.colorName);
         editHex = rootView.findViewById(R.id.HEXText);
+        editRgb = rootView.findViewById(R.id.RGBText);
+        editHsv = rootView.findViewById(R.id.HSVText);
 
         Button button = rootView.findViewById(R.id.openCameraButton);
         mImageView = rootView.findViewById(R.id.pickingImage);
@@ -138,7 +140,9 @@ public class ColorPickerFragment extends Fragment {
             public void onClick(View view) {
                 String name = editName.getText().toString();
                 String hex = editHex.getText().toString();
-                colorDB.addColorInfoData(name, hex);
+                String rgb = editRgb.getText().toString();
+                String hsv = editHsv.getText().toString();
+                colorDB.addColorInfoData(name, hex, rgb, hsv);
                 Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_LONG).show();
             }
         });
@@ -344,8 +348,8 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
         //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
         //Is the view argument to updateColorValues needed?
-        //TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
-        //rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+        TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
         //update the HEX value displayed
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
@@ -359,8 +363,8 @@ public class ColorPickerFragment extends Fragment {
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-        //TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
-        //hsvDisplay.setText(fullHSV);
+        TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
+        hsvDisplay.setText(fullHSV);
 
         //Set the color display
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);

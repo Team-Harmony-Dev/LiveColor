@@ -33,13 +33,13 @@ public class ColorDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addColorInfoData(String name, String hex) {
+    public boolean addColorInfoData(String name, String hex, String rgb, String hsv) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues colorInfoContentValues = new ContentValues();
         colorInfoContentValues.put(COL2, name);
         colorInfoContentValues.put(COL3, hex);
-        //colorInfoContentValues.put(COL4, rgb);
-        //colorInfoContentValues.put(COL5, hsv);
+        colorInfoContentValues.put(COL4, rgb);
+        colorInfoContentValues.put(COL5, hsv);
 
 
         long insertResult = db.insert(TABLE_NAME, null, colorInfoContentValues);
