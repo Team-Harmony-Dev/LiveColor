@@ -13,8 +13,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public static final String COL1 = "ID";
     public static final String COL2 = "NAME";
     public static final String COL3 = "HEX";
-    public static final String COL4 = "RGB";
-    public static final String COL5 = "HSV";
+    //public static final String COL4 = "RGB";
+    //public static final String COL5 = "HSV";
 
     public ColorDatabase(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -23,7 +23,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createColorInfoTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " NAME TEXT, HEX TEXT, RGB TEXT, HSV TEXT)";
+                " NAME TEXT, HEX TEXT)";
         db.execSQL(createColorInfoTable);
     }
 
@@ -33,13 +33,13 @@ public class ColorDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addColorInfoData(String name, String hex, String rgb, String hsv) {
+    public boolean addColorInfoData(String name, String hex) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues colorInfoContentValues = new ContentValues();
         colorInfoContentValues.put(COL2, name);
         colorInfoContentValues.put(COL3, hex);
-        colorInfoContentValues.put(COL4, rgb);
-        colorInfoContentValues.put(COL5, hsv);
+        //colorInfoContentValues.put(COL4, rgb);
+        //colorInfoContentValues.put(COL5, hsv);
 
 
         long insertResult = db.insert(TABLE_NAME, null, colorInfoContentValues);

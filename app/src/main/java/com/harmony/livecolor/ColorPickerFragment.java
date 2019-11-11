@@ -22,8 +22,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.RGBToHSV;
@@ -42,6 +45,9 @@ import static androidx.core.content.ContextCompat.getColorStateList;
  * create an instance of this fragment.
  */
 public class ColorPickerFragment extends Fragment {
+
+    TextView editName, editHex;
+    ColorDatabase colorDB;
 
     private OnFragmentInteractionListener mListener;
     public static final int RESULT_LOAD_IMAGE = 1;
@@ -81,8 +87,16 @@ public class ColorPickerFragment extends Fragment {
                         " - " + getResources().getText(R.string.title_color_picker)
         );
 
+
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+
+
+        colorDB = new ColorDatabase(getActivity());
+
+        editName = rootView.findViewById(R.id.textView);
+        editHex = rootView.findViewById(R.id.HEXText);
 
         Button button = rootView.findViewById(R.id.openCameraButton);
         mImageView = rootView.findViewById(R.id.pickingImage);
@@ -106,6 +120,17 @@ public class ColorPickerFragment extends Fragment {
             public void onClick(View view) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+            }
+        });
+
+        ImageButton button5 = rootView.findViewById(R.id.saveButton);
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editName.getText().toString();
+                String hex = editHex.getText().toString();
+                colorDB.addColorInfoData(name, hex);
+                Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_LONG).show();
             }
         });
 
