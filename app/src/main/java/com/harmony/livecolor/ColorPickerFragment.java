@@ -183,6 +183,7 @@ public class ColorPickerFragment extends Fragment {
         editColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
+                updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
                 startCIA.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startCIA);
