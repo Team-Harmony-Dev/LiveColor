@@ -116,7 +116,6 @@ public class ColorPickerFragment extends Fragment {
         editRgb = rootView.findViewById(R.id.RGBText);
         editHsv = rootView.findViewById(R.id.HSVText);
 
-        Button button = rootView.findViewById(R.id.openCameraButton);
         mImageView = rootView.findViewById(R.id.pickingImage);
 
         button.setOnClickListener(new View.OnClickListener() {
