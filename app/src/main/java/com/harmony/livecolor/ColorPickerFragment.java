@@ -139,7 +139,6 @@ public class ColorPickerFragment extends Fragment {
                 }else{
                     saveButton.setColorFilter(null);
                 }
-
             }
         });
 
@@ -147,6 +146,7 @@ public class ColorPickerFragment extends Fragment {
         infoColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
+                updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
                 startCIA.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startCIA);
@@ -339,6 +339,15 @@ public class ColorPickerFragment extends Fragment {
         updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
+    public void updateColorName(View view){
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        TextView colorNameView = getActivity().findViewById(R.id.colorName);
+        String input = colorNameView.getText().toString();
+        editor.putString("colorName", input);
+        editor.apply();
+    }
+
     //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
     public void updateColorValues(View view, int colorNew){
         Log.d("DEBUG", "updateColorValues: called");
@@ -391,11 +400,6 @@ public class ColorPickerFragment extends Fragment {
         SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("nameKey", Integer.toString(colorNew));
-        editor.apply();
-
-        TextView colorNameView = getActivity().findViewById(R.id.colorName);
-        String input = colorNameView.getText().toString();
-        editor.putString("colorName", input);
         editor.apply();
     }
 }
