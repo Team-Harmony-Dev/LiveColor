@@ -3,11 +3,15 @@ package com.harmony.livecolor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,10 +36,13 @@ public class MainActivity extends AppCompatActivity
     //random number to help differentiate between permissions for different contexts
     private int REQUEST_CODE_PERMISSIONS = 101;
     //required permissions for this activity
+    //If you change this, also change checkAndRequestPermissions()
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE"};
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.INTERNET"};
     //colorNameGetter changes the text in this view
     static TextView colorNameView;
 
@@ -59,6 +66,8 @@ public class MainActivity extends AppCompatActivity
         myPrefs = getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         colorNameView = findViewById(R.id.colorName);
+
+        checkAndRequestPermissions();
     }
 
     //checks if given fragment exists, and loads it if possible
@@ -136,5 +145,33 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         Log.d("Lifecycles", "onDestroy: MainActivity destroyed");
         super.onDestroy();
+    }
+
+    void checkAndRequestPermissions(){
+        //Not using a loop because Manifest.permission.MYVARNAME doesn't work.
+        //Prompt the users for any permissions not given
+        // https://developer.android.com/training/permissions/requesting
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+               != PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)
+                != PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Log.d("perms", "Missing permission, prompting");
+            //Ask for permissions (no explanation given)
+            //https://android--code.blogspot.com/2017/08/android-request-multiple-permissions.html
+            ActivityCompat.requestPermissions(
+                    this,
+                    REQUIRED_PERMISSIONS,
+                    REQUEST_CODE_PERMISSIONS
+            );
+        } else {
+            Log.d("perms", "All necessary permissions granted");
+        }
     }
 }
