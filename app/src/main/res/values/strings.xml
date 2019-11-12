@@ -15,6 +15,7 @@
     <string name="colorHSV"> HSV: </string>
     <string name="photo">Photo</string>
     <string name="takepicture">Take Picture</string>
+    <string name="color_info"> Color Information </string>
 
 
 </resources>

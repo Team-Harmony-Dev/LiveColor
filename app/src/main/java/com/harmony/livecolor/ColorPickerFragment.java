@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -55,6 +59,10 @@ import static androidx.core.content.ContextCompat.getColorStateList;
  */
 public class ColorPickerFragment extends Fragment {
 
+    private boolean isButtonClicked = false;
+    int colorT;
+    String colorNamePass;
+
     TextView editName, editHex, editRgb, editHsv;
     ColorDatabase colorDB;
 
@@ -96,11 +104,10 @@ public class ColorPickerFragment extends Fragment {
                         " - " + getResources().getText(R.string.title_color_picker)
         );
 
-
-
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
+        ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
 
         colorDB = new ColorDatabase(getActivity());
 
@@ -125,7 +132,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.viewGalleryButton);
+        ImageButton button2 = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,8 +141,8 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        ImageButton button5 = rootView.findViewById(R.id.saveButton);
-        button5.setOnClickListener(new View.OnClickListener() {
+        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
+        saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = editName.getText().toString();
@@ -143,11 +150,18 @@ public class ColorPickerFragment extends Fragment {
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
-                Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_LONG).show();
-            }
+                isButtonClicked = !isButtonClicked;
+                saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
+                ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
+                if(isButtonClicked){
+                    saveButton.setColorFilter(colorT);
+                }else{
+                    saveButton.setColorFilter(null);
+                }            }
         });
 
         /*final Button saveColorB = rootView.findViewById(R.id.saveButton);
+        final ImageButton saveColorB = (ImageButton) rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,7 +169,26 @@ public class ColorPickerFragment extends Fragment {
             }
         });*/
 
+        final ImageButton infoColorB = (ImageButton) rootView.findViewById(R.id.infoButton);
+        infoColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                updateColorName(getView());
+                Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
+                startCIA.putExtra("get_hex", Integer.toString(colorT));
+                startActivity(startCIA);
+            }
+        });
 
+        final ImageButton editColorB = (ImageButton) rootView.findViewById(R.id.editButton);
+        editColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
+                startCIA.putExtra("get_hex", Integer.toString(colorT));
+                startActivity(startCIA);
+            }
+        });
 
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
@@ -269,6 +302,10 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_action_name);
+            saveColorB.setColorFilter(null);
             //Get the color name from an API call
             //TODO if the name is very long it may go to a new line and shrink the buttons.
             //It takes a second to load and I don't want to spam the API so lets only call it when we releast
@@ -326,8 +363,16 @@ public class ColorPickerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
-        updateColorValues(getView(),Color.WHITE);
+        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
+    }
+
+    public void updateColorName(View view){
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        TextView colorNameView = getActivity().findViewById(R.id.colorName);
+        String input = colorNameView.getText().toString();
+        editor.putString("colorName", input);
+        editor.apply();
     }
 
     //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
@@ -335,7 +380,9 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
 
-        //fetch the color from pickedColor
+        colorT = colorNew;
+
+        //fetch the color components from colorNew
         int RV = Color.red(colorNew);
         int GV = Color.green(colorNew);
         int BV = Color.blue(colorNew);
@@ -379,5 +426,11 @@ public class ColorPickerFragment extends Fragment {
         final int TRANSPARENT = 0xFF000000;
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
+
+        //Put the color in SharedPreferences as a String with key nameKey
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("nameKey", Integer.toString(colorNew));
+        editor.apply();
     }
 }
