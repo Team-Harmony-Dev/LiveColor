@@ -8,11 +8,35 @@
     android:weightSum="10"
     tools:context=".EditColorActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/back_arrow" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="ToggleButton"
+            android:textOff="RGB"
+            android:textOn="HSV" />
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/colorShow"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="2.25"
         android:background="#03A9F4" />
 
     <LinearLayout
@@ -30,7 +54,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/saveOldColor"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
@@ -53,13 +77,13 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textRed"
+            android:id="@+id/textRorH"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
-            android:text="Red"
+            android:text="Red: "
             android:textAlignment="textStart"
             android:textSize="24sp" />
 
@@ -73,13 +97,13 @@
             android:thumb="@drawable/edit_filled" />
 
         <TextView
-            android:id="@+id/textG"
+            android:id="@+id/textGorS"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
-            android:text="Green"
+            android:text="Green: "
             android:textSize="24sp" />
 
         <SeekBar
@@ -92,13 +116,13 @@
             android:thumb="@drawable/edit_filled" />
 
         <TextView
-            android:id="@+id/textB"
+            android:id="@+id/textBorV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
-            android:text="Blue"
+            android:text="Blue: "
             android:textAlignment="viewStart"
             android:textSize="24sp" />
 
@@ -119,7 +143,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/saveNewColor"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
@@ -129,16 +153,28 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"/>
 
+            <ImageButton
+                android:id="@+id/resetColor"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                app:srcCompat="@drawable/reset"
+                android:background="@android:color/transparent"
+                android:adjustViewBounds="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter"/>
+
             <TextView
                 android:id="@+id/colorNN"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.6"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center|right"
                 android:text="Color Name New"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -147,7 +183,7 @@
         android:id="@+id/colorNewShow"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="2.25"
         android:background="#9C27B0" />
 
 </LinearLayout>
