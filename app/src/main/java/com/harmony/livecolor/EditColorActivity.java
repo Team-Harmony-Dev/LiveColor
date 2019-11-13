@@ -61,6 +61,8 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = (SeekBar) findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        updateRGBText();
+
         ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -68,21 +70,12 @@ public class EditColorActivity extends AppCompatActivity {
                     // The toggle is enabled
                     convertRGBtoHSV();
                     updateHSVText();
-                    seekRed.setMax(360);
-                    seekRed.setProgress(HV);
-                    seekGreen.setMax(100);
-                    seekGreen.setProgress(SV);
-                    seekBlue.setMax(100);
-                    seekBlue.setProgress(VV);
+                    updateSeekbarsHSV();
                 } else {
                     // The toggle is disabled
-                    convertRGBtoHSV();
-                    seekRed.setMax(255);
-                    seekRed.setProgress(RV);
-                    seekGreen.setMax(255);
-                    seekGreen.setProgress(GV);
-                    seekBlue.setMax(255);
-                    seekBlue.setProgress(BV);
+                    convertHSVtoRGB();
+                    updateRGBText();
+                    updateSeekbarsRGB();
                 }
             }
         });
@@ -96,7 +89,15 @@ public class EditColorActivity extends AppCompatActivity {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                RV = progressChangedValue;
+                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    RV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    HV = progressChangedValue;
+                    updateHSVText();
+                }
                 updateColorNew();
             }
         });
@@ -110,7 +111,15 @@ public class EditColorActivity extends AppCompatActivity {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                GV = progressChangedValue;
+                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    GV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    SV = progressChangedValue;
+                    updateHSVText();
+                }
                 updateColorNew();
             }
         });
@@ -124,7 +133,15 @@ public class EditColorActivity extends AppCompatActivity {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                BV = progressChangedValue;
+                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    BV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    VV = progressChangedValue;
+                    updateHSVText();
+                }
                 updateColorNew();
             }
         });
@@ -137,16 +154,39 @@ public class EditColorActivity extends AppCompatActivity {
                 GV = Color.green(colorValue);
                 BV = Color.blue(colorValue);
 
-                SeekBar seekRed = (SeekBar) findViewById(R.id.seekBarRed);
-                seekRed.setProgress(RV);
-                SeekBar seekBlue = (SeekBar) findViewById(R.id.seekBarBlue);
-                seekBlue.setProgress(BV);
-                SeekBar seekGreen = (SeekBar) findViewById(R.id.seekBarGreen);
-                seekGreen.setProgress(GV);
+                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+
+                if(!ToggleButtonState){
+                    updateSeekbarsRGB();
+                    updateRGBText();
+                } else {
+                    convertRGBtoHSV();
+                    updateHSVText();
+                    updateSeekbarsHSV();
+                }
 
                 updateColorNew();
             }
         });
+    }
+
+    public void updateSeekbarsHSV(){
+        seekRed.setMax(360);
+        seekRed.setProgress(HV);
+        seekGreen.setMax(100);
+        seekGreen.setProgress(SV);
+        seekBlue.setMax(100);
+        seekBlue.setProgress(VV);
+    }
+
+    public void updateSeekbarsRGB(){
+        seekRed.setMax(255);
+        seekRed.setProgress(RV);
+        seekGreen.setMax(255);
+        seekGreen.setProgress(GV);
+        seekBlue.setMax(255);
+        seekBlue.setProgress(BV);
     }
 
     public void updateHSVText(){
@@ -201,11 +241,11 @@ public class EditColorActivity extends AppCompatActivity {
         Boolean ToggleButtonState = simpleToggleButton.isChecked(); // check current state of a toggle button (true or false).
 
         int colorI = 0;
-        if(!ToggleButtonState){
-            colorI = getIntFromColor(RV,GV, BV);
-        } else {
-
+        if(ToggleButtonState){
+            convertHSVtoRGB();
         }
+
+        colorI = getIntFromColor(RV,GV, BV);
 
         colorNewS.setBackgroundColor(colorI);
 
