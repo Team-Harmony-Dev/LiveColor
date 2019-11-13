@@ -2,9 +2,11 @@ package com.harmony.livecolor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,6 +78,40 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     @Override
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
+
+        MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+        setAppropriatelySizedText(colorName);
+    }
+    //TODO maybe grab the size instead of hardcoding this
+    final float originalTextSize = 30;
+    //TODO maybe grab the weight instead of hardcoding this
+    final double nameDisplaySpacePercent = 0.60;
+    protected void setAppropriatelySizedText(String colorName){
         MainActivity.colorNameView.setText(colorName);
+        //If the text takes more than one line, lets shrink the text size.
+        //First lets get the width of the text
+        // https://stackoverflow.com/a/37930140
+        MainActivity.colorNameView.measure(0, 0);
+        int textWidth = MainActivity.colorNameView.getMeasuredWidth();
+        //And now the width of the screen
+        //https://stackoverflow.com/a/31377616
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        //And the font size
+        //https://stackoverflow.com/a/14078085
+        //https://stackoverflow.com/a/10641257
+        DisplayMetrics metrics;
+        metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
+        float previousSize = MainActivity.colorNameView.getTextSize()/metrics.density;
+        Log.d("S3US5", "Found text width of "+textWidth
+                +" with font size of " + previousSize
+                +" and height width of "+screenWidth
+                +" and we're given "+nameDisplaySpacePercent+" of the screen space"
+                +"("+screenWidth*nameDisplaySpacePercent+")");
+        //TODO This doesn't seem to work, width takes the new line into account. Check height?
+        if(textWidth > screenWidth*nameDisplaySpacePercent){
+            Log.d("S3US5", "Ran over a line, changing fontsize");
+            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,previousSize - 1);
+            setAppropriatelySizedText(colorName);
+        }
     }
 }
