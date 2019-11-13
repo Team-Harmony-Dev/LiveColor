@@ -225,8 +225,8 @@ public class EditColorActivity extends AppCompatActivity {
     public void convertHSVtoRGB(){
         float[] hsv = new float[3];
         hsv[0] = HV;
-        hsv[1] = SV;
-        hsv[2] = VV;
+        hsv[1] = ((float) SV) / 100;
+        hsv[2] = ((float) VV) / 100;
         int outputColor = Color.HSVToColor(hsv);
         RV = Color.red(outputColor);
         GV = Color.green(outputColor);
