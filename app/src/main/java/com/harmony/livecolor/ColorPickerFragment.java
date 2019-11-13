@@ -367,27 +367,12 @@ public class ColorPickerFragment extends Fragment {
         int GV = Color.green(colorNew);
         int BV = Color.blue(colorNew);
 
-        Log.d("DEBUG", "updateColorValues: red = " + RV + ", blue = " + GV + ", blue = " + BV);
-
-        //update the RGB value displayed
-        String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
-        String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
-        Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
-        //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
-        //Is the view argument to updateColorValues needed?
-
         //update the HEX value displayed
         String hexValue = colorToHex(colorNew);
         String fullHEX = String.format("HEX: #%1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
         TextView hexDisplay = getActivity().findViewById(R.id.HEXText);
         hexDisplay.setText(fullHEX);
-
-        //update the HSV value displayed
-        float[] hsvArray = new float[3];
-        RGBToHSV(RV,GV,BV,hsvArray);
-        int hue = Math.round(hsvArray[0]);
-        String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
 
         //Update the color display with the color they've chosen, ignoring transparency.
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
@@ -399,7 +384,7 @@ public class ColorPickerFragment extends Fragment {
         //Put the color in SharedPreferences as a String with key nameKey
         SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("nameKey", Integer.toString(colorNew));
+        editor.putString("colorString", Integer.toString(colorNew));
         editor.apply();
     }
 
