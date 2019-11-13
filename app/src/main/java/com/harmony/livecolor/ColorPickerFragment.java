@@ -140,7 +140,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
+        final ImageButton saveColorB = (ImageButton) rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,17 +156,9 @@ public class ColorPickerFragment extends Fragment {
                     saveButton.setColorFilter(colorT);
                 }else{
                     saveButton.setColorFilter(null);
-                }            }
-        });
-
-        /*final Button saveColorB = rootView.findViewById(R.id.saveButton);
-        final ImageButton saveColorB = (ImageButton) rootView.findViewById(R.id.saveButton);
-        saveColorB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveColorB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_text)));
+                }
             }
-        });*/
+        });
 
         final ImageButton infoColorB = (ImageButton) rootView.findViewById(R.id.infoButton);
         infoColorB.setOnClickListener(new View.OnClickListener() {
@@ -314,16 +306,12 @@ public class ColorPickerFragment extends Fragment {
             saveColorB.setColorFilter(null);
             //Get the color name from an API call
             //TODO if the name is very long it may go to a new line and shrink the buttons.
-            //It takes a second to load and I don't want to spam the API so lets only call it when we release
+            //It takes a second to load and I don't want to spam the API so lets only call it when we releast
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
-                /*
                 MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
                 colorNameGetter tmp = new colorNameGetter();
                 tmp.execute(pixel);
-                 */
-                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
@@ -433,7 +421,7 @@ public class ColorPickerFragment extends Fragment {
         //Put the color in SharedPreferences as a String with key nameKey
         SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("nameKey", Integer.toString(colorNew));
+        editor.putString("colorString", Integer.toString(colorNew));
         editor.apply();
     }
 

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -16,17 +17,20 @@ public class EditColorActivity extends AppCompatActivity {
     int RV;
     int GV;
     int BV;
+    static TextView colorNNView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_color);
 
+        colorNNView = findViewById(R.id.colorNN);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
-        String colorString = preferences.getString("nameKey","Default");
+        String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
         int colorValue = Integer.parseInt(colorString);
         RV = Color.red(colorValue);
@@ -101,9 +105,20 @@ public class EditColorActivity extends AppCompatActivity {
 
         //TODO: Get color name and update the text for "new color name"
 
-        /* EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        colorNameGetter tmp = new colorNameGetter();
-        tmp.execute(colorI); */
+        EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
+        colorNameGetter cng = new colorNameGetter();
+        colorNameGetter.updateViewWithColorName(colorNNView, colorI);
+        cng.execute(colorI);
+
+        updateColorPicker();
+    }
+
+    public void updateColorPicker(){
+        /*ImageView colorDisplay = findViewById(R.id.pickedColorDisplayView);
+        final int TRANSPARENT = 0xFF000000;
+        int colorNew = getIntFromColor(RV,GV, BV);
+        colorNew = colorNew | TRANSPARENT;
+        colorDisplay.setBackgroundColor(colorNew);*/
     }
 
     public int getIntFromColor(int Red, int Green, int Blue){
