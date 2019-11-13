@@ -43,8 +43,11 @@ public class MainActivity extends AppCompatActivity
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.ACCESS_NETWORK_STATE",
             "android.permission.INTERNET"};
-    //colorNameGetter changes the text in this view
+    //colorNameGetter changes the text in these views
+    //Name on the main picker page
     static TextView colorNameView;
+    //Name on the color edit page
+    static TextView editedColorNameView;
 
 
     @Override
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         myPrefs = getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         colorNameView = findViewById(R.id.colorName);
+        editedColorNameView = findViewById(R.id.colorNameCIA);
 
         checkAndRequestPermissions();
     }

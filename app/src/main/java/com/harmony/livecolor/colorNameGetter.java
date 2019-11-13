@@ -79,9 +79,22 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
 
-        MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
-        setAppropriatelySizedText(colorName);
+        try {
+            MainActivity.colorNameView.setText(colorName);
+        } catch(Exception e) {
+
+        }
+        try {
+            MainActivity.editedColorNameView.setText(colorName);
+        } catch(Exception e) {
+
+        }
+
+        //Prevent the text from taking up multiple lines by reducing font size as required
+        //MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+        //setAppropriatelySizedText(colorName);
     }
+    /*
     //TODO maybe grab the size instead of hardcoding this
     final float originalTextSize = 30;
     //TODO maybe grab the weight instead of hardcoding this
@@ -114,4 +127,5 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             setAppropriatelySizedText(colorName);
         }
     }
+    */
 }
