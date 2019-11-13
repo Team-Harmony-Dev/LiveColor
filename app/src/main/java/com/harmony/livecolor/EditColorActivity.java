@@ -96,7 +96,14 @@ public class EditColorActivity extends AppCompatActivity {
 
     public void updateColorNew(){
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
-        colorNewS.setBackgroundColor(getIntFromColor(RV,GV, BV));
+        int colorI = getIntFromColor(RV,GV, BV);
+        colorNewS.setBackgroundColor(colorI);
+
+        //TODO: Get color name and update the text for "new color name"
+
+        /* EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
+        colorNameGetter tmp = new colorNameGetter();
+        tmp.execute(colorI); */
     }
 
     public int getIntFromColor(int Red, int Green, int Blue){
