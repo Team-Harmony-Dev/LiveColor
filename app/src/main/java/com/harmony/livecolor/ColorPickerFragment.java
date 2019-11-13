@@ -200,7 +200,13 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
-            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+            Bitmap bitmap;
+            try {
+                bitmap = ((BitmapDrawable) pickedImage.getDrawable()).getBitmap();
+            } catch (Exception e){
+                Log.w("onTouch() possible error", "(Probably unable to retrieve image and/or turn it into a bitmap): "+e);
+                return true;
+            }
 
             //The horizontal space we have to display it in, in pixels.
             //Image doesn't necessarily take the entire ImageView!
@@ -371,8 +377,8 @@ public class ColorPickerFragment extends Fragment {
         //Is the view argument to updateColorValues needed?
 
         //update the HEX value displayed
-        String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
-        String fullHEX = String.format("HEX: %1$s",hexValue);
+        String hexValue = colorToHex(colorNew);
+        String fullHEX = String.format("HEX: #%1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
         TextView hexDisplay = getActivity().findViewById(R.id.HEXText);
         hexDisplay.setText(fullHEX);
@@ -383,15 +389,8 @@ public class ColorPickerFragment extends Fragment {
         int hue = Math.round(hsvArray[0]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
 
-        //Set the color display
+        //Update the color display with the color they've chosen, ignoring transparency.
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
-        //This doesn't work, commenting out for now. Remove if other one is confirmed working.
-        //Get transparency: https://stackoverflow.com/a/23045917
-        //int transparency = (colorNew & 0xff000000) >> 24;
-        //Remove transparency from the color we're displaying, because the hex/rgb/hsv and name
-        //  don't take transparency into account.
-        //colorNew = colorNew - transparency;
-
         // https://stackoverflow.com/a/7741300
         final int TRANSPARENT = 0xFF000000;
         colorNew = colorNew | TRANSPARENT;
@@ -402,5 +401,11 @@ public class ColorPickerFragment extends Fragment {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("nameKey", Integer.toString(colorNew));
         editor.apply();
+    }
+
+    //Takes a pixel color, returns the hex
+    //Ignores transparency.
+    public static String colorToHex(int color){
+        return String.format("%06X", (0xFFFFFF & color));
     }
 }
