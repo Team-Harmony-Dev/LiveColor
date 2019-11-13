@@ -11,22 +11,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.6"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="0.15"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:padding="1dp"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/back_arrow" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.45" />
 
         <ToggleButton
             android:id="@+id/toggleButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="ToggleButton"
+            android:layout_height="match_parent"
+            android:layout_weight="0.34"
+            android:text="Current Mode"
             android:textOff="RGB"
             android:textOn="HSV" />
 
