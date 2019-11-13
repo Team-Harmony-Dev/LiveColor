@@ -27,9 +27,7 @@ import java.net.URL;
 //TODO simplify using this. Currently it needs you to make sure the
 //  textView colorNameView is set properly because apparently onCreate can't.
 //Example of use:
-//MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
-//colorNameGetter tmp = new colorNameGetter();
-//tmp.execute(pixel);
+//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
 //TODO maybe return the value in some way? Save it somewhere?
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     @Override
@@ -79,64 +77,49 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     @Override
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
-
-        MainActivity.colorNameView.setText(colorName);
-        /*
         try {
-            MainActivity.colorNameView.setText(colorName);
-        } catch(Exception e) {
-
+            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+            setAppropriatelySizedText(colorName);
+        } catch (Exception e) {
+            Log.w("S3US5", "Something wrong in updating color name textview: "+e);
         }
-        try {
-            MainActivity.editedColorNameView.setText(colorName);
-        } catch(Exception e) {
-
-        }
-        */
-        /*
-        for(int i = 0; i < numberOfViews; ++i){
-            if(textViewsToEditToColorNameShouldUpdate[i]) {
-                try {
-                    textViewsToEditToColorName[i].setText(colorName);
-                } catch (Exception e) {
-                    Log.w("S3US5", "Something wrong in updating textview "+i+": "+e);
-                }
-            }
-        }
-        */
-        //TODO
-        //Prevent the text from taking up multiple lines by reducing font size as required
-        //MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
-        //setAppropriatelySizedText(colorName);
     }
 
-    //TODO
-    //The color name being gotten is placed in each one of these textViews, and their font is resized to fit on a single line.
-    /*
-    private final TextView[] textViewsToEditToColorName = new TextView[]{
-            MainActivity.colorNameView,
-            MainActivity.editedColorNameView
-    };
-    private final int numberOfViews = 2;
-    private boolean[] textViewsToEditToColorNameShouldUpdate = new boolean[]{
-            true,
-            true
-    };
-    */
+    //Starting size, in sp
+    private static float originalTextSize;
+
     //TODO If this works, remove those comments above and remove that var from MainActivity.java
     public static void updateViewWithColorName(TextView view, int pixelColor){
         MainActivity.colorNameView = view;
+
+        //Get the font size
+        //https://stackoverflow.com/a/14078085
+        //https://stackoverflow.com/a/10641257
+        DisplayMetrics metrics;
+        metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
+        originalTextSize = MainActivity.colorNameView.getTextSize()/metrics.density;
         //textViewsToEditToColorNameShouldUpdate[0] = true;
         colorNameGetter tmp = new colorNameGetter();
         tmp.execute(pixelColor);
     }
-    //TODO maybe grab the size instead of hardcoding this
-    final float originalTextSize = 30;
-    //TODO maybe grab the weight instead of hardcoding this
-    final double nameDisplaySpacePercent = 0.60;
-    protected void setAppropriatelySizedText(String colorName){
 
+    protected void setAppropriatelySizedText(String colorName){
         MainActivity.colorNameView.setText(colorName);
+        float previousSize = originalTextSize;
+        while(MainActivity.colorNameView.getLineCount() > 1){
+            Log.d("S3US5", "Ran over a line, changing fontsize");
+
+            //Update font size to be smaller
+            float newFontSize = previousSize - 1;
+            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,newFontSize);
+            MainActivity.colorNameView.setText(colorName);
+            previousSize = newFontSize;
+            //Needs to do a new layout pass?
+            // https://stackoverflow.com/questions/12037377/how-to-get-number-of-lines-of-textview
+        }
+        //Looks like there's a library function that does roughly what I want.
+        //If I remove all this should also remove imports
+        /*
         //If the text takes more than one line, lets shrink the text size.
         //First lets get the width of the text
         // https://stackoverflow.com/a/37930140
@@ -164,5 +147,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,previousSize - 1);
             setAppropriatelySizedText(colorName);
         }
+        */
     }
 }

@@ -290,11 +290,6 @@ public class ColorPickerFragment extends Fragment {
             //It takes a second to load and I don't want to spam the API so lets only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
-                /*
-                MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
-                colorNameGetter tmp = new colorNameGetter();
-                tmp.execute(pixel);
-                 */
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                 colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
