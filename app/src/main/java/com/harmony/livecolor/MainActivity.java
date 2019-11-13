@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity
     //colorNameGetter changes the text in these views
     //Name on the main picker page
     static TextView colorNameView;
-    //Name on the color edit page
-    static TextView editedColorNameView;
 
 
     @Override
@@ -69,7 +67,6 @@ public class MainActivity extends AppCompatActivity
         myPrefs = getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         colorNameView = findViewById(R.id.colorName);
-        editedColorNameView = findViewById(R.id.colorNameCIA);
 
         checkAndRequestPermissions();
     }
