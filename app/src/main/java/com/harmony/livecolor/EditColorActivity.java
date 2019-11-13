@@ -13,6 +13,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class EditColorActivity extends AppCompatActivity {
+    int RV;
+    int GV;
+    int BV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,9 @@ public class EditColorActivity extends AppCompatActivity {
         String colorString = preferences.getString("nameKey","Default");
         String colorNameT = preferences.getString("colorName","Default");
         int colorValue = Integer.parseInt(colorString);
-        int RV = Color.red(colorValue);
-        int GV = Color.green(colorValue);
-        int BV = Color.blue(colorValue);
+        RV = Color.red(colorValue);
+        GV = Color.green(colorValue);
+        BV = Color.blue(colorValue);
 
         // UPDATE VALUES
         ImageView colorD = (ImageView) findViewById(R.id.colorShow);
@@ -47,5 +50,60 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue.setProgress(BV);
         SeekBar seekGreen = (SeekBar) findViewById(R.id.seekBarGreen);
         seekGreen.setProgress(GV);
+
+        seekRed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                RV = progressChangedValue;
+                updateColorNew();
+            }
+        });
+
+        seekGreen.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                GV = progressChangedValue;
+                updateColorNew();
+            }
+        });
+
+        seekBlue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                BV = progressChangedValue;
+                updateColorNew();
+            }
+        });
+    }
+
+    public void updateColorNew(){
+        ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
+        colorNewS.setBackgroundColor(getIntFromColor(RV,GV, BV));
+    }
+
+    public int getIntFromColor(int Red, int Green, int Blue){
+        Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+        Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+        Blue = Blue & 0x000000FF; //Mask out anything not blue.
+
+        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 }
