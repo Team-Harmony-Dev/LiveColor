@@ -81,7 +81,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
             setAppropriatelySizedText(colorName);
         } catch (Exception e) {
-            Log.w("S3US5", "Something wrong in updating color name textview: "+e);
+            Log.e("S3US5", "Something wrong in updating color name textview: "+e);
         }
     }
 
@@ -102,18 +102,22 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         colorNameGetter tmp = new colorNameGetter();
         tmp.execute(pixelColor);
     }
-
+    //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
+    //  I suppose I could make the text bigger to fit (and forget original size). Maybe with some threshold.
     protected void setAppropriatelySizedText(String colorName){
-        MainActivity.colorNameView.setText(colorName);
+        //The view we're sticking the color name in
+        TextView view = MainActivity.colorNameView;
+        view.setText(colorName);
         float previousSize = originalTextSize;
-        while(MainActivity.colorNameView.getLineCount() > 1){
+        while(view.getLineCount() > 1){
             Log.d("S3US5", "Ran over a line, changing fontsize");
 
             //Update font size to be smaller
             float newFontSize = previousSize - 1;
-            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,newFontSize);
-            MainActivity.colorNameView.setText(colorName);
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP,newFontSize);
+            view.setText(colorName);
             previousSize = newFontSize;
+            //TODO
             //Needs to do a new layout pass?
             // https://stackoverflow.com/questions/12037377/how-to-get-number-of-lines-of-textview
         }
