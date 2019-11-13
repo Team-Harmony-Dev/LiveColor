@@ -288,12 +288,16 @@ public class ColorPickerFragment extends Fragment {
             saveColorB.setColorFilter(null);
             //Get the color name from an API call
             //TODO if the name is very long it may go to a new line and shrink the buttons.
-            //It takes a second to load and I don't want to spam the API so lets only call it when we releast
+            //It takes a second to load and I don't want to spam the API so lets only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
+                /*
                 MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
                 colorNameGetter tmp = new colorNameGetter();
                 tmp.execute(pixel);
+                 */
+                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
