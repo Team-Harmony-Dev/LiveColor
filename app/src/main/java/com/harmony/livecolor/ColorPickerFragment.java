@@ -142,10 +142,19 @@ public class ColorPickerFragment extends Fragment {
 
         pickingImage = rootView.findViewById(R.id.pickingImage);
         if (pickingImage != null) {
-            pickingImage.setImageURI(imageUri);
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            imagePath = prefs.getString("image", null);
+            if(imagePath == null) {
+                Log.d("DEBUG", "SAVED IMAGE PATH BE NULL");
+            }
+            else {
+                Log.d("DEBUG", "SAVED IMAGE PATH EXISTS: " + imagePath);
+
+            }
+           /* pickingImage.setImageURI(imageUri);
             Drawable drawable = Drawable.createFromPath(imagePath);
             Log.d("DEBUG", "Should be setting saved image.");
-            pickingImage.setImageDrawable(drawable);
+            pickingImage.setImageDrawable(drawable); */
         }
 
         //Adds a listener to get the x and y coordinates of taps and update the display
@@ -166,6 +175,10 @@ public class ColorPickerFragment extends Fragment {
             imagePath = getPath(data, this.getActivity());
             Log.i("PICTURE", "PATHHHHHH: " + imagePath);
             if (imagePath != null) {
+                // attempt to save image path to saved prefs.
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                editor.putString("image", imagePath);
+                editor.apply();
 //                setFullImageFromFilePath(pickingImage, imagePath);
                 Drawable drawable = Drawable.createFromPath(imagePath);
                 Log.d("DEBUG", "Should be setting saved image.");
@@ -359,7 +372,7 @@ public class ColorPickerFragment extends Fragment {
         Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
         // To load saved color onto fragment, default/initial load is white
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
-        int savedColorInt = prefs.getInt("color", Color.WHITE);
+        int savedColorInt = prefs.getInt("colorView", Color.WHITE);
         if(savedColorInt == Color.WHITE) {
             Log.d("DEBUG", "SAVED COLOR BE WHITE");
         }
@@ -412,7 +425,7 @@ public class ColorPickerFragment extends Fragment {
 
         // save color value (int) to Shared Prefs.
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
-        editor.putInt("color", colorNew);
+        editor.putInt("colorView", colorNew);
         editor.apply();
     }
 }
