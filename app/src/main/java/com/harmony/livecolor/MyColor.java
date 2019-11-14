@@ -1,6 +1,8 @@
 package com.harmony.livecolor;
 
-public class MyColor {
+import java.io.Serializable;
+
+public class MyColor implements Serializable {
 
     private String id, name, hex, rgb, hsv;
 
