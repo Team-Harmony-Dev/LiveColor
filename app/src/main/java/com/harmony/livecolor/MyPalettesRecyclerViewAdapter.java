@@ -3,10 +3,12 @@ package com.harmony.livecolor;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,15 +49,26 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         ArrayList<MyColor> paletteColors = myPalettes.get(position).getColors();
         //loop through first up-to 10 colors in palette
         for(int i = 0; i < 10; i++){
-            MyColor thisColor = paletteColors.get(i);
             //break if null aka end of palette
-            if(thisColor == null){
-                break;
+            if(i >= paletteColors.size()){
+                //set image to weight 0 so that it doesn't appear
+                holder.displayColors.get(i).setLayoutParams(new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        0.0f
+                ));
+            } else{
+                MyColor thisColor = paletteColors.get(i);
+                //set imageview of i to weight1
+                holder.displayColors.get(i).setLayoutParams(new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1.0f
+                ));
+                //set imageview to i's color
+                holder.displayColors.get(i).setBackgroundColor(Color.parseColor(thisColor.getHex()));
+                //set linear layout's weight sum to i? might not be needed
             }
-            //set imageview of i to weight1
-
-            //set imageview to i's color
-            //set linear layout's weight sum to i
         }
     }
 
@@ -66,12 +79,35 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView paletteName;
+        ArrayList<ImageView> displayColors;
+        ImageView color1, color2, color3, color4, color5, color6, color7, color8, color9, color10;
         LinearLayout listItem;
 
         public ViewHolder(View view) {
             super(view);
             paletteName = view.findViewById(R.id.paletteName);
             listItem = view.findViewById(R.id.paletteItem);
+            color1 = view.findViewById(R.id.color1);
+            color2 = view.findViewById(R.id.color2);
+            color3 = view.findViewById(R.id.color3);
+            color4 = view.findViewById(R.id.color4);
+            color5 = view.findViewById(R.id.color5);
+            color6 = view.findViewById(R.id.color6);
+            color7 = view.findViewById(R.id.color7);
+            color8 = view.findViewById(R.id.color8);
+            color9 = view.findViewById(R.id.color9);
+            color10 = view.findViewById(R.id.color10);
+            displayColors = new ArrayList<>();
+            displayColors.add(color1);
+            displayColors.add(color2);
+            displayColors.add(color3);
+            displayColors.add(color4);
+            displayColors.add(color5);
+            displayColors.add(color6);
+            displayColors.add(color7);
+            displayColors.add(color8);
+            displayColors.add(color9);
+            displayColors.add(color10);
         }
     }
 
