@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,6 +60,28 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return false;
+    }
+
+    public boolean popFragment() {
+        Log.d("DEBUG", "POPOPPING THE FRAGMENT");
+        boolean isPop = false;
+
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.navigation_color_picker);
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            isPop = true;
+            getSupportFragmentManager().popBackStackImmediate();
+        }
+
+        return isPop;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!popFragment()) {
+            finish();
+        }
     }
 
     //switches between fragments for Main Activity
@@ -113,6 +137,18 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         Log.d("Lifecycles", "onStop: MainActivity stopped");
         super.onStop();
+        // clears shared prefs. on app exit only, not updating image :(
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().remove("color").commit();
+        Log.d("Debug", "ONSTOP: SHARED PREFS SUPPOSEDLY EMPTY");
+        SharedPreferences prefs1 = getSharedPreferences("prefs", MODE_PRIVATE);
+        int savedColorInt = prefs1.getInt("color", Color.WHITE);
+        if(savedColorInt == Color.WHITE) {
+            Log.d("DEBUG", "SAVED COLOR BE DEFAULT WHITE");
+        }
+        else {
+            Log.d("DEBUG", "SAVED COLOR STILL SAVED UGHHHHH");
+        }
     }
 
     @Override
