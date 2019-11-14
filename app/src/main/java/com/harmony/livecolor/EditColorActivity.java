@@ -24,6 +24,9 @@ public class EditColorActivity extends AppCompatActivity {
     int RV, GV, BV, colorValue, HV, SV, VV;
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
+    private boolean isButtonClicked = false;
+    private boolean isButtonClickedNew = false;
+    ImageButton saveNC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class EditColorActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        saveNC = findViewById(R.id.saveNewColor);
 
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
@@ -63,6 +68,8 @@ public class EditColorActivity extends AppCompatActivity {
 
         updateRGBText();
 
+        //TODO: Working back button
+
         ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -84,6 +91,16 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
+                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    RV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    HV = progressChangedValue;
+                    updateHSVText();
+                }
+                updateColorNew();*/
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -99,6 +116,8 @@ public class EditColorActivity extends AppCompatActivity {
                     updateHSVText();
                 }
                 updateColorNew();
+                updateColorName();
+                resetBookmark();
             }
         });
 
@@ -106,6 +125,16 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
+                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    GV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    SV = progressChangedValue;
+                    updateHSVText();
+                }
+                updateColorNew();*/
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -121,6 +150,8 @@ public class EditColorActivity extends AppCompatActivity {
                     updateHSVText();
                 }
                 updateColorNew();
+                updateColorName();
+                resetBookmark();
             }
         });
 
@@ -128,6 +159,16 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
+                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                if(!ToggleButtonState){
+                    BV = progressChangedValue;
+                    updateRGBText();
+                } else {
+                    VV = progressChangedValue;
+                    updateHSVText();
+                }
+                updateColorNew();*/
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -143,6 +184,8 @@ public class EditColorActivity extends AppCompatActivity {
                     updateHSVText();
                 }
                 updateColorNew();
+                updateColorName();
+                resetBookmark();
             }
         });
 
@@ -169,6 +212,60 @@ public class EditColorActivity extends AppCompatActivity {
                 updateColorNew();
             }
         });
+
+        ImageButton backB = findViewById(R.id.backBut);
+        backB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        // TODO: ANDREW put your code here
+        // |
+        // |
+        // V
+        saveNC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isButtonClickedNew = !isButtonClickedNew;
+                saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
+                if(isButtonClickedNew){
+                    ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+                    Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                    int colorI = 0;
+                    if(ToggleButtonState){
+                        convertHSVtoRGB();
+                    }
+                    colorI = getIntFromColor(RV,GV, BV);
+                    saveNC.setColorFilter(colorI);
+                }else{
+                    saveNC.setColorFilter(null);
+                }
+            }
+        });
+
+        final ImageButton saveOC = findViewById(R.id.saveOldColor);
+        saveOC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isButtonClicked = !isButtonClicked;
+                saveOC.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
+                if(isButtonClicked){
+                    saveOC.setColorFilter(colorValue);
+                }else{
+                    saveOC.setColorFilter(null);
+                }
+            }
+        });
+    }
+
+    public void resetBookmark(){
+        if(isButtonClickedNew){
+            saveNC.setImageResource(R.drawable.ic_action_name);
+            saveNC.setColorFilter(null);
+            isButtonClickedNew = false;
+        }
     }
 
     public void updateSeekbarsHSV(){
@@ -249,24 +346,28 @@ public class EditColorActivity extends AppCompatActivity {
 
         colorNewS.setBackgroundColor(colorI);
 
-        //TODO: Get color name and update the text for "new color name"
+        //updateColorPicker();
+    }
+
+    public void updateColorName(){
+        ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton); // initiate a toggle button
+        Boolean ToggleButtonState = simpleToggleButton.isChecked(); // check current state of a toggle button (true or false).
+
+        int colorI = 0;
+        if(ToggleButtonState){
+            convertHSVtoRGB();
+        }
+
+        colorI = getIntFromColor(RV,GV, BV);
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
         colorNameGetter cng = new colorNameGetter();
         colorNameGetter.updateViewWithColorName(colorNNView, colorI);
         cng.execute(colorI);
-
-        updateColorPicker();
     }
 
     public void updateColorPicker(){
-        //View view;
-        //view = Inflater.inflate(R.layout.fragment_color_picker, MainActivity, false);
-        //ImageView colorDisplay = findViewById(R.id.pickedColorDisplayView);
-        //final int TRANSPARENT = 0xFF000000;
-        //int colorNew = getIntFromColor(RV,GV, BV);
-        //colorNew = colorNew | TRANSPARENT;
-        //colorDisplay.setBackgroundColor(colorNew);
+        //TODO: Decide if returning new color to color picker or keeping the old
     }
 
     public int getIntFromColor(int Red, int Green, int Blue){
