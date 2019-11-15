@@ -36,7 +36,7 @@ import java.net.URL;
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //TODO If this works, remove some commented code
-    public static void updateViewWithColorName(Activity activityThatYourViewIsIn, TextView view, int pixelColor){
+    public static void updateViewWithColorName(/*Activity activityThatYourViewIsIn, */TextView view, int pixelColor){
         MainActivity.colorNameView = view;
 
         //Get the font size
@@ -47,8 +47,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         if(originalTextSize == -1) {
             originalTextSize = MainActivity.colorNameView.getTextSize() / metrics.density;
         }
-        activityViewIsIn = activityThatYourViewIsIn;
-        //textViewsToEditToColorNameShouldUpdate[0] = true;
+        //activityViewIsIn = activityThatYourViewIsIn;
         colorNameGetter tmp = new colorNameGetter();
         tmp.execute(pixelColor);
     }
@@ -112,7 +111,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //  at all since it doesn't reset afterwards.
     //Starting size, in sp
     private static float originalTextSize = -1;
-    private static Activity activityViewIsIn;
+    //private static Activity activityViewIsIn;
 
     //TODO Actually it looks like it's already been done.
     //https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
@@ -124,6 +123,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         TextView view = MainActivity.colorNameView;
         view.setText(colorName);
         float fontSize = originalTextSize;
+        //TODO this has a bug where clicking two in a row doesn't work because the resize doesn't finish or whatever., line# returns 0
         if(view.getLineCount() > 1){
             Log.d("S3US5", "Ran over a line, changing fontsize");
             Log.d("S3US5", "# lines is currently: "+view.getLineCount());
@@ -145,8 +145,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+" mtw="+maximumTextWidth
                     +"rp="+reduceToThisPercent);
             //Update font size to be smaller
-            //TODO font size is not linear?
-            fontSize = (int) (fontSize*reduceToThisPercent);
+            //TODO font size is not linear? Could remove a fixed amount and just hope it's enough for testing.
+            fontSize = (int) (fontSize*(reduceToThisPercent-0.10));
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             view.setText(colorName);
         }
