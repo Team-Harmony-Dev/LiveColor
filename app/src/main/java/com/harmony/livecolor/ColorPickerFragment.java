@@ -1,19 +1,24 @@
 package com.harmony.livecolor;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -32,6 +37,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -42,6 +50,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -67,8 +76,11 @@ public class ColorPickerFragment extends Fragment {
     ColorDatabase colorDB;
 
     private OnFragmentInteractionListener mListener;
-    public static final int RESULT_LOAD_IMAGE = 1;
-    ImageView pickingImage;
+    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int CAMERA_OR_GALLERY = 1;
+    private String imagePath = null;
+    private ImageView pickingImage;
+    private Uri imageUri;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -92,7 +104,7 @@ public class ColorPickerFragment extends Fragment {
     }
     private static final int IMAGE_CAPTURE_CODE = 1001;
     ImageView mImageView;
-    Uri image_uri;
+//    Uri image_uri;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -124,9 +136,12 @@ public class ColorPickerFragment extends Fragment {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, "New Picture");
                 values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
-                image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
             }
         });
@@ -135,7 +150,14 @@ public class ColorPickerFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                Intent galleryIntent = new Intent();
+                galleryIntent.setType("image/*");
+//                galleryIntent.setAction(Intent.ACTION_GET_CONTENT); // ACTION_PICK ?? changes gallery picking view D:
+//                startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), RESULT_LOAD_IMAGE);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
             }
         });
@@ -184,9 +206,24 @@ public class ColorPickerFragment extends Fragment {
 
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
+        if (pickingImage != null) {
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            imagePath = prefs.getString("image", null);
+            if(imagePath == null) {
+                Log.d("DEBUG", "SAVED IMAGE PATH BE NULL");
+            }
+            else {
+                Log.d("DEBUG", "SAVED IMAGE PATH EXISTS: " + imagePath);
+
+            }
+           /* pickingImage.setImageURI(imageUri);
+            Drawable drawable = Drawable.createFromPath(imagePath);
+            Log.d("DEBUG", "Should be setting saved image.");
+            pickingImage.setImageDrawable(drawable); */
+        }
+
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
-
 
         return rootView;
     }
@@ -195,16 +232,74 @@ public class ColorPickerFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK){
-            mImageView.setImageURI(image_uri);
+            pickingImage.setImageURI(imageUri);
         }
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            pickingImage.setImageURI(selectedImage);
+            imageUri = data.getData();
+            pickingImage.setImageURI(imageUri);
+            imagePath = getPath(data, this.getActivity());
+            Log.i("PICTURE", "PATHHHHHH: " + imagePath);
+            if (imagePath != null) {
+                // attempt to save image path to saved prefs.
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                editor.putString("image", imagePath);
+                editor.apply();
+//                setFullImageFromFilePath(pickingImage, imagePath);
+                Drawable drawable = Drawable.createFromPath(imagePath);
+                Log.d("DEBUG", "Should be setting saved image.");
+                pickingImage.setImageDrawable(drawable);
+            }
+            Toast.makeText(getContext(), "Image is picked successfully", Toast.LENGTH_SHORT).show();
         }
     }
 
+    public String getPath(Intent data, Context context)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
+        if (cursor == null) return null;
+        cursor.moveToFirst();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        imagePath = cursor.getString(column_index);
+        cursor.close();
+        Log.d("DEBUG", "Image path: " + imagePath); // /storage/emulated/0/Pictures/1572683606289.jpg :DDDDD
+        return imagePath;
+    }
 
+    public void setFullImageFromFilePath(ImageView pickingImage, String imagePath) {
+        File imgFile = new File(imagePath);
+        if(imgFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            pickingImage.setImageBitmap(bitmap);
+        }
+    }
 
+  /*  @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        outState.clear();
+        // Save the image bitmap into outState
+
+        if(pickingImage.getDrawable() != null) {
+            Log.d("DEBUG", "GETDRAWABLE FOR BITMAP AIN'T NULL");
+            Bitmap bitmap = ((BitmapDrawable) pickingImage.getDrawable()).getBitmap();
+            outState.putParcelable("image", bitmap);
+        }
+        else
+            Log.d("DEBUG", "NULLLLLLLLLLLLLLLLL for getDrawable");
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // Read the bitmap from the savedInstanceState and set it to the ImageView
+        if (savedInstanceState != null){
+            Bitmap bitmap = (Bitmap) savedInstanceState.getParcelable("image");
+            pickingImage.setImageBitmap(bitmap);
+//            pickingImage.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+//            savedInstanceState.clear();
+        }
+    } */
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
@@ -375,6 +470,17 @@ public class ColorPickerFragment extends Fragment {
         String input = colorNameView.getText().toString();
         editor.putString("colorName", input);
         editor.apply();
+        Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
+        // To load saved color onto fragment, default/initial load is white
+        SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+        int savedColorInt = prefs.getInt("colorView", Color.WHITE);
+        if(savedColorInt == Color.WHITE) {
+            Log.d("DEBUG", "SAVED COLOR BE WHITE");
+        }
+        else {
+            Log.d("DEBUG", "SAVED COLOR NNNNOOOOTTTT BE THAT WHITE");
+        }
+        updateColorValues(getView(), savedColorInt); // DEFAULT ON FRAGMENT LOAD: change to saved
     }
 
     //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
@@ -402,6 +508,11 @@ public class ColorPickerFragment extends Fragment {
         final int TRANSPARENT = 0xFF000000;
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
+
+        // save color value (int) to Shared Prefs.
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+        editor.putInt("colorView", colorNew);
+        editor.apply();
 
         //Put the color in SharedPreferences as a String with key nameKey
         SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
