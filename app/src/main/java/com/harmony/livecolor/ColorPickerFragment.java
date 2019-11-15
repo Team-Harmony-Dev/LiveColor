@@ -216,10 +216,10 @@ public class ColorPickerFragment extends Fragment {
                 Log.d("DEBUG", "SAVED IMAGE PATH EXISTS: " + imagePath);
 
             }
-           /* pickingImage.setImageURI(imageUri);
+            pickingImage.setImageURI(imageUri);
             Drawable drawable = Drawable.createFromPath(imagePath);
             Log.d("DEBUG", "Should be setting saved image.");
-            pickingImage.setImageDrawable(drawable); */
+            pickingImage.setImageDrawable(drawable);
         }
 
         //Adds a listener to get the x and y coordinates of taps and update the display
@@ -273,33 +273,6 @@ public class ColorPickerFragment extends Fragment {
             pickingImage.setImageBitmap(bitmap);
         }
     }
-
-  /*  @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-//        outState.clear();
-        // Save the image bitmap into outState
-
-        if(pickingImage.getDrawable() != null) {
-            Log.d("DEBUG", "GETDRAWABLE FOR BITMAP AIN'T NULL");
-            Bitmap bitmap = ((BitmapDrawable) pickingImage.getDrawable()).getBitmap();
-            outState.putParcelable("image", bitmap);
-        }
-        else
-            Log.d("DEBUG", "NULLLLLLLLLLLLLLLLL for getDrawable");
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // Read the bitmap from the savedInstanceState and set it to the ImageView
-        if (savedInstanceState != null){
-            Bitmap bitmap = (Bitmap) savedInstanceState.getParcelable("image");
-            pickingImage.setImageBitmap(bitmap);
-//            pickingImage.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-//            savedInstanceState.clear();
-        }
-    } */
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
