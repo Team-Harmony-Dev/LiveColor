@@ -164,5 +164,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,previousSize - 1);
             setAppropriatelySizedText(colorName);
         }
+
     }
 }
