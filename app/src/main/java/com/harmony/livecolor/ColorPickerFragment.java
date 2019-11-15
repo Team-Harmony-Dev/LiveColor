@@ -291,7 +291,7 @@ public class ColorPickerFragment extends Fragment {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
+                colorNameGetter.updateViewWithColorName(getActivity(), viewToUpdateColorName, pixel);
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
