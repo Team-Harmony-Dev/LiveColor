@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -93,8 +94,7 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                updateHueOrRed(progress);
-                /*updateColorNew();*/
+                updateText(progress, seekGreen.getProgress(), seekBlue.getProgress());
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -103,11 +103,10 @@ public class EditColorActivity extends AppCompatActivity {
                 ToggleButtonState = simpleToggleButton.isChecked();
                 if(!ToggleButtonState){
                     RV = progressChangedValue;
-                    updateRGBText();
                 } else {
                     HV = progressChangedValue;
-                    updateHSVText();
                 }
+                updateText(progressChangedValue, seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorNew();
                 updateColorName();
                 resetBookmark();
@@ -118,15 +117,7 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                /*ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    GV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    SV = progressChangedValue;
-                    updateHSVText();
-                }
-                /*updateColorNew();*/
+                updateText(seekRed.getProgress(), progress, seekBlue.getProgress());
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -135,11 +126,10 @@ public class EditColorActivity extends AppCompatActivity {
                 ToggleButtonState = simpleToggleButton.isChecked();
                 if(!ToggleButtonState){
                     GV = progressChangedValue;
-                    updateRGBText();
                 } else {
                     SV = progressChangedValue;
-                    updateHSVText();
                 }
+                updateText(seekRed.getProgress(), progressChangedValue, seekBlue.getProgress());
                 updateColorNew();
                 updateColorName();
                 resetBookmark();
@@ -150,15 +140,7 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                /*ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    BV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    VV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();*/
+                updateText(seekRed.getProgress(), seekGreen.getProgress(), progress);
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -167,18 +149,17 @@ public class EditColorActivity extends AppCompatActivity {
                 ToggleButtonState = simpleToggleButton.isChecked();
                 if(!ToggleButtonState){
                     BV = progressChangedValue;
-                    updateRGBText();
                 } else {
                     VV = progressChangedValue;
-                    updateHSVText();
                 }
+                updateText(seekRed.getProgress(), seekGreen.getProgress(), progressChangedValue);
                 updateColorNew();
                 updateColorName();
                 resetBookmark();
             }
         });
 
-        ImageButton reset = findViewById(R.id.resetColor);
+        Button reset = findViewById(R.id.resetColor);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -290,15 +271,25 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     //TODO: make a generic updateText function that checks for HSV or RGB state, & takes in the three ints of the seekbars
-    public void updateHueOrRed(int update){
+    public void updateText(int updateR, int updateG, int updateB){
         TextView A = (TextView) findViewById(R.id.textRorH);
+        TextView B = (TextView) findViewById(R.id.textGorS);
+        TextView C = (TextView) findViewById(R.id.textBorV);
         ToggleButtonState = simpleToggleButton.isChecked();
         if(!ToggleButtonState){
-            String fullHueText = String.format("Red: %1$d", update);
-            A.setText(fullHueText);
+            String fullRedText = String.format("Red: %1$d", updateR);
+            A.setText(fullRedText);
+            String fullGreenText = String.format("Green: %1$d", updateG);
+            B.setText(fullGreenText);
+            String fullBlueText = String.format("Blue: %1$d", updateB);
+            C.setText(fullBlueText);
         } else {
-            String fullHueText = String.format("Hue: %1$d", update);
+            String fullHueText = String.format("Hue: %1$d", updateR);
             A.setText(fullHueText);
+            String fullSaturationText = String.format("Saturation: %1$d", updateG);
+            B.setText(fullSaturationText);
+            String fullValueText = String.format("Value: %1$d", updateB);
+            C.setText(fullValueText);
         }
     }
 

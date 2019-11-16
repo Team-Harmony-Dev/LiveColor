@@ -162,16 +162,18 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"/>
 
-            <ImageButton
+            <Button
                 android:id="@+id/resetColor"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
-                app:srcCompat="@drawable/reset"
-                android:background="@android:color/transparent"
                 android:adjustViewBounds="true"
-                android:padding="10dp"
-                android:scaleType="fitCenter"/>
+                android:background="@drawable/reset"
+                android:fontFamily="@font/lato_light"
+                android:scaleType="fitCenter"
+                android:text="Reset"
+                android:textSize="8sp"/>
 
             <TextView
                 android:id="@+id/colorNN"
