@@ -121,6 +121,9 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     protected void setAppropriatelySizedText(String colorName){
         //The view we're sticking the color name in
         TextView view = MainActivity.colorNameView;
+        //DEBUG code
+        final String singleLineTest = "aaaaa";
+        colorName = singleLineTest;
         view.setText(colorName);
         float fontSize = originalTextSize;
         //TODO this has a bug where clicking two in a row doesn't work because the resize doesn't finish or whatever., line# returns 0
@@ -149,6 +152,11 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             fontSize = (int) (fontSize*(reduceToThisPercent-0.10));
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             view.setText(colorName);
+        } else {
+            //DEBUG
+            MainActivity.colorNameView.measure(0, 0);
+            int textWidth = MainActivity.colorNameView.getMeasuredWidth();
+            Log.d("S3US5", "w="+textWidth);
         }
         /*
         //The idea is to decrease the font size by 1 until it fits on one line.
