@@ -119,9 +119,9 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         }
     }
 
-    //TODO currently it assumes all textViews have the same starting size? Or just doesn't work
-    //  at all since it doesn't reset afterwards.
-    //Starting size, in sp
+    //TODO currently it assumes all textViews have the same starting size?
+    //Starting size, in sp. This is essentially the maximum size, aka what it'll be set to if it
+    //  can already fit on one line. It'll be reduced as needed.
     private static float originalTextSize = -1;
     private static double viewWidthPercentOfScreen;
     //private static Activity activityViewIsIn;
@@ -132,6 +132,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
     //  I suppose I could make the text bigger to fit (and forget original size). Maybe with some threshold.
+    //TODO handle weight better, probably don't need it as a parameter?
+    //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
     protected void setAppropriatelySizedText(String colorName){
         //The view we're sticking the color name in
         TextView view = MainActivity.colorNameView;
