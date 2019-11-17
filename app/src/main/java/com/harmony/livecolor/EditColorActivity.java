@@ -334,9 +334,9 @@ public class EditColorActivity extends AppCompatActivity {
         }
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        colorNameGetter cng = new colorNameGetter();
+        //colorNameGetter cng = new colorNameGetter();
         colorNameGetter.updateViewWithColorName(colorNNView, colorI);
-        cng.execute(colorI);
+        //cng.execute(colorI);
     }
 
     public void updateColorPicker(){
