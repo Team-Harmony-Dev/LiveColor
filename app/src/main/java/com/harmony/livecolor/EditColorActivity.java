@@ -46,7 +46,7 @@ public class EditColorActivity extends AppCompatActivity {
         simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         ToggleButtonState = simpleToggleButton.isChecked();
 
-        SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);

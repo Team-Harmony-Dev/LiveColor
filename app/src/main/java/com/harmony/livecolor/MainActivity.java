@@ -11,6 +11,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -137,6 +138,10 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         Log.d("Lifecycles", "onStop: MainActivity stopped");
         super.onStop();
+        // clears shared prefs. on app exit only, not updating image :(
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().remove("color").commit();
+        SharedPreferences prefs1 = getSharedPreferences("prefs", MODE_PRIVATE);
     }
 
     @Override

@@ -1,19 +1,24 @@
 package com.harmony.livecolor;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -30,18 +35,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -67,8 +61,12 @@ public class ColorPickerFragment extends Fragment {
     ColorDatabase colorDB;
 
     private OnFragmentInteractionListener mListener;
-    public static final int RESULT_LOAD_IMAGE = 1;
-    ImageView pickingImage;
+    private static final int CAMERA_OR_GALLERY = 0;
+    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
+    private String imagePath = null;
+    private ImageView pickingImage;
+    private Uri imageUri;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -90,9 +88,7 @@ public class ColorPickerFragment extends Fragment {
             //if arguments are needed ever, use this to set them to static values in the class
         }
     }
-    private static final int IMAGE_CAPTURE_CODE = 1001;
-    ImageView mImageView;
-    Uri image_uri;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -116,17 +112,18 @@ public class ColorPickerFragment extends Fragment {
         editRgb = rootView.findViewById(R.id.RGBText);
         editHsv = rootView.findViewById(R.id.HSVText);
 
-        mImageView = rootView.findViewById(R.id.pickingImage);
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, "New Picture");
                 values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
-                image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
             }
         });
@@ -135,7 +132,11 @@ public class ColorPickerFragment extends Fragment {
         viewGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
             }
         });
@@ -184,27 +185,48 @@ public class ColorPickerFragment extends Fragment {
 
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
+        if (pickingImage != null) { // loads saved image to fragment using path
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            imagePath = prefs.getString("image", null);
+            pickingImage.setImageURI(imageUri);
+            if(imagePath != null) {
+                Drawable drawable = Drawable.createFromPath(imagePath);
+                pickingImage.setImageDrawable(drawable);
+            }
+        }
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
-
-
         return rootView;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK){
-            mImageView.setImageURI(image_uri);
-        }
-        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            pickingImage.setImageURI(selectedImage);
+        if(resultCode == Activity.RESULT_OK && data != null) {
+            if(requestCode == RESULT_LOAD_IMAGE) {
+                imageUri = data.getData(); // only needed for gallery images
+            }
+            pickingImage.setImageURI(imageUri); // updates the view
+            imagePath = getPath(data, this.getActivity());
+            if (imagePath != null) {
+                // save image path to saved prefs after updating imageview
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                editor.putString("image", imagePath);
+                editor.apply();
+            }
         }
     }
-
-
-
+    // gets path of image to save to fragment
+    public String getPath(Intent data, Context context) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
+        if (cursor == null) return null;
+        cursor.moveToFirst();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        imagePath = cursor.getString(column_index);
+        cursor.close();
+        return imagePath;
+    }
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
@@ -343,6 +365,12 @@ public class ColorPickerFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -365,11 +393,24 @@ public class ColorPickerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
+        Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
+        loadColorView();
+    }
+
+    public void loadColorView() {
+        // To load saved color onto fragment, default/initial load is white?
+        SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+        int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
+        String savedColorName = prefs.getString("colorName", null);
+        if(savedColorName != null) { // loads saved name, if it exists
+            ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
+        }
+        updateColorValues(getView(), savedColorInt);
+//        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
     public void updateColorName(View view){
-        SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         TextView colorNameView = getActivity().findViewById(R.id.colorName);
         String input = colorNameView.getText().toString();
@@ -403,9 +444,12 @@ public class ColorPickerFragment extends Fragment {
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
 
+        // save color value (int) to Shared Prefs.
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+        editor.putInt("colorValue", colorNew);
+        editor.apply();
+
         //Put the color in SharedPreferences as a String with key nameKey
-        SharedPreferences preferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
         editor.putString("colorString", Integer.toString(colorNew));
         editor.apply();
     }

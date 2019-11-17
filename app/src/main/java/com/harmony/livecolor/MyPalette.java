@@ -1,8 +1,9 @@
 package com.harmony.livecolor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MyPalette {
+public class MyPalette implements Serializable {
     private String id, name;
     private ArrayList<MyColor> colors;
 
