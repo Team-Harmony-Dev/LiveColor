@@ -2,15 +2,20 @@ package com.harmony.livecolor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.harmony.livecolor.PalettesFragment.OnListFragmentInteractionListener;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -19,60 +24,106 @@ import java.util.List;
  */
 public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalettesRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private ArrayList<MyPalette> myPalettes;
+    private OnListFragmentInteractionListener listener;
+    private Context context;
 
-    public MyPalettesRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
+        Log.d("S3US2", "PaletteColorsRecyclerViewAdapter: Constructed");
+        this.context = context;
+        this.myPalettes = myPalettes;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_palettes, parent, false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_palettes,parent,false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.paletteName.setText(myPalettes.get(position).getName());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+        ArrayList<MyColor> paletteColors = myPalettes.get(position).getColors();
+        //loop through first up-to 10 colors in palette
+        for(int i = 0; i < 10; i++){
+            //break if null aka end of palette
+            if(i >= paletteColors.size()){
+                //set image to weight 0 so that it doesn't appear
+                holder.displayColors.get(i).setLayoutParams(new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        0.0f
+                ));
+            } else{
+                MyColor thisColor = paletteColors.get(i);
+                //set imageview of i to weight1
+                holder.displayColors.get(i).setLayoutParams(new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1.0f
+                ));
+                //set imageview to i's color
+                holder.displayColors.get(i).setBackgroundColor(Color.parseColor(thisColor.getHex()));
+                //set linear layout's weight sum to i? might not be needed
             }
-        });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return myPalettes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        TextView paletteName;
+        ArrayList<ImageView> displayColors;
+        ImageView color1, color2, color3, color4, color5, color6, color7, color8, color9, color10;
+        LinearLayout listItem;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            paletteName = view.findViewById(R.id.paletteName);
+            listItem = view.findViewById(R.id.paletteItem);
+            color1 = view.findViewById(R.id.color1);
+            color2 = view.findViewById(R.id.color2);
+            color3 = view.findViewById(R.id.color3);
+            color4 = view.findViewById(R.id.color4);
+            color5 = view.findViewById(R.id.color5);
+            color6 = view.findViewById(R.id.color6);
+            color7 = view.findViewById(R.id.color7);
+            color8 = view.findViewById(R.id.color8);
+            color9 = view.findViewById(R.id.color9);
+            color10 = view.findViewById(R.id.color10);
+            displayColors = new ArrayList<>();
+            displayColors.add(color1);
+            displayColors.add(color2);
+            displayColors.add(color3);
+            displayColors.add(color4);
+            displayColors.add(color5);
+            displayColors.add(color6);
+            displayColors.add(color7);
+            displayColors.add(color8);
+            displayColors.add(color9);
+            displayColors.add(color10);
         }
     }
+
+    //TODO: uncomment method when PaletteInfoActivity is complete
+    // separate method for the onClickListener in order to pass the position from onBVH in
+    /*View.OnClickListener getPaletteClickListener(final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //create intent for PaletteInfo
+                Intent intent = new Intent(context,PaletteInfoActivity.class);
+                //use putExtra Serializable to pass in desired color with intent
+                intent.putExtra("palette",myPalettes.get(position));
+                //start new activity with this intent
+                context.startActivity(intent);
+            }
+        };
+    }*/
 }

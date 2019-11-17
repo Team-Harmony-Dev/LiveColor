@@ -45,10 +45,12 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
+        //TODO: Move SharedPrefs to outside of the method
+        // pass colors through MyColor and intent (talk with Gabby)
 
         // FETCH PICKED COLOR FROM PREFERENCES
         SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
-        String colorString = preferences.getString("nameKey","Default");
+        String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
 
         Log.d("DEBUG", "Color set to background = " + colorString);

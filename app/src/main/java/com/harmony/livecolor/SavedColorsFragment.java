@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,11 +29,10 @@ import java.util.List;
  */
 public class SavedColorsFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private OnListFragmentInteractionListener listener;
+    private Context context;
+    private View view;
+    private ArrayList<MyColor> colorList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,66 +43,72 @@ public class SavedColorsFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static SavedColorsFragment newInstance(/*int columnCount*/) {
+    public static SavedColorsFragment newInstance() {
         SavedColorsFragment fragment = new SavedColorsFragment();
-        /*Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);*/
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
+        view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
 
         Log.d("Lifecycles", "onCreateView: SavedColorsFragment created");
 
-        //Set title on action bar to match current fragment
-        getActivity().setTitle(
-                getResources().getText(R.string.app_name) +
-                        " - " + getResources().getText(R.string.title_saved_colors)
-        );
+        context = view.getContext();
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MySavedColorsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+        initColors();
+
+        initRecycler();
+
         return view;
+    }
+
+    public void initColors(){
+        //initialize ArrayList<MyColors> here
+        colorList = new ArrayList<>();
+        //will access colors from database and put into MyColor objects
+        //TODO: Andrew's database code/method call will go here
+        //Temporary Colors atm:
+        colorList.add(new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)"));
+        colorList.add(new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)"));
+        colorList.add(new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)"));
+        colorList.add(new MyColor("4","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)"));
+        colorList.add(new MyColor("5","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)"));
+        colorList.add(new MyColor("6","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)"));
+    }
+
+    public void initRecycler(){
+        //get the RecyclerView from the view
+        RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
+        //add divider decoration to make it match the assignment example?
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
+        //then initialize the adapter, passing in the bookList
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
+        //and set the adapter for the RecyclerView
+        recyclerView.setAdapter(adapter);
+        //and set the layout manager as well
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+        listener = (OnListFragmentInteractionListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     /**
