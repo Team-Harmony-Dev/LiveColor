@@ -118,8 +118,8 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        ImageButton button2 = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
-        button2.setOnClickListener(new View.OnClickListener() {
+        ImageButton viewGallery = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
+        viewGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -158,9 +158,9 @@ public class ColorPickerFragment extends Fragment {
             @Override
             public void onClick (View view){
                 updateColorName(getView());
-                Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
-                startCIA.putExtra("get_hex", Integer.toString(colorT));
-                startActivity(startCIA);
+                Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
+                startEditColorActivity.putExtra("get_hex", Integer.toString(colorT));
+                startActivity(startEditColorActivity);
             }
         });
 

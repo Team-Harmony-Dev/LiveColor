@@ -51,6 +51,16 @@ public class ColorInfoActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
 
+        // Edit color listener
+        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
+        editColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+                startActivity(startEditColorActivity);
+            }
+        });
+
         Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
 
