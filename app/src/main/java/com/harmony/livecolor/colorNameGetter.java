@@ -45,6 +45,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         DisplayMetrics metrics;
         metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
         if(originalTextSize == -1) {
+            //TODO test if this is the best way to do it. view.getTextSize() ?
             originalTextSize = MainActivity.colorNameView.getTextSize() / metrics.density;
         }
         //activityViewIsIn = activityThatYourViewIsIn;
@@ -114,17 +115,19 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //private static Activity activityViewIsIn;
 
     //TODO Actually it looks like it's already been done.
-    //https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
+    //https://stackoverflow.com/a/31399534
+    //And maybe https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
 
     //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
     //  I suppose I could make the text bigger to fit (and forget original size). Maybe with some threshold.
     protected void setAppropriatelySizedText(String colorName){
         //The view we're sticking the color name in
         TextView view = MainActivity.colorNameView;
-        //DEBUG code
-        final String singleLineTest = "aaaaa";
-        colorName = singleLineTest;
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
         view.setText(colorName);
+        // The idea is to detect how much we need to reduce the font size by,
+        //   and then do that in one go
+
         float fontSize = originalTextSize;
         //TODO this has a bug where clicking two in a row doesn't work because the resize doesn't finish or whatever., line# returns 0
         if(view.getLineCount() > 1){
@@ -142,22 +145,26 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth);
 
             //TODO don't use hardcoded percent, take as a parameter or pull weights or something
-            double PERCENT = 0.6;
+            double PERCENT = 0.60;
             double maximumTextWidth = PERCENT * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+" mtw="+maximumTextWidth
                     +"rp="+reduceToThisPercent);
             //Update font size to be smaller
-            //TODO font size is not linear? Could remove a fixed amount and just hope it's enough for testing.
-            fontSize = (int) (fontSize*(reduceToThisPercent-0.10));
+            //TODO font size is not linear? Could remove a fixed amount and just hope it's enough.
+            fontSize = (int) (fontSize*(reduceToThisPercent-0.00));
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             view.setText(colorName);
         } else {
-            //DEBUG
+            //DEBUG (this entire else is for debug)
             MainActivity.colorNameView.measure(0, 0);
             int textWidth = MainActivity.colorNameView.getMeasuredWidth();
             Log.d("S3US5", "w="+textWidth);
         }
+
+
+        //TODO this seems like the best approach, try something like https://stackoverflow.com/a/5302232 ? https://stackoverflow.com/a/6794146 ?
+        //  Also check math of above approach, if that'd work it'd be good. But the twice in a row timing bug would still be a problem.
         /*
         //The idea is to decrease the font size by 1 until it fits on one line.
         //The problem is the textView doesn't refresh instantly so the loop ends.
