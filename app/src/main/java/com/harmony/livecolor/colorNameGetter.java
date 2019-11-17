@@ -53,6 +53,15 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         tmp.execute(pixelColor);
     }
 
+
+    private final static String loadingText = "...";
+
+    @Override
+    protected void onPreExecute(){
+        MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+        MainActivity.colorNameView.setText(loadingText);
+    }
+
     @Override
     protected String doInBackground(Integer... colorButArray){
         final String baseColorNameUrl = "https://api.color.pizza/v1/";
@@ -101,7 +110,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
         try {
-            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
             setAppropriatelySizedText(colorName);
         } catch (Exception e) {
             Log.e("S3US5", "Something wrong in updating color name textview: "+e);
@@ -145,7 +153,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth);
 
             //TODO don't use hardcoded percent, take as a parameter or pull weights or something
-            double PERCENT = 0.60;
+            //  Using .6 for 60% doesn't quite work? Error in my math or some sort of padding?
+            double PERCENT = 0.55;
             double maximumTextWidth = PERCENT * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+" mtw="+maximumTextWidth
