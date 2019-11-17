@@ -22,11 +22,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:src="@drawable/camera_white_filled"
             android:adjustViewBounds="true"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            />
+            android:src="@drawable/camera_white_filled"
+            tools:src="@drawable/camera_white_filled" />
 
         <ImageButton
             android:id="@+id/viewGalleryButton"
@@ -129,9 +129,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"
                     android:src="@drawable/ic_action_name" />
             </LinearLayout>
 
