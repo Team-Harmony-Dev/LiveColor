@@ -49,9 +49,19 @@ public class ColorInfoActivity extends AppCompatActivity {
         // pass colors through MyColor and intent (talk with Gabby)
 
         // FETCH PICKED COLOR FROM PREFERENCES
-        SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
+
+        // Edit color listener
+        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
+        editColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+                startActivity(startEditColorActivity);
+            }
+        });
 
         Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);

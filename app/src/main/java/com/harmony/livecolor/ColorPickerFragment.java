@@ -128,8 +128,8 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        ImageButton button2 = rootView.findViewById(R.id.viewGalleryButton);
-        button2.setOnClickListener(new View.OnClickListener() {
+        ImageButton viewGallery = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
+        viewGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -177,12 +177,13 @@ public class ColorPickerFragment extends Fragment {
             @Override
             public void onClick (View view){
                 updateColorName(getView());
-                Intent startCIA = new Intent(getActivity(), EditColorActivity.class);
-                startCIA.putExtra("get_hex", Integer.toString(colorT));
-                startActivity(startCIA);
+                Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
+                startEditColorActivity.putExtra("get_hex", Integer.toString(colorT));
+                startActivity(startEditColorActivity);
             }
         });
 
+        //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
         if (pickingImage != null) { // loads saved image to fragment using path
             SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);

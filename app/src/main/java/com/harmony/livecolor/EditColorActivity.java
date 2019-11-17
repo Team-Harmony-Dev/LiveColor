@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,12 +22,14 @@ import java.util.zip.Inflater;
 import static android.graphics.Color.RGBToHSV;
 
 public class EditColorActivity extends AppCompatActivity {
-    int RV, GV, BV, colorValue, HV, SV, VV;
+    int colorValue;
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
     private boolean isButtonClicked = false;
     private boolean isButtonClickedNew = false;
     ImageButton saveNC;
+    ToggleButton simpleToggleButton;
+    Boolean ToggleButtonState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +43,16 @@ public class EditColorActivity extends AppCompatActivity {
 
         saveNC = findViewById(R.id.saveNewColor);
 
-        SharedPreferences preferences = getSharedPreferences("pref", Context.MODE_PRIVATE);
+        simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        ToggleButtonState = simpleToggleButton.isChecked();
+
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
-        RV = Color.red(colorValue);
-        GV = Color.green(colorValue);
-        BV = Color.blue(colorValue);
+        int RV = Color.red(colorValue);
+        int GV = Color.green(colorValue);
+        int BV = Color.blue(colorValue);
 
         // UPDATE VALUES
         ImageView colorD = (ImageView) findViewById(R.id.colorShow);
@@ -59,30 +65,28 @@ public class EditColorActivity extends AppCompatActivity {
         TextView colorNameN = findViewById(R.id.colorNN);
         colorNameN.setText(colorNameT);
 
-        seekRed = (SeekBar) findViewById(R.id.seekBarRed);
+        seekRed = findViewById(R.id.seekBarRed);
         seekRed.setProgress(RV);
-        seekGreen = (SeekBar) findViewById(R.id.seekBarGreen);
+        seekGreen = findViewById(R.id.seekBarGreen);
         seekGreen.setProgress(GV);
-        seekBlue = (SeekBar) findViewById(R.id.seekBarBlue);
+        seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
-        updateRGBText();
+        updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
 
-        //TODO: Working back button
-
-        ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    // The toggle is enabled
-                    convertRGBtoHSV();
-                    updateHSVText();
-                    updateSeekbarsHSV();
+                    // The toggle is enabled: HSV mode
+                    int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
+                    updateSeekbarsHSV(newHSVValues[0],newHSVValues[1],newHSVValues[2]); // Set the seekbars to their new values
+                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
+
                 } else {
-                    // The toggle is disabled
-                    convertHSVtoRGB();
-                    updateRGBText();
-                    updateSeekbarsRGB();
+                    // The toggle is disabled: RGB mode
+                    int[] newRGBValues = convertHSVtoRGB(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); //Convert teh HSV values to RGB values for the seekbars
+                    updateSeekbarsRGB(newRGBValues[0], newRGBValues[1], newRGBValues[2]); // Set the seekbars to their new values
+                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
                 }
             }
         });
@@ -91,31 +95,15 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    RV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    HV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();*/
+                updateText(progress, seekGreen.getProgress(), seekBlue.getProgress());
+                updateColorNewInput(progress, seekGreen.getProgress(), seekBlue.getProgress());
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    RV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    HV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();
+                updateText(progressChangedValue, seekGreen.getProgress(), seekBlue.getProgress());
+                updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorName();
                 resetBookmark();
             }
@@ -125,31 +113,15 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    GV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    SV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();*/
+                updateText(seekRed.getProgress(), progress, seekBlue.getProgress());
+                updateColorNewInput(seekRed.getProgress(), progress, seekBlue.getProgress());
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    GV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    SV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();
+                updateText(seekRed.getProgress(), progressChangedValue, seekBlue.getProgress());
+                updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorName();
                 resetBookmark();
             }
@@ -159,57 +131,37 @@ public class EditColorActivity extends AppCompatActivity {
             int progressChangedValue = 0;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                /*ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    BV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    VV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();*/
+                updateText(seekRed.getProgress(), seekGreen.getProgress(), progress);
+                updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), progress);
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
-                if(!ToggleButtonState){
-                    BV = progressChangedValue;
-                    updateRGBText();
-                } else {
-                    VV = progressChangedValue;
-                    updateHSVText();
-                }
-                updateColorNew();
+                updateText(seekRed.getProgress(), seekGreen.getProgress(), progressChangedValue);
+                updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorName();
                 resetBookmark();
             }
         });
 
-        ImageButton reset = findViewById(R.id.resetColor);
+        Button reset = findViewById(R.id.resetColor);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RV = Color.red(colorValue);
-                GV = Color.green(colorValue);
-                BV = Color.blue(colorValue);
-
-                ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                ToggleButtonState = simpleToggleButton.isChecked();
 
                 if(!ToggleButtonState){
-                    updateSeekbarsRGB();
-                    updateRGBText();
+                    updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 } else {
-                    convertRGBtoHSV();
-                    updateHSVText();
-                    updateSeekbarsHSV();
+                    int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+                    updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
+                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 }
 
-                updateColorNew();
+                updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+                updateColorName();
             }
         });
 
@@ -228,20 +180,27 @@ public class EditColorActivity extends AppCompatActivity {
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Code for making the save button change color when clicked
                 isButtonClickedNew = !isButtonClickedNew;
                 saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 if(isButtonClickedNew){
-                    ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-                    Boolean ToggleButtonState = simpleToggleButton.isChecked();
+                    ToggleButtonState = simpleToggleButton.isChecked();
                     int colorI = 0;
-                    if(ToggleButtonState){
-                        convertHSVtoRGB();
+                    if(ToggleButtonState) {
+                        int hue = seekRed.getProgress();
+                        int sat = seekGreen.getProgress();
+                        int val = seekBlue.getProgress();
+                        int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
+                        colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+                    } else {
+                        colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                     }
-                    colorI = getIntFromColor(RV,GV, BV);
                     saveNC.setColorFilter(colorI);
                 }else{
                     saveNC.setColorFilter(null);
                 }
+
             }
         });
 
@@ -249,6 +208,8 @@ public class EditColorActivity extends AppCompatActivity {
         saveOC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Code for making the save button change color when clicked
                 isButtonClicked = !isButtonClicked;
                 saveOC.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 if(isButtonClicked){
@@ -256,10 +217,12 @@ public class EditColorActivity extends AppCompatActivity {
                 }else{
                     saveOC.setColorFilter(null);
                 }
+
             }
         });
     }
 
+    // Resets the "save" button for the new color to the "unsaved" state
     public void resetBookmark(){
         if(isButtonClickedNew){
             saveNC.setImageResource(R.drawable.ic_action_name);
@@ -268,81 +231,87 @@ public class EditColorActivity extends AppCompatActivity {
         }
     }
 
-    public void updateSeekbarsHSV(){
+    // Updates the seekbars to the HSV values
+    public void updateSeekbarsHSV(int hue, int saturation, int value){
         seekRed.setMax(360);
-        seekRed.setProgress(HV);
+        seekRed.setProgress(hue);
         seekGreen.setMax(100);
-        seekGreen.setProgress(SV);
+        seekGreen.setProgress(saturation);
         seekBlue.setMax(100);
-        seekBlue.setProgress(VV);
+        seekBlue.setProgress(value);
     }
 
-    public void updateSeekbarsRGB(){
+    // Updates the seekbars to the RGB values
+    public void updateSeekbarsRGB(int red, int green, int blue){
         seekRed.setMax(255);
-        seekRed.setProgress(RV);
+        seekRed.setProgress(red);
         seekGreen.setMax(255);
-        seekGreen.setProgress(GV);
+        seekGreen.setProgress(green);
         seekBlue.setMax(255);
-        seekBlue.setProgress(BV);
+        seekBlue.setProgress(blue);
     }
 
-    public void updateHSVText(){
+    //A generic updateText function that checks for HSV or RGB state, & takes in the three ints of the seekbars
+    public void updateText(int updateR, int updateG, int updateB){
         TextView A = (TextView) findViewById(R.id.textRorH);
-        String fullHueText = String.format("Hue: %1$d", HV);
-        A.setText(fullHueText);
         TextView B = (TextView) findViewById(R.id.textGorS);
-        String fullSaturationText = String.format("Saturation: %1$d", SV);
-        B.setText(fullSaturationText);
         TextView C = (TextView) findViewById(R.id.textBorV);
-        String fullValueText = String.format("Value: %1$d", VV);
-        C.setText(fullValueText);
+        ToggleButtonState = simpleToggleButton.isChecked();
+        if(!ToggleButtonState){
+            String fullRedText = String.format("Red: %1$d", updateR);
+            A.setText(fullRedText);
+            String fullGreenText = String.format("Green: %1$d", updateG);
+            B.setText(fullGreenText);
+            String fullBlueText = String.format("Blue: %1$d", updateB);
+            C.setText(fullBlueText);
+        } else {
+            String fullHueText = String.format("Hue: %1$d", updateR);
+            A.setText(fullHueText);
+            String fullSaturationText = String.format("Saturation: %1$d", updateG);
+            B.setText(fullSaturationText);
+            String fullValueText = String.format("Value: %1$d", updateB);
+            C.setText(fullValueText);
+        }
     }
 
-    public void updateRGBText(){
-        TextView A = (TextView) findViewById(R.id.textRorH);
-        String fullRedText = String.format("Red: %1$d", RV);
-        A.setText(fullRedText);
-        TextView B = (TextView) findViewById(R.id.textGorS);
-        String fullGreenText = String.format("Green: %1$d", GV);
-        B.setText(fullGreenText);
-        TextView C = (TextView) findViewById(R.id.textBorV);
-        String fullBlueText = String.format("Blue: %1$d", BV);
-        C.setText(fullBlueText);
+    public int[] convertRGBtoHSV(int red, int green, int blue){
+        float[] hsvArray = new float[3];
+        RGBToHSV(red,green,blue,hsvArray);
+        int[] convertedHSVForSeekbars = new int[3];
+        convertedHSVForSeekbars[0] = Math.round(hsvArray[0]);
+        convertedHSVForSeekbars[1] = Math.round((hsvArray[1])*100);
+        convertedHSVForSeekbars[2] = Math.round((hsvArray[2])*100);
+        return convertedHSVForSeekbars;
     }
 
-    public void convertRGBtoHSV(){
-        float[] hsvArray;
-        hsvArray = new float[3];
-        RGBToHSV(RV,GV,BV,hsvArray);
-        HV = Math.round(hsvArray[0]);
-        SV = Math.round((hsvArray[1])*100);
-        VV = Math.round((hsvArray[2])*100);
-    }
-
-    public void convertHSVtoRGB(){
+    // Converts the current values in HSV to RGB and stores them in RV, GV, BV
+    public int[] convertHSVtoRGB(int hue, int saturation, int value){
         float[] hsv = new float[3];
-        hsv[0] = HV;
-        hsv[1] = ((float) SV) / 100;
-        hsv[2] = ((float) VV) / 100;
+        hsv[0] = hue;
+        hsv[1] = ((float) saturation) / 100;
+        hsv[2] = ((float) value) / 100;
         int outputColor = Color.HSVToColor(hsv);
-        RV = Color.red(outputColor);
-        GV = Color.green(outputColor);
-        BV = Color.blue(outputColor);
+        int[] newRGBValues = new int[3];
+        newRGBValues[0] = Color.red(outputColor);
+        newRGBValues[1] = Color.green(outputColor);
+        newRGBValues[2] = Color.blue(outputColor);
+        return newRGBValues;
     }
 
-    public void updateColorNew(){
+    public void updateColorNewInput(int redOrHue, int greenOrSat, int blueOrVal){
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
 
         //Get the current state of the toggle button - RGB or HSV
-        ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton); // initiate a toggle button
-        Boolean ToggleButtonState = simpleToggleButton.isChecked(); // check current state of a toggle button (true or false).
+        ToggleButtonState = simpleToggleButton.isChecked();
 
         int colorI = 0;
         if(ToggleButtonState){
-            convertHSVtoRGB();
+            // In HSV mode
+            int[] getRGBValue = convertHSVtoRGB(redOrHue, greenOrSat, blueOrVal);
+            colorI = getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
+        }else {
+            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrVal);
         }
-
-        colorI = getIntFromColor(RV,GV, BV);
 
         colorNewS.setBackgroundColor(colorI);
 
@@ -350,15 +319,19 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     public void updateColorName(){
-        ToggleButton simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton); // initiate a toggle button
-        Boolean ToggleButtonState = simpleToggleButton.isChecked(); // check current state of a toggle button (true or false).
+        ToggleButtonState = simpleToggleButton.isChecked();
+
+        int redOrHue = seekRed.getProgress();
+        int greenOrSat = seekGreen.getProgress();
+        int blueOrValue = seekBlue.getProgress();
 
         int colorI = 0;
         if(ToggleButtonState){
-            convertHSVtoRGB();
+            int[] getRGBValues = convertHSVtoRGB(redOrHue, greenOrSat, blueOrValue);
+            colorI = getIntFromColor(getRGBValues[0], getRGBValues[1], getRGBValues[2]);
+        } else {
+            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
-
-        colorI = getIntFromColor(RV,GV, BV);
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
         colorNameGetter cng = new colorNameGetter();
