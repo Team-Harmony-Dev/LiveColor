@@ -30,13 +30,13 @@ import java.net.URL;
 //TODO simplify using this. Currently it needs you to make sure the
 //  textView colorNameView is set properly because apparently onCreate can't.
 //Example of use:
-//colorNameGetter.updateViewWithColorName(getActivity(), viewToUpdateColorName, pixel);
+//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
 //TODO maybe return the value in some way? Save it somewhere other than the textView?
 //TODO doing some weird stuff with static? Currently assumes only one call at a time?
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //TODO If this works, remove some commented code
-    public static void updateViewWithColorName(/*Activity activityThatYourViewIsIn, */TextView view, int pixelColor){
+    public static void updateViewWithColorName(/*Activity activityThatYourViewIsIn, */TextView view, int pixelColor, double maximumViewWidthPercentOfScreen){
         MainActivity.colorNameView = view;
 
         //Get the font size
@@ -48,6 +48,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             //TODO test if this is the best way to do it. view.getTextSize() ?
             originalTextSize = MainActivity.colorNameView.getTextSize() / metrics.density;
         }
+        viewWidthPercentOfScreen = maximumViewWidthPercentOfScreen;
         //activityViewIsIn = activityThatYourViewIsIn;
         colorNameGetter tmp = new colorNameGetter();
         tmp.execute(pixelColor);
@@ -58,6 +59,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     @Override
     protected void onPreExecute(){
+        //TODO Currently I'm assuming all the views have the same maximum font size. That's
+        //  probably a bad assumption. We could take it as another parameter I guess.
         MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
         MainActivity.colorNameView.setText(loadingText);
     }
@@ -120,6 +123,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //  at all since it doesn't reset afterwards.
     //Starting size, in sp
     private static float originalTextSize = -1;
+    private static double viewWidthPercentOfScreen;
     //private static Activity activityViewIsIn;
 
     //TODO Actually it looks like it's already been done.
@@ -154,8 +158,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
             //TODO don't use hardcoded percent, take as a parameter or pull weights or something
             //  Using .6 for 60% doesn't quite work? Error in my math or some sort of padding?
-            double PERCENT = 0.55;
-            double maximumTextWidth = PERCENT * screenWidth;
+            double maximumViewWidthPercentOfScreen = viewWidthPercentOfScreen - 0.05;
+            double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+" mtw="+maximumTextWidth
                     +"rp="+reduceToThisPercent);
