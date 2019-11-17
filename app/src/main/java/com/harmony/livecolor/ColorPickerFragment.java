@@ -26,9 +26,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -60,6 +62,9 @@ public class ColorPickerFragment extends Fragment {
     private boolean isButtonClicked = false;
     int colorT;
     String colorNamePass;
+
+    TextView editName, editHex, editRgb, editHsv;
+    ColorDatabase colorDB;
 
     private OnFragmentInteractionListener mListener;
     public static final int RESULT_LOAD_IMAGE = 1;
@@ -103,6 +108,14 @@ public class ColorPickerFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
         ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
+
+        colorDB = new ColorDatabase(getActivity());
+
+        editName = rootView.findViewById(R.id.colorName);
+        editHex = rootView.findViewById(R.id.HEXText);
+        editRgb = rootView.findViewById(R.id.RGBText);
+        editHsv = rootView.findViewById(R.id.HSVText);
+
         mImageView = rootView.findViewById(R.id.pickingImage);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -127,10 +140,15 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        final ImageButton saveColorB = (ImageButton) rootView.findViewById(R.id.saveButton);
+        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String name = editName.getText().toString();
+                String hex = editHex.getText().toString();
+                String rgb = editRgb.getText().toString();
+                String hsv = editHsv.getText().toString();
+                colorDB.addColorInfoData(name, hex, rgb, hsv);
                 isButtonClicked = !isButtonClicked;
                 saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);

@@ -94,6 +94,22 @@
                 android:text="@string/colorHEX"
                 android:textSize="24sp" />
 
+            <TextView
+                android:id="@+id/RGBText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/colorRGB"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/HSVText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/colorHSV"
+                android:visibility="gone" />
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
