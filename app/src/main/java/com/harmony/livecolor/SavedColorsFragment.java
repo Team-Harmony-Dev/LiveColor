@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ public class SavedColorsFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyColor> colorList;
+    ColorDatabase newColorDatabase;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,6 +64,8 @@ public class SavedColorsFragment extends Fragment {
 
         context = view.getContext();
 
+        newColorDatabase = new ColorDatabase(getActivity());
+
         initColors();
 
         initRecycler();
@@ -71,16 +75,21 @@ public class SavedColorsFragment extends Fragment {
 
     public void initColors(){
         //initialize ArrayList<MyColors> here
+        String TAG = "COLORS";
+        Cursor colorData = newColorDatabase.getColorInfoData();
         colorList = new ArrayList<>();
-        //will access colors from database and put into MyColor objects
-        //TODO: Andrew's database code/method call will go here
-        //Temporary Colors atm:
-        colorList.add(new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)"));
-        colorList.add(new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)"));
-        colorList.add(new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)"));
-        colorList.add(new MyColor("4","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)"));
-        colorList.add(new MyColor("5","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)"));
-        colorList.add(new MyColor("6","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)"));
+
+        if (colorData != null && colorData.getCount() > 0) {
+            if (colorData.moveToFirst()) {
+                do {
+                    Log.d(TAG,  colorData.getString(2));
+                    colorList.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                }         while (colorData.moveToNext());
+
+            }
+        }
     }
 
     public void initRecycler(){
