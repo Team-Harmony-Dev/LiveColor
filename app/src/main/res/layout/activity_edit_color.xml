@@ -171,7 +171,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_weight="0.6"
+                android:layout_weight="0.8"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center|right"
                 android:text="Color Name New"
