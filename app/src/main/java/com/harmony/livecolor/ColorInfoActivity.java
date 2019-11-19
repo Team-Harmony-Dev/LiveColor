@@ -34,7 +34,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_color_info);
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        final Bundle bundle = intent.getExtras();
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -62,6 +62,9 @@ public class ColorInfoActivity extends AppCompatActivity {
             @Override
             public void onClick (View view){
                 Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+                startEditColorActivity.putExtra("hex", bundle.getString("hex"));
+                startEditColorActivity.putExtra("rgb", bundle.getString("rgb"));
+                startEditColorActivity.putExtra("hsv", bundle.getString("hsv"));
                 startActivity(startEditColorActivity);
             }
         });
