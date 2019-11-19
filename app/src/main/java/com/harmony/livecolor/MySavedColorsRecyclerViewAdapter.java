@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,8 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private ArrayList<MyColor> myColors;
     private OnListFragmentInteractionListener listener;
     private Context context;
+    ColorDatabase newColorDatabase;
+
 
     public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener) {
         Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
@@ -80,10 +83,15 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //create intent for ColorInfo
-                Intent intent = new Intent(context,ColorInfoActivity.class);
-                //use putExtra Serializable to pass in desired color with intent
-                intent.putExtra("color",myColors.get(position));
+                newColorDatabase = new ColorDatabase(context);
+                final Cursor colorData = newColorDatabase.getColorInfoData();
+                colorData.moveToPosition(position);
+                Intent intent=new Intent(context, ColorInfoActivity.class);
+                intent.putExtra("id", colorData.getString(0));
+                intent.putExtra("name", colorData.getString(1));
+                intent.putExtra("hex", colorData.getString(2));
+                intent.putExtra("rgb", colorData.getString(3));
+                intent.putExtra("hsv", colorData.getString(4));
                 //start new activity with this intent
                 context.startActivity(intent);
             }
