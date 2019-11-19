@@ -60,10 +60,6 @@ public class EditColorActivity extends AppCompatActivity {
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
         colorNewS.setBackgroundColor(colorValue);
 
-        TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameT);
-        TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText(colorNameT);
 
         seekRed = findViewById(R.id.seekBarRed);
         seekRed.setProgress(RV);
@@ -72,6 +68,11 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        TextView colorNameView = findViewById(R.id.colorN);
+        colorNameView.setText(colorNameT);
+        TextView colorNameN = findViewById(R.id.colorNN);
+        //colorNameN.setText(colorNameT);
+        updateColorName();
         updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
