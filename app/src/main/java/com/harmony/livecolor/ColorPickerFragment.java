@@ -398,24 +398,32 @@ public class ColorPickerFragment extends Fragment {
         // To load saved color onto fragment, default/initial load is white?
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
+        /*
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
             ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
         }
+        */
+        final double viewWidthPercentOfScreen = 0.60;
+        final float maxFontSize = 30;
+        TextView view = getActivity().findViewById(R.id.colorName);
+        colorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+
         updateColorValues(getView(), savedColorInt);
 //        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
+    //This function actually saves, not loads
     public void updateColorName(View view){
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         TextView colorNameView = getActivity().findViewById(R.id.colorName);
         String input = colorNameView.getText().toString();
+        Log.d("S3US5", "saved colorname input="+input);
         editor.putString("colorName", input);
         editor.apply();
     }
 
-    //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
     public void updateColorValues(View view, int colorNew){
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
