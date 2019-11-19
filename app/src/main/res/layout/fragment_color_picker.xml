@@ -108,6 +108,25 @@
                 android:text="@string/colorHSV"
                 android:visibility="gone" />
 
+            //below gets our HEX/RGB/HSV without labels
+            <TextView
+                android:id="@+id/plainHex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:visibility="gone" />
+            <TextView
+                android:id="@+id/plainRgb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:visibility="gone" />
+            <TextView
+                android:id="@+id/plainHsv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:visibility="gone" />
 
 
             <LinearLayout

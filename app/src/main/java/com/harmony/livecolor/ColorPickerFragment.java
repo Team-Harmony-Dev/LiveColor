@@ -35,6 +35,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
@@ -108,9 +123,9 @@ public class ColorPickerFragment extends Fragment {
         colorDB = new ColorDatabase(getActivity());
 
         editName = rootView.findViewById(R.id.colorName);
-        editHex = rootView.findViewById(R.id.HEXText);
-        editRgb = rootView.findViewById(R.id.RGBText);
-        editHsv = rootView.findViewById(R.id.HSVText);
+        editHex = rootView.findViewById(R.id.plainHex);
+        editRgb = rootView.findViewById(R.id.plainRgb);
+        editHsv = rootView.findViewById(R.id.plainHsv);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -435,12 +450,37 @@ public class ColorPickerFragment extends Fragment {
         int GV = Color.green(colorNew);
         int BV = Color.blue(colorNew);
 
+        //update the RGB value displayed
+        String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
+        String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
+        Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
+        //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
+        //Is the view argument to updateColorValues needed?
+        TextView plainRgbDisplay = getActivity().findViewById(R.id.plainRgb);
+        TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        plainRgbDisplay.setText(rgb);
+        rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+
         //update the HEX value displayed
-        String hexValue = colorToHex(colorNew);
-        String fullHEX = String.format("HEX: #%1$s",hexValue);
+        String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
+        String fullHEX = String.format("HEX: %1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
+        TextView plainHexDisplay = getActivity().findViewById(R.id.plainHex);
         TextView hexDisplay = getActivity().findViewById(R.id.HEXText);
+        plainHexDisplay.setText(hexValue);
         hexDisplay.setText(fullHEX);
+
+        //update the HSV value displayed
+        float[] hsvArray = new float[3];
+        RGBToHSV(RV,GV,BV,hsvArray);
+        int hue = Math.round(hsvArray[0]);
+        String plainHSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+        String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+        TextView plainHsvDisplay = getActivity().findViewById(R.id.plainHsv);
+        TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
+        plainHsvDisplay.setText(plainHSV);
+        hsvDisplay.setText(fullHSV);
+
 
         //Update the color display with the color they've chosen, ignoring transparency.
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);

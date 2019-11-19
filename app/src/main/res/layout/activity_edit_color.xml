@@ -62,16 +62,18 @@
             android:layout_weight="2"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/saveOldColor"
+            <Button
+                android:id="@+id/resetColor"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_action_name"
                 android:adjustViewBounds="true"
-                android:padding="10dp"
-                android:scaleType="fitCenter"/>
+                android:drawableBottom="@drawable/reset"
+                android:fontFamily="@font/lato_light"
+                android:scaleType="fitCenter"
+                android:text="Reset"
+                android:textSize="8sp" />
 
             <TextView
                 android:id="@+id/colorN"
@@ -83,6 +85,7 @@
                 android:gravity="center|right"
                 android:text="Color Name"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
         <TextView
@@ -162,19 +165,6 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_action_name" />
-
-            <Button
-                android:id="@+id/resetColor"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:adjustViewBounds="true"
-                android:drawableBottom="@drawable/reset"
-                android:fontFamily="@font/lato_light"
-                android:scaleType="fitCenter"
-                android:text="Reset"
-                android:textSize="8sp" />
 
             <TextView
                 android:id="@+id/colorNN"
