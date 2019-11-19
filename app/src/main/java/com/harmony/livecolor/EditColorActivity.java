@@ -336,7 +336,8 @@ public class EditColorActivity extends AppCompatActivity {
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
         //colorNameGetter cng = new colorNameGetter();
         final double viewWidthPercentOfScreen = 0.60;
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen);
+        final float maxFontSize = 30;
+        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
         //cng.execute(colorI);
     }
 

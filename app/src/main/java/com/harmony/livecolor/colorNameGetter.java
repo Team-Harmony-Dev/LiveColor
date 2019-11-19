@@ -23,31 +23,36 @@ import java.net.URL;
 
 
 // Lets get some color names!
-// Takes the color int, returns a string of the color name
+// Takes the color int, "returns" a string of the color name by placing it in the TextView
+// Automatically reduces the font size of the TextView to ensure that the name fits on one line.
+//Example of use:
+//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
+//
 // Retrieves names from https://github.com/meodai/color-names
 // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
 // Relies on ColorPickerFragment.colorToHex()
-//TODO simplify using this. Currently it needs you to make sure the
-//  textView colorNameView is set properly because apparently onCreate can't.
-//Example of use:
-//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
-//TODO maybe return the value in some way? Save it somewhere other than the textView?
 //TODO doing some weird stuff with static? Currently assumes only one call at a time?
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //TODO If this works, remove some commented code
-    public static void updateViewWithColorName(/*Activity activityThatYourViewIsIn, */TextView view, int pixelColor, double maximumViewWidthPercentOfScreen){
+    //Font size is in sp.
+    public static void updateViewWithColorName(TextView view, int pixelColor, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         MainActivity.colorNameView = view;
 
+        //TODO I think just letting them pass me it is better
         //Get the font size
         //https://stackoverflow.com/a/14078085
         //https://stackoverflow.com/a/10641257
+        /*
         DisplayMetrics metrics;
         metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
         if(originalTextSize == -1) {
             //TODO test if this is the best way to do it. view.getTextSize() ?
             originalTextSize = MainActivity.colorNameView.getTextSize() / metrics.density;
         }
+        */
+        originalTextSize = maximumFontSize;
+
         viewWidthPercentOfScreen = maximumViewWidthPercentOfScreen;
         //activityViewIsIn = activityThatYourViewIsIn;
         colorNameGetter tmp = new colorNameGetter();
@@ -55,13 +60,14 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     }
 
 
-    private final static String loadingText = "...";
+    private final static String loadingText = ". . .";
 
     @Override
     protected void onPreExecute(){
         //TODO Currently I'm assuming all the views have the same maximum font size. That's
         //  probably a bad assumption. We could take it as another parameter I guess.
         MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+        //TODO this is always slightly ugly, but prevents the big ugly of squishing then unsquishing.
         MainActivity.colorNameView.setText(loadingText);
     }
 
@@ -162,7 +168,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             double maximumViewWidthPercentOfScreen = viewWidthPercentOfScreen - 0.05;
             double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
-            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+" mtw="+maximumTextWidth
+            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+
+                    " maxPercent="+maximumViewWidthPercentOfScreen+" mtw="+maximumTextWidth
                     +" rp="+reduceToThisPercent);
             //Update font size to be smaller
             fontSize = (int) (fontSize*(reduceToThisPercent));
@@ -171,6 +178,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             //  Just remove this if and the line count if.
             if(fontSize < originalTextSize) {
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            } else {
+                Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
             }
         } else {
             //DEBUG (this entire else is for debug)
