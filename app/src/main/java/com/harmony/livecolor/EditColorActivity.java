@@ -163,6 +163,7 @@ public class EditColorActivity extends AppCompatActivity {
 
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorName();
+                resetBookmark();
             }
         });
 
