@@ -125,19 +125,16 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         }
     }
 
-    //TODO currently it assumes all textViews have the same starting size?
     //Starting size, in sp. This is essentially the maximum size, aka what it'll be set to if it
     //  can already fit on one line. It'll be reduced as needed.
-    private static float originalTextSize = -1;
+    private static float originalTextSize;
     private static double viewWidthPercentOfScreen;
-    //private static Activity activityViewIsIn;
 
     //TODO Actually it looks like it's already been done.
     //https://stackoverflow.com/a/31399534
     //And maybe https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
 
     //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
-    //  I suppose I could make the text bigger to fit (and forget original size). Maybe with some threshold.
     //TODO handle weight better, probably don't need it as a parameter?
     //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
     protected void setAppropriatelySizedText(String colorName){
@@ -181,94 +178,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             } else {
                 Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
             }
-        } else {
-            //DEBUG (this entire else is for debug)
-            MainActivity.colorNameView.measure(0, 0);
-            int textWidth = MainActivity.colorNameView.getMeasuredWidth();
-            Log.d("S3US5", "w="+textWidth);
         }
-
-
-        //TODO this seems like the most straightforward approach, try something like https://stackoverflow.com/a/5302232 ? https://stackoverflow.com/a/6794146 ?
-        //  Also check math of above approach, if that'd work it'd be good.
-        /*
-        //The idea is to decrease the font size by 1 until it fits on one line.
-        //The problem is the textView doesn't refresh instantly so the loop ends.
-        while(view.getLineCount() > 1){
-            Log.d("S3US5", "Ran over a line, changing fontsize");
-            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
-
-            //Update font size to be smaller
-            fontSize = fontSize - 1;
-            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-            view.setText(colorName);
-
-            //  Maybe based on proportions vs line #?
-            //Needs to do a new layout pass?
-            // https://stackoverflow.com/questions/12037377/how-to-get-number-of-lines-of-textview
-            //https://developer.android.com/guide/topics/ui/how-android-draws
-
-            //https://stackoverflow.com/questions/5991968/how-to-force-an-entire-layout-view-refresh
-            //error: non-static method getWindow() cannot be referenced from a static context
-            //MainActivity.getWindow().getDecorView().findViewById(android.R.id.content).invalidate();
-
-            //Doesn't work.
-            //activityViewIsIn.getWindow().getDecorView().findViewById(android.R.id.content).invalidate();
-
-            //
-            //need to use activity and view, static issues?
-            //ViewGroup vg = findViewById (R.id.mainLayout);
-            //vg.invalidate();
-
-            //TODO if this works remove the activity stuff
-            //Seems to be async so we exit the loop
-            //MainActivity.view.invalidate();
-
-            //This is async or something? We're not waiting, we're exiting the loop
-            //Also it wipes other stuff.
-            //activityViewIsIn.recreate();
-        }
-        */
-        Log.d("S3US5", "# lines is now: "+view.getLineCount());
-        //Looks like there's a library function that does roughly what I want.
-        //If I remove all this should also remove imports
-        /*
-        //If the text takes more than one line, lets shrink the text size.
-        //First lets get the width of the text
-        // https://stackoverflow.com/a/37930140
-        MainActivity.colorNameView.measure(0, 0);
-        int textWidth = MainActivity.colorNameView.getMeasuredWidth();
-        //And now the width of the screen
-        //https://stackoverflow.com/a/31377616
-        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        //And the font size
-        //https://stackoverflow.com/a/14078085
-        //https://stackoverflow.com/a/10641257
-        DisplayMetrics metrics;
-        metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
-        float previousSize = MainActivity.colorNameView.getTextSize()/metrics.density;
-        Log.d("S3US5", "Found text width of "+textWidth
-                +" with font size of " + previousSize
-                +" and height width of "+screenWidth
-                +" and we're given "+nameDisplaySpacePercent+" of the screen space"
-                +"("+screenWidth*nameDisplaySpacePercent+")");
-        //TODO This doesn't seem to work, width takes the new line into account. Check height?
-        //  Could try adding a new line, testing height difference, using that to estimate the
-        //  height of a single line
-        if(textWidth > screenWidth*nameDisplaySpacePercent){
-            Log.d("S3US5", "Ran over a line, changing fontsize");
-            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,previousSize - 1);
-            setAppropriatelySizedText(colorName);
-        }
-        */
     }
-    /*
-    //https://stackoverflow.com/a/42851039
-    private Activity mContext;
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.mContext = (Activity) context;
-    }
-    */
 }
