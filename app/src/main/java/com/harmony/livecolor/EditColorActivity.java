@@ -204,22 +204,6 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        final ImageButton saveOC = findViewById(R.id.saveOldColor);
-        saveOC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Code for making the save button change color when clicked
-                isButtonClicked = !isButtonClicked;
-                saveOC.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
-                if(isButtonClicked){
-                    saveOC.setColorFilter(colorValue);
-                }else{
-                    saveOC.setColorFilter(null);
-                }
-
-            }
-        });
     }
 
     // Resets the "save" button for the new color to the "unsaved" state
