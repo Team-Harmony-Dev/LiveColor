@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ToggleButton;
 import java.util.zip.Inflater;
 
 import static android.graphics.Color.RGBToHSV;
+import static android.graphics.Color.parseColor;
 
 public class EditColorActivity extends AppCompatActivity {
     int colorValue;
@@ -37,6 +39,9 @@ public class EditColorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_color);
 
+        Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
+
         colorNNView = findViewById(R.id.colorNN);
 
         ActionBar actionBar = getSupportActionBar();
@@ -51,6 +56,10 @@ public class EditColorActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
+        if (bundle != null) {
+            String hex = bundle.getString("hex");
+            colorValue = parseColor(hex);
+        }
         int RV = Color.red(colorValue);
         int GV = Color.green(colorValue);
         int BV = Color.blue(colorValue);
