@@ -26,6 +26,7 @@ import static android.graphics.Color.parseColor;
 public class ColorInfoActivity extends AppCompatActivity {
 
     int colorValue, RV, GV, BV, hue;
+    String hexValue;
     float[] hsvArray;
 
     @Override
@@ -33,7 +34,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_info);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
 
 
@@ -62,16 +63,18 @@ public class ColorInfoActivity extends AppCompatActivity {
             @Override
             public void onClick (View view){
                 Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
-                startEditColorActivity.putExtra("hex", bundle.getString("hex"));
-                startEditColorActivity.putExtra("rgb", bundle.getString("rgb"));
-                startEditColorActivity.putExtra("hsv", bundle.getString("hsv"));
+                if(intent.getExtras() != null){
+                    Log.d("ColorInfoActivity", "BUNDLE sending hex: " + hexValue);
+                    startEditColorActivity.putExtra("hex", hexValue);
+                }
                 startActivity(startEditColorActivity);
             }
         });
 
         Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
-        if (bundle != null) {
+        if (intent.getExtras() != null) {
+            Log.d("ColorInfoActivity", "BUNDLE!! hex: " + bundle.getString("hex"));
             String hex = bundle.getString("hex");
             colorValue = parseColor(hex);
         }
@@ -83,14 +86,16 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
-        if (bundle != null) {
+        if (intent.getExtras() != null) {
+            Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
         }
         colorNameView.setText(colorNameT);
 
         //HEX
 
-        String hexValue = String.format("HEX: #%06X", (0xFFFFFF & colorValue)); //get the hex representation minus the first ff
+        hexValue = String.format("HEX: #%06X", (0xFFFFFF & colorValue)); //get the hex representation minus the first ff
+        Log.d("ColorInfoActivity", "hexValue: " + hexValue);
         TextView hexDisplay = (TextView) findViewById(R.id.HexText);
         hexDisplay.setText(hexValue);
 

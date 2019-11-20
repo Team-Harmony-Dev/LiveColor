@@ -56,8 +56,10 @@ public class EditColorActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
-        if (bundle != null) {
+        if (intent.getExtras() != null) {
+            Log.d("EditColorActivity", "BUNDLE!!");
             String hex = bundle.getString("hex");
+            Log.d("EditColorActivity", "BUNDLE getting hex: " + hex);
             colorValue = parseColor(hex);
         }
         int RV = Color.red(colorValue);
