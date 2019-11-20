@@ -61,10 +61,6 @@ public class PaletteInfoActivity extends AppCompatActivity {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.paletteInfoRecycler);
-        //add divider decoration to make it match the assignment example?
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
         //then initialize the adapter, passing in the bookList
         MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener);
         //and set the adapter for the RecyclerView

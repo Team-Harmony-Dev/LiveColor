@@ -95,10 +95,6 @@ public class SavedColorsFragment extends Fragment {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
-        //add divider decoration to make it match the assignment example?
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
         //then initialize the adapter, passing in the bookList
         MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
         //and set the adapter for the RecyclerView
