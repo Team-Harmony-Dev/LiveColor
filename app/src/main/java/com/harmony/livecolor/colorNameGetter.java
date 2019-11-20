@@ -39,18 +39,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     public static void updateViewWithColorName(TextView view, int pixelColor, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         MainActivity.colorNameView = view;
 
-        //TODO I think just letting them pass me it is better
-        //Get the font size
-        //https://stackoverflow.com/a/14078085
-        //https://stackoverflow.com/a/10641257
-        /*
-        DisplayMetrics metrics;
-        metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
-        if(originalTextSize == -1) {
-            //TODO test if this is the best way to do it. view.getTextSize() ?
-            originalTextSize = MainActivity.colorNameView.getTextSize() / metrics.density;
-        }
-        */
         originalTextSize = maximumFontSize;
 
         viewWidthPercentOfScreen = maximumViewWidthPercentOfScreen;
@@ -64,8 +52,8 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
     @Override
     protected void onPreExecute(){
-        //TODO Currently I'm assuming all the views have the same maximum font size. That's
-        //  probably a bad assumption. We could take it as another parameter I guess.
+        //TODO We do thise here because it's async and might not happen in time for setAppropriatelySizedText()
+        //  There must be a better way, properly wait for it.
         MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
         //TODO this is always slightly ugly, but prevents the big ugly of squishing then unsquishing.
         MainActivity.colorNameView.setText(loadingText);
