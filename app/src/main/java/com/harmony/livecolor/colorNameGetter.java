@@ -119,7 +119,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
         try {
-            setAppropriatelySizedText(colorName);
+            setAppropriatelySizedText(MainActivity.colorNameView, colorName, viewWidthPercentOfScreen, originalTextSize);
         } catch (Exception e) {
             Log.e("S3US5", "Something wrong in updating color name textview: "+e);
         }
@@ -137,23 +137,25 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
     //TODO handle weight better, probably don't need it as a parameter?
     //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
-    protected void setAppropriatelySizedText(String colorName){
+    public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         //The view we're sticking the color name in
-        TextView view = MainActivity.colorNameView;
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);//TODO this is redundant now right? Unless we call this function alone.
+        //TextView view = MainActivity.colorNameView;//Can we just take it as a parameter?
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);//TODO this is redundant now right? Unless we call this function alone.
         view.setText(colorName);
         // The idea is to detect how much we need to reduce the font size by,
         //   and then do that in one go
 
-        float fontSize = originalTextSize;
+        //TODO The above statements are async, so there's no guarantee we're over two lines when we hit this point.
+
+        float fontSize = maximumFontSize;
         if( view.getLineCount() > 1){
             Log.d("S3US5", "Ran over a line, changing fontsize");
             Log.d("S3US5", "# lines is currently: "+view.getLineCount());
 
             //First lets get the width of the text
             // https://stackoverflow.com/a/37930140
-            MainActivity.colorNameView.measure(0, 0);
-            int textWidth = MainActivity.colorNameView.getMeasuredWidth();
+            view.measure(0, 0);
+            int textWidth = view.getMeasuredWidth();
             //And now the width of the screen
             //https://stackoverflow.com/a/31377616
             int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -162,7 +164,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
             //TODO don't use hardcoded percent, take as a parameter or pull weights or something
             //  Using .6 for 60% doesn't quite work? Error in my math or some sort of padding?
-            double maximumViewWidthPercentOfScreen = viewWidthPercentOfScreen - 0.05;
+            maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
             double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
             Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+
@@ -173,7 +175,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             //There's a bug where fitting text gets bigger to fully fit for some reason.
             //  We could easily make it a feature and just ignore the max size and always resize to fit.
             //  Just remove this if and the line count if.
-            if(fontSize < originalTextSize) {
+            if(fontSize < maximumFontSize) {
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             } else {
                 Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
