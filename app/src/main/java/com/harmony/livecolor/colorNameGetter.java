@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -125,16 +127,18 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
     //TODO handle weight better, probably don't need it as a parameter?
     //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
-    public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
-        //The view we're sticking the color name in
-        //TextView view = MainActivity.colorNameView;//Can we just take it as a parameter?
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);//TODO this is redundant now right? Unless we call this function alone.
+    public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
+        //TODO The following statements are async, so there's no guarantee we're over two lines when we check
+        //TextWatcher's onTextChanged() may fix the problem?
+        addWatcher(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+        //TODO Does this do it twice?
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
         view.setText(colorName);
+        //TODO remove watcher when done. From watcher call?
+    }
+    protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         // The idea is to detect how much we need to reduce the font size by,
         //   and then do that in one go
-
-        //TODO The above statements are async, so there's no guarantee we're over two lines when we hit this point.
-
         float fontSize = maximumFontSize;
         if( view.getLineCount() > 1){
             Log.d("S3US5", "Ran over a line, changing fontsize");
@@ -169,5 +173,27 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
                 Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
             }
         }
+    }
+
+    //https://stackoverflow.com/a/8543479
+    protected static void addWatcher(final TextView view, final String colorName, final double maximumViewWidthPercentOfScreen, final float maximumFontSize){
+        view.addTextChangedListener(new TextWatcher() {
+            //This is the one we want I believe
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
+            }
+        });
     }
 }
