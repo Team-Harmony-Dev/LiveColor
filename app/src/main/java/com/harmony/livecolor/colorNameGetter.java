@@ -128,13 +128,17 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //TODO handle weight better, probably don't need it as a parameter?
     //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
     public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
+        //Do this first so we don't trigger two changes.
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
         //TODO The following statements are async, so there's no guarantee we're over two lines when we check
         //TextWatcher's onTextChanged() may fix the problem?
-        addWatcher(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
-        //TODO Does this do it twice?
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
+        //addWatcher(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+        //TODO I don't actually need to pass the colorName to helper, right?
         view.setText(colorName);
-        //TODO remove watcher when done. From watcher call?
+        //TODO remove watcher when done. From inside watcher call?
+
+        //Watcher isn't working any better than this.
+        setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
     }
     protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         // The idea is to detect how much we need to reduce the font size by,
@@ -172,16 +176,33 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             } else {
                 Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
             }
+        } else {
+            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
         }
     }
-
+    /*
+    //TODO we actually don't need screen size as a parameter
+    protected static void recursiveTextFix(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        if(view.getLineCount() > 1){
+            //TODO look at old code for grabbing font size from a view
+            float fontSize = 1;
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+        } else {
+            //I suppose we could remove the watcher but I think it just overrides anyway?
+            //Maybe removing it would be good to prevent weird changes if anyone else uses it.
+            //TODO
+        }
+    }
+    */
+    /*
     //https://stackoverflow.com/a/8543479
     protected static void addWatcher(final TextView view, final String colorName, final double maximumViewWidthPercentOfScreen, final float maximumFontSize){
         view.addTextChangedListener(new TextWatcher() {
             //This is the one we want I believe
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+                //Log.d("S3US5", "Calling helper from onTextChanged");
+                //setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -191,9 +212,13 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d("S3US5", "Calling helper from afterTextChanged");
+                //TODO so basically this still isn't waiting for the text to finish changing, it says line # is 0.
+                setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
 
                 // TODO Auto-generated method stub
             }
         });
     }
+    */
 }
