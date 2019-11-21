@@ -13,6 +13,11 @@ import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -21,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
+import com.airbnb.lottie.LottieAnimationView;
 import java.util.zip.Inflater;
 
 import static android.graphics.Color.RGBToHSV;
@@ -37,6 +42,7 @@ public class EditColorActivity extends AppCompatActivity {
     Boolean ToggleButtonState;
     private int m_Text = 0;
     String colorNameT;
+    ScaleAnimation scaleAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +85,16 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
         updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                buttonView.startAnimation(scaleAnimation);
                 if (isChecked) {
                     // The toggle is enabled: HSV mode
                     int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
@@ -152,12 +164,16 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton reset = findViewById(R.id.resetColor);
+        final RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(250);
+        rotate.setInterpolator(new LinearInterpolator());
+
+        final ImageButton reset = findViewById(R.id.resetColor);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ToggleButtonState = simpleToggleButton.isChecked();
-
+                reset.startAnimation(rotate);
                 if(!ToggleButtonState){
                     updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
                     updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
@@ -174,10 +190,11 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton backB = findViewById(R.id.backBut);
+        final ImageButton backB = findViewById(R.id.backBut);
         backB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                backB.startAnimation(scaleAnimation);
                 finish();
             }
         });
@@ -306,8 +323,9 @@ public class EditColorActivity extends AppCompatActivity {
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                view.startAnimation(scaleAnimation);
                 // Code for making the save button change color when clicked
+                //saveNC.playAnimation();
                 isButtonClickedNew = !isButtonClickedNew;
                 saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 if(isButtonClickedNew){

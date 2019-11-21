@@ -44,7 +44,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="2.7"
         android:orientation="horizontal">
 
         <ImageView
@@ -65,7 +65,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7.15"
+        android:layout_weight="6.7"
         android:gravity="center|top"
         android:orientation="vertical"
         android:weightSum="10">
@@ -73,6 +73,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1.5"
             android:orientation="horizontal">
 
@@ -109,7 +110,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:fontFamily="@font/lato_bold"
-            android:gravity="left"
+            android:gravity="center_vertical"
             android:text="Red: "
             android:textSize="24sp" />
 
@@ -130,6 +131,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
+            android:gravity="center_vertical"
             android:text="Green: "
             android:textSize="24sp" />
 
@@ -150,6 +152,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
+            android:gravity="center_vertical"
             android:text="Blue: "
             android:textSize="24sp" />
 
@@ -165,7 +168,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.4"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:orientation="horizontal">
 
