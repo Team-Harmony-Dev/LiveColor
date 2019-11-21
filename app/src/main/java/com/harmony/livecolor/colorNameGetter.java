@@ -185,16 +185,26 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     protected static void recursiveTextFix(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         if(view.getLineCount() > 1){
             //TODO look at old code for grabbing font size from a view
-            float fontSize = 1;
+            //Get current font size
+            //https://stackoverflow.com/a/14078085
+            //https://stackoverflow.com/a/10641257
+            DisplayMetrics metrics;
+            metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
+            float fontSize = MainActivity.colorNameView.getTextSize()/metrics.density;
+            fontSize = fontSize - 1;
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+        } else if (view.getLineCount() == 0){
+            //We could maybe recurse here until it changes ? Ugly.
+            //Looks like this crashes the program. Needs an actual way to wait.
+            //recursiveTextFix(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
         } else {
             //I suppose we could remove the watcher but I think it just overrides anyway?
             //Maybe removing it would be good to prevent weird changes if anyone else uses it.
             //TODO
         }
     }
-    */
-    /*
+
+
     //https://stackoverflow.com/a/8543479
     protected static void addWatcher(final TextView view, final String colorName, final double maximumViewWidthPercentOfScreen, final float maximumFontSize){
         view.addTextChangedListener(new TextWatcher() {
@@ -214,11 +224,12 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
             public void afterTextChanged(Editable s) {
                 Log.d("S3US5", "Calling helper from afterTextChanged");
                 //TODO so basically this still isn't waiting for the text to finish changing, it says line # is 0.
-                setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+                recursiveTextFix(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
 
                 // TODO Auto-generated method stub
             }
         });
     }
     */
+
 }
