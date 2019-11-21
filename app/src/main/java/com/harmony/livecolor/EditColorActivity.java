@@ -3,15 +3,19 @@ package com.harmony.livecolor;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -31,6 +35,8 @@ public class EditColorActivity extends AppCompatActivity {
     ImageButton saveNC;
     ToggleButton simpleToggleButton;
     Boolean ToggleButtonState;
+    private int m_Text = 0;
+    String colorNameT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,7 @@ public class EditColorActivity extends AppCompatActivity {
 
         SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
-        String colorNameT = preferences.getString("colorName","Default");
+        colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
         int RV = Color.red(colorValue);
         int GV = Color.green(colorValue);
@@ -146,7 +152,7 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        Button reset = findViewById(R.id.resetColor);
+        ImageButton reset = findViewById(R.id.resetColor);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,7 +168,8 @@ public class EditColorActivity extends AppCompatActivity {
                 }
 
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-                updateColorName();
+                TextView colorNameN = findViewById(R.id.colorNN);
+                colorNameN.setText(colorNameT);
                 resetBookmark();
             }
         });
@@ -172,6 +179,123 @@ public class EditColorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        TextView redText = findViewById(R.id.textRorH);
+        redText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Hue in the range (0,360):");
+                } else{
+                    builder.setTitle("Input a value for Red in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekRed.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        TextView greenText = findViewById(R.id.textGorS);
+        greenText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Saturation in the range (0,100):");
+                } else{
+                    builder.setTitle("Input a value for Green in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekGreen.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        TextView blueText = findViewById(R.id.textRorH);
+        blueText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Value in the range (0,100):");
+                } else{
+                    builder.setTitle("Input a value for Blue in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekBlue.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 

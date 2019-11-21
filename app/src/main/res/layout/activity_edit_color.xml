@@ -62,18 +62,34 @@
             android:layout_weight="2"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/resetColor"
-                style="@style/Widget.AppCompat.Button"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
-                android:adjustViewBounds="true"
-                android:drawableBottom="@drawable/reset"
-                android:fontFamily="@font/lato_light"
-                android:scaleType="fitCenter"
-                android:text="Reset"
-                android:textSize="8sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.3"
+                    android:fontFamily="@font/lato_regular"
+                    android:text="Reset Color"
+                    android:textAlignment="center" />
+
+                <ImageButton
+                    android:id="@+id/resetColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.7"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="1dp"
+                    android:scaleType="fitCenter"
+                    android:tint="#00585757"
+                    app:srcCompat="@drawable/reset" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/colorN"
@@ -90,13 +106,15 @@
 
         <TextView
             android:id="@+id/textRorH"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_gravity="left"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
+            android:clickable="true"
             android:fontFamily="@font/lato_bold"
+            android:gravity="left"
             android:text="Red: "
-            android:textAlignment="textStart"
             android:textSize="24sp" />
 
         <SeekBar
@@ -110,8 +128,9 @@
 
         <TextView
             android:id="@+id/textGorS"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_gravity="left"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
@@ -129,13 +148,13 @@
 
         <TextView
             android:id="@+id/textBorV"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_gravity="left"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
             android:text="Blue: "
-            android:textAlignment="viewStart"
             android:textSize="24sp" />
 
         <SeekBar
@@ -171,7 +190,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_weight="0.6"
+                android:layout_weight="0.8"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center|right"
                 android:text="Color Name New"

@@ -66,12 +66,14 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("DEBUG", "Color set to background = " + colorString);
+        colorValue = Integer.parseInt(colorString);
+
+        /*Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
         if (bundle != null) {
             String hex = bundle.getString("hex");
             colorValue = parseColor(hex);
-        }
+        }*/
 
 
         // UPDATE VALUES
@@ -80,9 +82,9 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
-        if (bundle != null) {
+        /*if (bundle != null) {
             colorNameT = bundle.getString("name");
-        }
+        }*/
         colorNameView.setText(colorNameT);
 
         //HEX
