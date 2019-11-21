@@ -57,20 +57,6 @@ public class ColorInfoActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
 
-        // Edit color listener
-        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
-        editColorB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view){
-                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
-                if(intent.getExtras() != null){
-                    Log.d("ColorInfoActivity", "BUNDLE sending hex: " + hexValue);
-                    startEditColorActivity.putExtra("hex", hexValue);
-                }
-                startActivity(startEditColorActivity);
-            }
-        });
-
         Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
         if (intent.getExtras() != null) {
@@ -79,6 +65,19 @@ public class ColorInfoActivity extends AppCompatActivity {
             colorValue = parseColor(hex);
         }
 
+        // Edit color listener
+        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
+        editColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+                if(intent.getExtras() != null){
+                    Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
+                    startEditColorActivity.putExtra("colorValue", colorValue);
+                }
+                startActivity(startEditColorActivity);
+            }
+        });
 
         // UPDATE VALUES
         ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
