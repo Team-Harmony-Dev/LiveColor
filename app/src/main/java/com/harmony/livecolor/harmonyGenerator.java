@@ -125,12 +125,12 @@ public class harmonyGenerator {
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
                 monoValue = hue + (percent * numberOfColorsLeftFromMiddle);
-                Log.d("S4US4", "Calculated mono color "+numberOfColorsLeftFromMiddle
+                Log.d("S4US4", "Calculated mono color -"+numberOfColorsLeftFromMiddle
                         +" :"+monoValue);
             } else {
-                int numberOfColorsRightFromMiddle = middleIndex - i;
+                int numberOfColorsRightFromMiddle = i - middleIndex;
                 monoValue = hue - (percent * numberOfColorsRightFromMiddle);
-                Log.d("S4US4", "Calculated mono color "+numberOfColorsRightFromMiddle
+                Log.d("S4US4", "Calculated mono color +"+numberOfColorsRightFromMiddle
                         +" :"+monoValue);
             }
 
