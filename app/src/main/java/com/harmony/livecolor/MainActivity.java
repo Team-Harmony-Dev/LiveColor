@@ -3,13 +3,21 @@ package com.harmony.livecolor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
@@ -29,10 +37,19 @@ public class MainActivity extends AppCompatActivity
     //random number to help differentiate between permissions for different contexts
     private int REQUEST_CODE_PERMISSIONS = 101;
     //required permissions for this activity
+    //If you change this, also change checkAndRequestPermissions()
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE"};
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.INTERNET"};
+    //colorNameGetter changes the text in these views
+    //Name on the main picker page
+    static TextView colorNameView;
+    //Name on the color edit page
+    static TextView editedColorNameView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +65,14 @@ public class MainActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        SharedPreferences myPrefs;
+        myPrefs = getSharedPreferences("pref", Context.MODE_PRIVATE);
+
+        colorNameView = findViewById(R.id.colorName);
+        editedColorNameView = findViewById(R.id.colorNameCIA);
+
+        checkAndRequestPermissions();
     }
 
     //checks if given fragment exists, and loads it if possible
@@ -113,6 +138,10 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         Log.d("Lifecycles", "onStop: MainActivity stopped");
         super.onStop();
+        // clears shared prefs. on app exit only, not updating image :(
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().remove("color").commit();
+        SharedPreferences prefs1 = getSharedPreferences("prefs", MODE_PRIVATE);
     }
 
     @Override
@@ -125,5 +154,33 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         Log.d("Lifecycles", "onDestroy: MainActivity destroyed");
         super.onDestroy();
+    }
+
+    void checkAndRequestPermissions(){
+        //Not using a loop because Manifest.permission.MYVARNAME doesn't work.
+        //Prompt the users for any permissions not given
+        // https://developer.android.com/training/permissions/requesting
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Log.d("perms", "Missing permission, prompting");
+            //Ask for permissions (no explanation given)
+            //https://android--code.blogspot.com/2017/08/android-request-multiple-permissions.html
+            ActivityCompat.requestPermissions(
+                    this,
+                    REQUIRED_PERMISSIONS,
+                    REQUEST_CODE_PERMISSIONS
+            );
+        } else {
+            Log.d("perms", "All necessary permissions granted");
+        }
     }
 }

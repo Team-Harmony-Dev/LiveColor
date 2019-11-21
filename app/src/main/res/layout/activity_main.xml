@@ -13,10 +13,6 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="100">
 
     </FrameLayout>
@@ -28,6 +24,8 @@
         android:layout_weight="1"
         android:background="?android:attr/windowBackground"
         app:itemHorizontalTranslationEnabled="false"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@xml/bottom_nav_button_colors"
+        app:itemTextColor="@xml/bottom_nav_button_colors"/>
 
 </LinearLayout>

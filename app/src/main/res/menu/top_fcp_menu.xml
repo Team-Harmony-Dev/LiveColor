@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_camera"
+        android:title="@string/opencamera"
+        android:icon="@drawable/camera_white_filled"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/navigation_gallery"
+        android:title="@string/photogallery"
+        android:icon="@drawable/image_white_filled"
+        app:showAsAction="always"/>
+</menu>

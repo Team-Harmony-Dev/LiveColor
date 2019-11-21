@@ -2,14 +2,24 @@ package com.harmony.livecolor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.harmony.livecolor.SavedColorsFragment.OnListFragmentInteractionListener;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,60 +29,72 @@ import java.util.List;
  */
 public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySavedColorsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private ArrayList<MyColor> myColors;
+    private OnListFragmentInteractionListener listener;
+    private Context context;
+    ColorDatabase newColorDatabase;
 
-    public MySavedColorsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+
+    public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener) {
+        Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
+        this.context = context;
+        this.myColors = myColors;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_saved_colors, parent, false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_saved_colors,parent,false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.color.setBackgroundColor(Color.parseColor(myColors.get(position).getHex()));
+        holder.colorName.setText(myColors.get(position).getName());
+        holder.colorHex.setText(myColors.get(position).getHex());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+        holder.colorItem.setOnClickListener(getColorClickListener(position));
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return myColors.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        TextView colorName;
+        ImageView color;
+        TextView colorHex;
+        LinearLayout colorItem;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            colorName = view.findViewById(R.id.colorName);
+            color = view.findViewById(R.id.color);
+            colorHex = view.findViewById(R.id.colorHex);
+            colorItem = view.findViewById(R.id.colorItem);
         }
+    }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+    //separate method for the onClickListener in order to pass the position from onBVH in
+    View.OnClickListener getColorClickListener(final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newColorDatabase = new ColorDatabase(context);
+                final Cursor colorData = newColorDatabase.getColorInfoData();
+                colorData.moveToPosition(position);
+                Intent intent=new Intent(context, ColorInfoActivity.class);
+                intent.putExtra("id", colorData.getString(0));
+                intent.putExtra("name", colorData.getString(1));
+                intent.putExtra("hex", colorData.getString(2));
+                intent.putExtra("rgb", colorData.getString(3));
+                intent.putExtra("hsv", colorData.getString(4));
+                //start new activity with this intent
+                context.startActivity(intent);
+            }
+        };
     }
 }

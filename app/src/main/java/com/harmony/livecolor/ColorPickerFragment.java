@@ -1,17 +1,26 @@
 package com.harmony.livecolor;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -22,10 +31,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -43,9 +68,20 @@ import static androidx.core.content.ContextCompat.getColorStateList;
  */
 public class ColorPickerFragment extends Fragment {
 
+    private boolean isButtonClicked = false;
+    int colorT;
+    String colorNamePass;
+
+    TextView editName, editHex, editRgb, editHsv;
+    ColorDatabase colorDB;
+
     private OnFragmentInteractionListener mListener;
-    public static final int RESULT_LOAD_IMAGE = 1;
-    ImageView pickingImage;
+    private static final int CAMERA_OR_GALLERY = 0;
+    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
+    private String imagePath = null;
+    private ImageView pickingImage;
+    private Uri imageUri;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -67,9 +103,7 @@ public class ColorPickerFragment extends Fragment {
             //if arguments are needed ever, use this to set them to static values in the class
         }
     }
-    private static final int IMAGE_CAPTURE_CODE = 1001;
-    ImageView mImageView;
-    Uri image_uri;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,10 +116,16 @@ public class ColorPickerFragment extends Fragment {
         );
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        Button button = rootView.findViewById(R.id.openCameraButton);
-        mImageView = rootView.findViewById(R.id.pickingImage);
+        ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
+
+        colorDB = new ColorDatabase(getActivity());
+
+        editName = rootView.findViewById(R.id.colorName);
+        editHex = rootView.findViewById(R.id.plainHex);
+        editRgb = rootView.findViewById(R.id.plainRgb);
+        editHsv = rootView.findViewById(R.id.plainHsv);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,55 +133,113 @@ public class ColorPickerFragment extends Fragment {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, "New Picture");
                 values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
-                image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.viewGalleryButton);
-        button2.setOnClickListener(new View.OnClickListener() {
+        ImageButton viewGallery = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
+        viewGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                }
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
             }
         });
 
-        /*final Button saveColorB = rootView.findViewById(R.id.saveButton);
+        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveColorB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_text)));
+                String name = editName.getText().toString();
+                String hex = editHex.getText().toString();
+                String rgb = editRgb.getText().toString();
+                String hsv = editHsv.getText().toString();
+                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                isButtonClicked = !isButtonClicked;
+                saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
+                ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
+                if(isButtonClicked){
+                    saveButton.setColorFilter(colorT);
+                }else{
+                    saveButton.setColorFilter(null);
+                }
             }
-        });*/
+        });
 
+        final ImageButton infoColorB = (ImageButton) rootView.findViewById(R.id.infoButton);
+        infoColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                updateColorName(getView());
+                Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
+                startActivity(startCIA);
+            }
+        });
 
+        final ImageButton editColorB = (ImageButton) rootView.findViewById(R.id.editButton);
+        editColorB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                updateColorName(getView());
+                Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
+                startActivity(startEditColorActivity);
+            }
+        });
 
         //onClickListener for
         pickingImage = rootView.findViewById(R.id.pickingImage);
+        if (pickingImage != null) { // loads saved image to fragment using path
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            imagePath = prefs.getString("image", null);
+            pickingImage.setImageURI(imageUri);
+            if(imagePath != null) {
+                Drawable drawable = Drawable.createFromPath(imagePath);
+                pickingImage.setImageDrawable(drawable);
+            }
+        }
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
-
-
         return rootView;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK){
-            mImageView.setImageURI(image_uri);
-        }
-        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            pickingImage.setImageURI(selectedImage);
+        if(resultCode == Activity.RESULT_OK && data != null) {
+            if(requestCode == RESULT_LOAD_IMAGE) {
+                imageUri = data.getData(); // only needed for gallery images
+            }
+            pickingImage.setImageURI(imageUri); // updates the view
+            imagePath = getPath(data, this.getActivity());
+            if (imagePath != null) {
+                // save image path to saved prefs after updating imageview
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                editor.putString("image", imagePath);
+                editor.apply();
+            }
         }
     }
-
-
-
+    // gets path of image to save to fragment
+    public String getPath(Intent data, Context context) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
+        if (cursor == null) return null;
+        cursor.moveToFirst();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        imagePath = cursor.getString(column_index);
+        cursor.close();
+        return imagePath;
+    }
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
@@ -155,7 +253,13 @@ public class ColorPickerFragment extends Fragment {
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
-            Bitmap bitmap = ((BitmapDrawable)pickedImage.getDrawable()).getBitmap();
+            Bitmap bitmap;
+            try {
+                bitmap = ((BitmapDrawable) pickedImage.getDrawable()).getBitmap();
+            } catch (Exception e){
+                Log.w("onTouch() possible error", "(Probably unable to retrieve image and/or turn it into a bitmap): "+e);
+                return true;
+            }
 
             //The horizontal space we have to display it in, in pixels.
             //Image doesn't necessarily take the entire ImageView!
@@ -231,6 +335,26 @@ public class ColorPickerFragment extends Fragment {
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
             updateColorValues(view, pixel);
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_action_name);
+            saveColorB.setColorFilter(null);
+            //Get the color name from an API call
+            //TODO if the name is very long it may go to a new line and shrink the buttons.
+            //It takes a second to load and I don't want to spam the API so lets only call it when we release
+            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+                Log.d("S3US5", "Release detected");
+                /*
+                MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
+                colorNameGetter tmp = new colorNameGetter();
+                tmp.execute(pixel);
+                 */
+                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
+            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                //Wipe the color name until we get a new one during drags.
+                ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
+            }
             return true;
         }
     };
@@ -251,6 +375,12 @@ public class ColorPickerFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
     }
 
     @Override
@@ -277,7 +407,28 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
-        updateColorValues(getView(),Color.WHITE);
+        loadColorView();
+    }
+
+    public void loadColorView() {
+        // To load saved color onto fragment, default/initial load is white?
+        SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+        int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
+        String savedColorName = prefs.getString("colorName", null);
+        if(savedColorName != null) { // loads saved name, if it exists
+            ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
+        }
+        updateColorValues(getView(), savedColorInt);
+//        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
+    }
+
+    public void updateColorName(View view){
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        TextView colorNameView = getActivity().findViewById(R.id.colorName);
+        String input = colorNameView.getText().toString();
+        editor.putString("colorName", input);
+        editor.apply();
     }
 
     //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
@@ -285,12 +436,12 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);
 
-        //fetch the color from pickedColor
+        colorT = colorNew;
+
+        //fetch the color components from colorNew
         int RV = Color.red(colorNew);
         int GV = Color.green(colorNew);
         int BV = Color.blue(colorNew);
-
-        Log.d("DEBUG", "updateColorValues: red = " + RV + ", blue = " + GV + ", blue = " + BV);
 
         //update the RGB value displayed
         String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
@@ -298,26 +449,52 @@ public class ColorPickerFragment extends Fragment {
         Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
         //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
         //Is the view argument to updateColorValues needed?
-        //TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
-        //rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
+        TextView plainRgbDisplay = getActivity().findViewById(R.id.plainRgb);
+        TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
+        plainRgbDisplay.setText(rgb);
+        rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
         //update the HEX value displayed
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
         String fullHEX = String.format("HEX: %1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
+        TextView plainHexDisplay = getActivity().findViewById(R.id.plainHex);
         TextView hexDisplay = getActivity().findViewById(R.id.HEXText);
+        plainHexDisplay.setText(hexValue);
         hexDisplay.setText(fullHEX);
 
         //update the HSV value displayed
         float[] hsvArray = new float[3];
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);
+        String plainHSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
         String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-        //TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
-        //hsvDisplay.setText(fullHSV);
+        TextView plainHsvDisplay = getActivity().findViewById(R.id.plainHsv);
+        TextView hsvDisplay = getActivity().findViewById(R.id.HSVText);
+        plainHsvDisplay.setText(plainHSV);
+        hsvDisplay.setText(fullHSV);
 
-        //Set the color display
+
+        //Update the color display with the color they've chosen, ignoring transparency.
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
+
+        // save color value (int) to Shared Prefs.
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+        editor.putInt("colorValue", colorNew);
+        editor.apply();
+
+        //Put the color in SharedPreferences as a String with key nameKey
+        editor.putString("colorString", Integer.toString(colorNew));
+        editor.apply();
+    }
+
+    //Takes a pixel color, returns the hex
+    //Ignores transparency.
+    public static String colorToHex(int color){
+        return String.format("%06X", (0xFFFFFF & color));
     }
 }
