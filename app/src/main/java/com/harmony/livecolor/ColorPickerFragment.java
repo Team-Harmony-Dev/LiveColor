@@ -33,6 +33,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -79,6 +82,9 @@ public class ColorPickerFragment extends Fragment {
 
     TextView editName, editHex, editRgb, editHsv;
     ColorDatabase colorDB;
+    FloatingActionButton add;
+    ScaleAnimation scaleAnimation;
+
 
     private OnFragmentInteractionListener mListener;
     private static final int CAMERA_OR_GALLERY = 0;
@@ -161,7 +167,7 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
-        FloatingActionButton add = rootView.findViewById(R.id.addButton);
+        add = rootView.findViewById(R.id.addButton);
         add.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -201,10 +207,16 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(scaleAnimation);
                 String name = editName.getText().toString();
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
@@ -297,6 +309,7 @@ public class ColorPickerFragment extends Fragment {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             //Retrieve image from view
+            add.hide();
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
@@ -398,6 +411,7 @@ public class ColorPickerFragment extends Fragment {
                  */
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                 colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
+                add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");

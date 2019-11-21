@@ -60,7 +60,7 @@
             android:layout_margin="5dp"
             android:clickable="true"
             android:onClick="showPopup"
-            android:src="@drawable/add_white" />
+            android:src="@drawable/add_image" />
     </FrameLayout>
 
     <LinearLayout

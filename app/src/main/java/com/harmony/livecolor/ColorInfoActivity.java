@@ -4,11 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -20,13 +25,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
 
 public class ColorInfoActivity extends AppCompatActivity {
-
+    private SavedColorsFragment.OnListFragmentInteractionListener listener;
     int colorValue, RV, GV, BV, hue;
     float[] hsvArray;
+    private ArrayList<MyColor> colorList;
+    ColorDatabase newColorDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +160,46 @@ public class ColorInfoActivity extends AppCompatActivity {
                 Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
+
+        initColors();
+
+        initRecycler();
+    }
+
+    public void initColors(){
+        //initialize ArrayList<MyColors> here
+        String TAG = "COLORS";
+        Cursor colorData = newColorDatabase.getColorInfoData();
+        colorList = new ArrayList<>();
+
+        if (colorData != null && colorData.getCount() > 0) {
+            if (colorData.moveToFirst()) {
+                do {
+                    Log.d(TAG,  colorData.getString(2));
+                    colorList.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                }         while (colorData.moveToNext());
+
+            }
+        }
+    }
+
+    public void initRecycler(){
+        //get the RecyclerView from the view
+        RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
+        //add divider decoration to make it match the assignment example?
+        //RecyclerView.ItemDecoration itemDecoration = new
+                //DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        //recyclerView.addItemDecoration(itemDecoration);
+        //then initialize the adapter, passing in the bookList
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
+        //and set the adapter for the RecyclerView
+        recyclerView.setAdapter(adapter);
+        //and set the layout manager as well
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 }
