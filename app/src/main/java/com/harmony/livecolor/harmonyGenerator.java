@@ -21,7 +21,8 @@ public class harmonyGenerator {
     public static ArrayList<MyColor> colorsToMyColors(int[][] colors, int numberOfColors){
         ArrayList<MyColor> myColorArrayList = new ArrayList<>();
         for(int i = 0; i < numberOfColors; ++i){
-            //myColorArrayList.push_back();
+            MyColor color = hsvToMyColor(colors[i], i);
+            myColorArrayList.add(color);
         }
         return myColorArrayList;
     }
@@ -35,7 +36,7 @@ public class harmonyGenerator {
     }
     //For all these functions, currently I'm using hue (0..359) saturation (0..100) value (0..100)
 
-    //Returns something like "#FFFFFF"
+    //Returns something like "FFFFFF"
     public static String hsvToStringHex(int[] color){
         //Easiest way to get hex is probably to convert to decimal rgb, and then to hex.
         int hue = color[0];
@@ -44,7 +45,7 @@ public class harmonyGenerator {
         int[] rgb = EditColorActivity.convertHSVtoRGB(hue, saturation, value);
         //https://stackoverflow.com/a/3607942
         String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
-        return "#"+hex;
+        return hex;
     }
 
     //Returns something like "(0, 0 ,0)"

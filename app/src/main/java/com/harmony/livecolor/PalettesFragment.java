@@ -91,6 +91,7 @@ public class PalettesFragment extends Fragment {
         colorList2.add(cyan);
         paletteList.add(new MyPalette("3","Six Colors",colorList2));
         //test 10+ colors
+        /*
         ArrayList<MyColor> colorList3 = new ArrayList<>();
         colorList3.add(magenta);
         colorList3.add(yellow);
@@ -105,6 +106,12 @@ public class PalettesFragment extends Fragment {
         colorList3.add(yellow);
         colorList3.add(cyan);
         paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
+        */
+        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+        int[][] testAnalogous = harmonyGenerator.analogousScheme(180, 100, 100, 15, 3);
+        ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 3);
+        MyPalette testAnalogousPalette = new MyPalette("4", "Analogous", testAnalogousMyColors);
+        paletteList.add(testAnalogousPalette);
     }
 
     public void initRecycler(){
