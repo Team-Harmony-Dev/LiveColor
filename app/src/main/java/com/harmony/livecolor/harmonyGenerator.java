@@ -90,12 +90,12 @@ public class harmonyGenerator {
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
                 analogHue = hue + (degrees * numberOfColorsLeftFromMiddle);
-                Log.d("S3US4", "Calculated analogous color "+numberOfColorsLeftFromMiddle
+                Log.d("S4US4", "Calculated analogous color -"+numberOfColorsLeftFromMiddle
                         +" :"+analogHue);
             } else {
-                int numberOfColorsRightFromMiddle = middleIndex - i;
+                int numberOfColorsRightFromMiddle = i - middleIndex;
                 analogHue = hue - (degrees * numberOfColorsRightFromMiddle);
-                Log.d("S3US4", "Calculated analogous color "+numberOfColorsRightFromMiddle
+                Log.d("S4US4", "Calculated analogous color +"+numberOfColorsRightFromMiddle
                         +" :"+analogHue);
             }
 
@@ -125,12 +125,12 @@ public class harmonyGenerator {
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
                 monoValue = hue + (percent * numberOfColorsLeftFromMiddle);
-                Log.d("S3US4", "Calculated mono color "+numberOfColorsLeftFromMiddle
+                Log.d("S4US4", "Calculated mono color "+numberOfColorsLeftFromMiddle
                         +" :"+monoValue);
             } else {
                 int numberOfColorsRightFromMiddle = middleIndex - i;
                 monoValue = hue - (percent * numberOfColorsRightFromMiddle);
-                Log.d("S3US4", "Calculated mono color "+numberOfColorsRightFromMiddle
+                Log.d("S4US4", "Calculated mono color "+numberOfColorsRightFromMiddle
                         +" :"+monoValue);
             }
 
@@ -141,6 +141,8 @@ public class harmonyGenerator {
         }
         return monochromaticColors;
     }
+
+    //TODO triadic scheme, just do analog of complement, with the original color as the middle value.
 
     //https://www.tigercolor.com/color-lab/color-theory/color-harmonies.htm
     //Complement could actually just call this.

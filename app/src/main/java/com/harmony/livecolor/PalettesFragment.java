@@ -72,6 +72,7 @@ public class PalettesFragment extends Fragment {
         //will access palettes from database and put into MyPalette objects
         //TODO: Andrew's database code/method call will go here
         //Temporary Palettes atm:
+        /*
         MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
         MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
         MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
@@ -91,7 +92,6 @@ public class PalettesFragment extends Fragment {
         colorList2.add(cyan);
         paletteList.add(new MyPalette("3","Six Colors",colorList2));
         //test 10+ colors
-        /*
         ArrayList<MyColor> colorList3 = new ArrayList<>();
         colorList3.add(magenta);
         colorList3.add(yellow);
@@ -108,7 +108,12 @@ public class PalettesFragment extends Fragment {
         paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
         */
         //Testing getting the analogous colors 15 degrees to each side of the given color ().
-        int[][] testAnalogous = harmonyGenerator.analogousScheme(180, 100, 100, 15, 3);
+        int[][] testMonochromatic = harmonyGenerator.monochromaticScheme(180, 100, 100, 50, 3);
+        ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 3);
+        MyPalette testMonochromaticPalette = new MyPalette("3", "Monochromatic", testMonochromaticMyColors);
+        paletteList.add(testMonochromaticPalette);
+        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+        int[][] testAnalogous = harmonyGenerator.analogousScheme(180, 100, 100, 20, 3);
         ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 3);
         MyPalette testAnalogousPalette = new MyPalette("4", "Analogous", testAnalogousMyColors);
         paletteList.add(testAnalogousPalette);
