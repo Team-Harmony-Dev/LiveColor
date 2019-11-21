@@ -12,9 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        >
+        android:layout_weight="0"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/openCameraButton"
@@ -34,16 +33,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:src="@drawable/image_white_filled"
             android:adjustViewBounds="true"
             android:padding="10dp"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/image_white_filled" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6.5">
+        android:layout_weight="7.5">
 
         <ImageView
             android:id="@+id/pickingImage"
@@ -52,6 +51,16 @@
             android:background="@drawable/newtransparent"
             android:src="@drawable/livecolor_logo"
             app:layout_constraintDimensionRatio="1:1" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:onClick="showPopup"
+            android:src="@drawable/add_white" />
     </FrameLayout>
 
     <LinearLayout
