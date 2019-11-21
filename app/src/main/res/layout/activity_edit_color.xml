@@ -41,65 +41,61 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/colorShow"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.25"
-        android:background="#03A9F4" />
+        android:layout_weight="2.5"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/colorShow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="#03A9F4" />
+
+        <ImageView
+            android:id="@+id/colorNewShow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="#9C27B0" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
-        android:gravity="center"
+        android:layout_weight="7.15"
+        android:gravity="center|top"
         android:orientation="vertical"
         android:weightSum="10">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.3"
-                    android:fontFamily="@font/lato_regular"
-                    android:text="Reset Color"
-                    android:textAlignment="center" />
-
-                <ImageButton
-                    android:id="@+id/resetColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.7"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:padding="1dp"
-                    android:scaleType="fitCenter"
-                    android:tint="#00585757"
-                    app:srcCompat="@drawable/reset" />
-
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/colorN"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0.8"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="0.5"
                 android:fontFamily="@font/lato_bold"
-                android:gravity="center|right"
                 android:text="Color Name"
+                android:textAlignment="viewStart"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/colorNN"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="0.5"
+                android:fontFamily="@font/lato_bold"
+                android:text="Color Name New"
+                android:textAlignment="viewEnd"
                 android:textSize="30sp" />
 
         </LinearLayout>
@@ -169,42 +165,73 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="2"
-            android:gravity="bottom"
+            android:layout_weight="1.4"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/saveNewColor"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_action_name" />
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/colorNN"
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.3"
+                    android:fontFamily="@font/lato_regular"
+                    android:text="Reset Color"
+                    android:textAlignment="center" />
+
+                <ImageButton
+                    android:id="@+id/resetColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.7"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="1dp"
+                    android:scaleType="fitCenter"
+                    android:tint="#00585757"
+                    app:srcCompat="@drawable/reset" />
+
+            </LinearLayout>
+
+            <Space
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0.8"
-                android:fontFamily="@font/lato_bold"
-                android:gravity="center|right"
-                android:text="Color Name New"
-                android:textSize="30sp" />
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.3"
+                    android:text="Save New Color" />
+
+                <ImageButton
+                    android:id="@+id/saveNewColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.7"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:padding="1dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_action_name" />
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/colorNewShow"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2.25"
-        android:background="#9C27B0" />
 
 </LinearLayout>
