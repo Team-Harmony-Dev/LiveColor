@@ -277,7 +277,7 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        TextView blueText = findViewById(R.id.textRorH);
+        TextView blueText = findViewById(R.id.textBorV);
         blueText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
