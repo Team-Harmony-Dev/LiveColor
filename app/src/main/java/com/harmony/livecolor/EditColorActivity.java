@@ -282,7 +282,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     // Converts the current values in HSV to RGB and stores them in RV, GV, BV
-    public int[] convertHSVtoRGB(int hue, int saturation, int value){
+    public static int[] convertHSVtoRGB(int hue, int saturation, int value){
         float[] hsv = new float[3];
         hsv[0] = hue;
         hsv[1] = ((float) saturation) / 100;
