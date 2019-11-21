@@ -182,7 +182,6 @@ public class ColorPickerFragment extends Fragment {
             public void onClick (View view){
                 updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
-                startCIA.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startCIA);
             }
         });
@@ -193,7 +192,6 @@ public class ColorPickerFragment extends Fragment {
             public void onClick (View view){
                 updateColorName(getView());
                 Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
-                startEditColorActivity.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startEditColorActivity);
             }
         });
