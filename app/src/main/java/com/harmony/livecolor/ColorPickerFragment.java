@@ -325,12 +325,22 @@ public class ColorPickerFragment extends Fragment {
 
             //If you click in the image and then drag outside the image this function still fires,
             //  but with invalid x & y, causing a crash on bitmap.getPixel()
+            boolean wasValidClick = true;
             if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
-                return true; //I'm not sure if our return value really matters.
+                wasValidClick = false;
             }
             //get color int from said pixel coordinates using the source image
-            int pixel = bitmap.getPixel((int) x, (int) y);
+            int pixel;
+            if(wasValidClick){
+                pixel = bitmap.getPixel((int) x, (int) y);
+            } else {
+                //This is a bug fix for dragging outside of the valid area not getting the color
+                // name (previously we returned above, but then that ended up with no color name)
+                //So lets just get the last valid color, which was stored in the imageview
+                ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
+                pixel = imgWithOurColor.getSolidColor();
+            }
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
