@@ -124,6 +124,7 @@ public class harmonyGenerator {
             int middleIndex = numberOfColors / 2;
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
+                //TODO I don't think this is the correct formula
                 monoValue = hue + (percent * numberOfColorsLeftFromMiddle);
                 Log.d("S4US4", "Calculated mono color -"+numberOfColorsLeftFromMiddle
                         +" :"+monoValue);

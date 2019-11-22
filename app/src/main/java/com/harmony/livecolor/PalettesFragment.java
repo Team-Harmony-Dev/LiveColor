@@ -107,16 +107,30 @@ public class PalettesFragment extends Fragment {
         colorList3.add(cyan);
         paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
         */
+
+        //TODO should probably have a helper function for these tests.
+
+        int[][] testBasicColor = new int[][] {new int[] {180, 100, 100}};
+        ArrayList<MyColor> testBasicColorMyColors = harmonyGenerator.colorsToMyColors(testBasicColor, 1);
+        MyPalette testBasicColorPalette = new MyPalette("1", "Single color", testBasicColorMyColors);
+        paletteList.add(testBasicColorPalette);
+        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+        int[][] testAnalogous = harmonyGenerator.analogousScheme(180, 100, 100, 20, 5);
+        ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 5);
+        MyPalette testAnalogousPalette = new MyPalette("1", "Analogous", testAnalogousMyColors);
+        paletteList.add(testAnalogousPalette);
         //Testing getting the analogous colors 15 degrees to each side of the given color ().
         int[][] testMonochromatic = harmonyGenerator.monochromaticScheme(180, 100, 100, 50, 3);
         ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 3);
-        MyPalette testMonochromaticPalette = new MyPalette("3", "Monochromatic", testMonochromaticMyColors);
+        MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
+        //TODO triadic test
+
         //Testing getting the analogous colors 15 degrees to each side of the given color ().
-        int[][] testAnalogous = harmonyGenerator.analogousScheme(180, 100, 100, 20, 3);
-        ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 3);
-        MyPalette testAnalogousPalette = new MyPalette("4", "Analogous", testAnalogousMyColors);
-        paletteList.add(testAnalogousPalette);
+        int[][] testEvenEvenSpaced = harmonyGenerator.evenlySpacedScheme(300, 100, 100, 4);
+        ArrayList<MyColor> testEvenEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
+        MyPalette testEvenEvenSpacedPalette = new MyPalette("4", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
+        paletteList.add(testEvenEvenSpacedPalette);
     }
 
     public void initRecycler(){
