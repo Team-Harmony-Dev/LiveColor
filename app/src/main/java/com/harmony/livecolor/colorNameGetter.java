@@ -137,6 +137,20 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
         view.setText(colorName);
         //TODO remove watcher when done. From inside watcher call?
 
+        //If the watcher isn't working, I suppose we can just use a constant delay?
+        //Looks like the answer is no, that must be sleeping the textview as well
+        //https://stackoverflow.com/a/24104332
+        /*
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+        */
+
         //Watcher isn't working any better than this.
         setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
     }

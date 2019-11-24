@@ -428,10 +428,10 @@ public class ColorPickerFragment extends Fragment {
             final float maxFontSize = 30;
             TextView view = getActivity().findViewById(R.id.colorName);
             //A full API call should be unnecessary since we already saved the name.
-            colorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            //colorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
             //Log.d("S3US5", "Loading color name into textview using function to ensure it fits on one line...");
             //Just set the text and make sure it fits on a single line.
-            //colorNameGetter.setAppropriatelySizedText(view, savedColorName, viewWidthPercentOfScreen, maxFontSize);
+            colorNameGetter.setAppropriatelySizedText(view, savedColorName, viewWidthPercentOfScreen, maxFontSize);
             //Old, simple code. Doesn't prevent text from going to a new line.
             //((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
         }
