@@ -85,6 +85,12 @@ public class EditColorActivity extends AppCompatActivity {
 
         TextView colorNameView = findViewById(R.id.colorN);
         colorNameView.setText(colorNameT);
+        //When you press edit color on a saved color, the name is incorrect. This should fix it...
+        //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
+        //final double viewWidthPercentOfScreen = 0.80;
+        //final float maxFontSize = 30;
+        //colorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+
         TextView colorNameN = findViewById(R.id.colorNN);
         //colorNameN.setText(colorNameT);
         updateColorName();
@@ -352,6 +358,8 @@ public class EditColorActivity extends AppCompatActivity {
         //TODO this probably won't work,
         // the name won't be updated by the time this code runs.
         // This is where it gets the text to save if you save the color.
+        //I think the easiest way to solve this would be to just call colorNameGetter for each
+        //  saved color, since those already are having problems with names going to multiple lines.
         name = colorNNView.getText().toString();
     }
 
