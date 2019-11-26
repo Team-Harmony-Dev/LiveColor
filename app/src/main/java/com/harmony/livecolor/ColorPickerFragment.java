@@ -215,20 +215,20 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && data != null) {
-            pickingImage.setImageURI(imageUri); // updates the view
-        }
-            if(requestCode == RESULT_LOAD_IMAGE) {
+        if(resultCode == Activity.RESULT_OK) {
+            if(requestCode == RESULT_LOAD_IMAGE && data != null) {
                 imageUri = data.getData(); // only needed for gallery images
-                imagePath = getPath(data, this.getActivity());
-                if (imagePath != null) {
-                    // save image path to saved prefs after updating imageview
-                    SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
-                    editor.putString("image", imagePath);
-                    editor.apply();
-                }
+            }
+            pickingImage.setImageURI(imageUri); // updates the view
+            imagePath = getPath(data, this.getActivity());
+            if (imagePath != null) {
+                // save image path to saved prefs after updating imageview
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                editor.putString("image", imagePath);
+                editor.apply();
             }
         }
+    }
     // gets path of image to save to fragment
     public String getPath(Intent data, Context context) {
         String[] projection = { MediaStore.Images.Media.DATA };
