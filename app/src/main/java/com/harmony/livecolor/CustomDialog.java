@@ -115,17 +115,14 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         savedColorsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add database addition specifically to saved colors palette
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //TODO: implement palette database part
                 alertDialogSave.dismiss();
                 Toast.makeText(context,
                         "Color has been saved to Saved Colors",
                         Toast.LENGTH_SHORT).show();
             }
         });
-
-        //TODO: add recycler functionality and set up appropriate listener
-        // and add palette database part
 
         alertDialogSave = builder.create();
         alertDialogSave.show();
@@ -228,6 +225,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
         colorDB.addColorInfoData(name, hex, rgb, hsv);
+        //TODO: implement palette database part
         alertDialogSave.dismiss();
         Toast.makeText(context,
                 "Saved color to \"" + palette.getName() + "\"",
