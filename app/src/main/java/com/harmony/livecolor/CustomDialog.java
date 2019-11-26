@@ -29,7 +29,7 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
  *
  * EditText newPaletteName allows access to the user's input palette name for adding to the database
  */
-public class CustomDialog {
+public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmentInteractionListener {
 
     Context context;
     Activity activity;
@@ -177,6 +177,8 @@ public class CustomDialog {
         RecyclerView recyclerView = saveDialogView.findViewById(R.id.dialogRecycler);
         //then initialize the adapter, passing in the list
         SaveDialogRecyclerViewAdapter adapter = new SaveDialogRecyclerViewAdapter(context, paletteList);
+        //set item listener that gets position
+        adapter.setOnListFragmentInteractionListener(this);
         //add dividers
         DividerItemDecoration divider = new DividerItemDecoration(context, VERTICAL);
         recyclerView.addItemDecoration(divider);
@@ -221,5 +223,14 @@ public class CustomDialog {
 
         alertDialogName = builder.create();
         alertDialogName.show();
+    }
+
+    @Override
+    public void onListFragmentInteraction(MyPalette palette) {
+        colorDB.addColorInfoData(name, hex, rgb, hsv);
+        alertDialogSave.dismiss();
+        Toast.makeText(context,
+                "Saved color to \"" + palette.getName() + "\"",
+                Toast.LENGTH_SHORT).show();
     }
 }

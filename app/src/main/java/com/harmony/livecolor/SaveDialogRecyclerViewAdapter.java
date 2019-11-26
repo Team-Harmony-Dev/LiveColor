@@ -16,12 +16,14 @@ import java.util.ArrayList;
 public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDialogRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<MyPalette> myPalettes;
+    private OnListFragmentInteractionListener listener;
     private Context context;
 
     public SaveDialogRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes) {
         Log.d("S4US1", "SaveDialogRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myPalettes = myPalettes;
+        this.listener = listener;
     }
 
     @Override
@@ -58,8 +60,16 @@ public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDial
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //save to selected palette and close dialog
+                listener.onListFragmentInteraction(myPalettes.get(position));
             }
         };
+    }
+
+    public void setOnListFragmentInteractionListener(OnListFragmentInteractionListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnListFragmentInteractionListener {
+        void onListFragmentInteraction(MyPalette palette);
     }
 }
