@@ -351,6 +351,7 @@ public class EditColorActivity extends AppCompatActivity {
         //cng.execute(colorI);
         //TODO this probably won't work,
         // the name won't be updated by the time this code runs.
+        // This is where it gets the text to save if you save the color.
         name = colorNNView.getText().toString();
     }
 
