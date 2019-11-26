@@ -109,6 +109,8 @@ public class PalettesFragment extends Fragment {
         */
 
         //TODO should probably have a helper function for these tests.
+        //Note: fragment_palettes.xml limits the number of colors displayed per palette on the menu to 10.
+        // also the edit button when you select a palette does nothing.
 
         int[][] testBasicColor = new int[][] {new int[] {180, 100, 100}};
         ArrayList<MyColor> testBasicColorMyColors = harmonyGenerator.colorsToMyColors(testBasicColor, 1);

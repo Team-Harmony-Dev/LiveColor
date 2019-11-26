@@ -119,6 +119,8 @@ public class harmonyGenerator {
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
         int[][] monochromaticColors = new int[numberOfColors][numberOfComponents];
+        int distance_from_right = 100-value;
+        int distance_from_left = value;
         for(int i = 0; i < numberOfColors; ++i){
             int monoValue;
             int middleIndex = numberOfColors / 2;
@@ -135,6 +137,7 @@ public class harmonyGenerator {
                         +" :"+monoValue);
             }
 
+            //An overflow would just be an error, right?
             monoValue = checkValueForOverflow(monoValue);
 
             int[] color = new int[] {hue, saturation, monoValue};
