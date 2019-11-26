@@ -28,16 +28,20 @@ public class EditColorActivity extends AppCompatActivity {
     int colorValue;
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
+    String name, hex, rgb, hsv;
     private boolean isButtonClicked = false;
     private boolean isButtonClickedNew = false;
     ImageButton saveNC;
     ToggleButton simpleToggleButton;
     Boolean ToggleButtonState;
+    ColorDatabase colorDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_color);
+        colorDB = new ColorDatabase(this);
+
 
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
@@ -185,14 +189,9 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: ANDREW put your code here
-        // |
-        // |
-        // V
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // Code for making the save button change color when clicked
                 isButtonClickedNew = !isButtonClickedNew;
                 saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
@@ -203,10 +202,25 @@ public class EditColorActivity extends AppCompatActivity {
                         int hue = seekRed.getProgress();
                         int sat = seekGreen.getProgress();
                         int val = seekBlue.getProgress();
+                        updateColorName();
+                        hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                         int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
                         colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+                        rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
+                        hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
+                        colorDB.addColorInfoData(name, hex, rgb, hsv);
                     } else {
                         colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+                        int red = seekRed.getProgress();
+                        int green = seekGreen.getProgress();
+                        int blue = seekBlue.getProgress();
+                        updateColorName();
+                        rgb = String.format("(%1$d, %2$d, %3$d)", red, green, blue);
+                        hex = String.format( "#%02X%02X%02X", red, green, blue);
+                        int[] hue = convertRGBtoHSV(red,green,blue);
+                        hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
+                        colorDB.addColorInfoData(name, hex, rgb, hsv);
+
                     }
                     saveNC.setColorFilter(colorI);
                 }else{
@@ -335,6 +349,9 @@ public class EditColorActivity extends AppCompatActivity {
         final float maxFontSize = 30;
         colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
         //cng.execute(colorI);
+        //TODO this probably won't work,
+        // the name won't be updated by the time this code runs.
+        name = colorNNView.getText().toString();
     }
 
     public void updateColorPicker(){

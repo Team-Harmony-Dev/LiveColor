@@ -136,10 +136,6 @@ public class PalettesFragment extends Fragment {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
-        //add divider decoration to make it match the assignment example?
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
         //then initialize the adapter, passing in the bookList
         MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
