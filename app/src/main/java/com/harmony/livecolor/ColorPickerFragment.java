@@ -164,7 +164,7 @@ public class ColorPickerFragment extends Fragment {
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //colorDB.addColorInfoData(name, hex, rgb, hsv);
                 isButtonClicked = !isButtonClicked;
                 saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
@@ -173,6 +173,8 @@ public class ColorPickerFragment extends Fragment {
                 }else{
                     saveButton.setColorFilter(null);
                 }
+                CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
+                pickerDialog.showSaveDialog();
             }
         });
 

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/lato_bold"
         android:paddingBottom="16dp"
-        android:text="Name your new palette:"
+        android:text="Name your palette:"
         android:textSize="24sp" />
 
     <EditText

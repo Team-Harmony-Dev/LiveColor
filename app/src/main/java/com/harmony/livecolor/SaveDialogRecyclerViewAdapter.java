@@ -11,32 +11,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.harmony.livecolor.PalettesFragment.OnListFragmentInteractionListener;
-import com.harmony.livecolor.dummy.DummyContent.DummyItem;
-
 import java.util.ArrayList;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDialogRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<MyPalette> myPalettes;
-    private OnListFragmentInteractionListener listener;
     private Context context;
 
-    public SaveDialogRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
+    public SaveDialogRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes) {
         Log.d("S4US1", "SaveDialogRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myPalettes = myPalettes;
-        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_palettes,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_save_color_palette_item,parent,false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -63,7 +53,6 @@ public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDial
         }
     }
 
-    //TODO: uncomment method when PaletteInfoActivity is complete
     // separate method for the onClickListener in order to pass the position from onBVH in
     View.OnClickListener getSaveDialogClickListener(final int position) {
         return new View.OnClickListener() {

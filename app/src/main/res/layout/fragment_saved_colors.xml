@@ -4,9 +4,10 @@
     android:id="@+id/paletteItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp">
+    android:layout_marginBottom="0dp"
+    app:cardElevation="0dp">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/colorItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
