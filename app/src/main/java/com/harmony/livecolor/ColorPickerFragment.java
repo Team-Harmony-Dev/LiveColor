@@ -217,8 +217,8 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && data != null) {
-            if(requestCode == RESULT_LOAD_IMAGE) {
+        if(resultCode == Activity.RESULT_OK) {
+            if(requestCode == RESULT_LOAD_IMAGE && data != null) {
                 imageUri = data.getData(); // only needed for gallery images
             }
             pickingImage.setImageURI(imageUri); // updates the view
