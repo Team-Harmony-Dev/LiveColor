@@ -48,7 +48,12 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         paletteList = new ArrayList<>();
 
         float[] hsv = getIntent().getFloatArrayExtra("color_hsv");
-        Log.d("S4US4", "Received hsv "+hsv);
+        Log.d("S4US4", "Received hsv "+hsv[0]+" "+hsv[1]+" "+hsv[2]);
+        //TODO generate based on that color. Which means turning int code to floats. Which it probably should have been anyway.
+
+        float hue = hsv[0];
+        float saturation = hsv[1];
+        float value = hsv[2];
 
         //TODO should probably have a helper function for these tests.
         //Note: fragment_palettes.xml limits the number of colors displayed per palette on the menu to 10.
