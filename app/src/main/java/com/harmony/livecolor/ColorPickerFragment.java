@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,15 +28,22 @@ import androidx.fragment.app.Fragment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,6 +82,9 @@ public class ColorPickerFragment extends Fragment {
 
     TextView editName, editHex, editRgb, editHsv;
     ColorDatabase colorDB;
+    FloatingActionButton add;
+    ScaleAnimation scaleAnimation;
+
 
     private OnFragmentInteractionListener mListener;
     private static final int CAMERA_OR_GALLERY = 0;
@@ -156,10 +167,56 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        add = rootView.findViewById(R.id.addButton);
+        add.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(getActivity(), view);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.camera:
+                                ContentValues values = new ContentValues();
+                                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                                values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+                                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                                }
+                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+                                return true;
+                            case R.id.gallery:
+                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                                }
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                galleryIntent.setType("image/*");
+                                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+
+                });
+                popup.inflate(R.menu.add_menu);
+                popup.show();
+            }
+        });
+
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(scaleAnimation);
                 String name = editName.getText().toString();
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
@@ -252,6 +309,7 @@ public class ColorPickerFragment extends Fragment {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             //Retrieve image from view
+            add.hide();
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
@@ -360,6 +418,7 @@ public class ColorPickerFragment extends Fragment {
                 final double viewWidthPercentOfScreen = 0.60;
                 final float maxFontSize = 30;
                 colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
@@ -398,6 +457,13 @@ public class ColorPickerFragment extends Fragment {
         mListener = null;
     }
 
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.add_menu, popup.getMenu());
+        popup.show();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -423,7 +489,6 @@ public class ColorPickerFragment extends Fragment {
         // To load saved color onto fragment, default/initial load is white?
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
-
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
             final double viewWidthPercentOfScreen = 0.60;
@@ -437,7 +502,6 @@ public class ColorPickerFragment extends Fragment {
             //Old, simple code. Doesn't prevent text from going to a new line.
             //((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
         }
-
         updateColorValues(getView(), savedColorInt);
 //        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }

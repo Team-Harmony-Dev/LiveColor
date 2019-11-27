@@ -115,7 +115,7 @@ public class EditColorActivity extends AppCompatActivity {
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.startAnimation(scaleAnimation);
+                //buttonView.startAnimation(scaleAnimation);
                 if (isChecked) {
                     // The toggle is enabled: HSV mode
                     int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
@@ -215,7 +215,7 @@ public class EditColorActivity extends AppCompatActivity {
         backB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                backB.startAnimation(scaleAnimation);
+                //backB.startAnimation(scaleAnimation);
                 finish();
             }
         });
@@ -298,7 +298,7 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        TextView blueText = findViewById(R.id.textRorH);
+        TextView blueText = findViewById(R.id.textBorV);
         blueText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
