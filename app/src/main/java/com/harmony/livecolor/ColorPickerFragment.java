@@ -418,7 +418,6 @@ public class ColorPickerFragment extends Fragment {
                 final double viewWidthPercentOfScreen = 0.60;
                 final float maxFontSize = 30;
                 colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
-                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.

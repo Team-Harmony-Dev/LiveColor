@@ -86,7 +86,7 @@
                 android:fontFamily="@font/lato_bold"
                 android:lineSpacingMultiplier="0.9"
                 android:text="Color Name"
-                android:textAlignment="viewStart"
+                android:textAlignment="center"
                 android:textSize="30sp" />
 
             <TextView
@@ -98,7 +98,7 @@
                 android:fontFamily="@font/lato_bold"
                 android:lineSpacingMultiplier="0.9"
                 android:text="Color Name Newy"
-                android:textAlignment="viewEnd"
+                android:textAlignment="center"
                 android:textSize="30sp" />
 
         </LinearLayout>
@@ -108,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="21dp"
             android:layout_weight="1"
             android:clickable="true"
             android:fontFamily="@font/lato_bold"
@@ -120,6 +120,7 @@
             android:id="@+id/seekBarRed"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:max="255"
             android:progress="50"
@@ -130,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="21dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
             android:gravity="center_vertical"
@@ -141,6 +142,7 @@
             android:id="@+id/seekBarGreen"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:max="255"
             android:progress="50"
@@ -151,7 +153,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="21dp"
             android:layout_weight="1"
             android:fontFamily="@font/lato_bold"
             android:gravity="center_vertical"
@@ -162,6 +164,7 @@
             android:id="@+id/seekBarBlue"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:max="255"
             android:progress="50"

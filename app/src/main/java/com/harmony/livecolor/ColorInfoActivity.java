@@ -215,11 +215,6 @@ public class ColorInfoActivity extends AppCompatActivity {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
-        //add divider decoration to make it match the assignment example?
-        //RecyclerView.ItemDecoration itemDecoration = new
-                //DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //recyclerView.addItemDecoration(itemDecoration);
-        //then initialize the adapter, passing in the bookList
         MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
