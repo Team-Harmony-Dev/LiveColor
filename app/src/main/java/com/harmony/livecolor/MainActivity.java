@@ -47,12 +47,11 @@ public class MainActivity extends AppCompatActivity
     //colorNameGetter changes the text in these views
     //Name on the main picker page
     static TextView colorNameView;
-    //Name on the color edit page
-    static TextView editedColorNameView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -67,10 +66,9 @@ public class MainActivity extends AppCompatActivity
         actionBar.hide();
 
         SharedPreferences myPrefs;
-        myPrefs = getSharedPreferences("pref", Context.MODE_PRIVATE);
+        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
         colorNameView = findViewById(R.id.colorName);
-        editedColorNameView = findViewById(R.id.colorNameCIA);
 
         checkAndRequestPermissions();
     }

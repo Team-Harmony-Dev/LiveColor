@@ -145,15 +145,21 @@
                     android:text="HSV: "
                     android:textSize="24sp" />
 
-                <Button
-                    android:id="@+id/copyHSV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="0.2"
-                    android:fontFamily="@font/lato_regular"
-                    android:text="@android:string/copy" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/copyHSV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.2"
+                android:fontFamily="@font/lato_regular"
+                android:text="@android:string/copy" />
+        </LinearLayout>
+
+            <Button
+                android:id="@+id/harmonyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See harmonies" />
 
             <TextView
                 android:id="@+id/textView6"

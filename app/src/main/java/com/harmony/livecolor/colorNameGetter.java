@@ -1,12 +1,16 @@
 package com.harmony.livecolor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -19,19 +23,44 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
+
 // Lets get some color names!
-// Takes the color int, returns a string of the color name
+// Takes the color int, "returns" a string of the color name by placing it in the TextView
+// Automatically reduces the font size of the TextView to ensure that the name fits on one line.
+//Example of use:
+//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
+//
 // Retrieves names from https://github.com/meodai/color-names
 // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
 // Relies on ColorPickerFragment.colorToHex()
-//TODO simplify using this. Currently it needs you to make sure the
-//  textView colorNameView is set properly because apparently onCreate can't.
-//Example of use:
-//MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
-//colorNameGetter tmp = new colorNameGetter();
-//tmp.execute(pixel);
-//TODO maybe return the value in some way? Save it somewhere?
+//TODO doing some weird stuff with static? Currently assumes only one call at a time?
 public class colorNameGetter extends AsyncTask<Integer, Void, String> {
+
+    //TODO If this works, remove some commented code
+    //Font size is in sp.
+    public static void updateViewWithColorName(TextView view, int pixelColor, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        MainActivity.colorNameView = view;
+
+        originalTextSize = maximumFontSize;
+
+        viewWidthPercentOfScreen = maximumViewWidthPercentOfScreen;
+        //activityViewIsIn = activityThatYourViewIsIn;
+        colorNameGetter tmp = new colorNameGetter();
+        tmp.execute(pixelColor);
+    }
+
+
+    private final static String loadingText = ". . .";
+
+    @Override
+    protected void onPreExecute(){
+        //TODO We do thise here because it's async and might not happen in time for setAppropriatelySizedText()
+        //  There must be a better way, properly wait for it.
+        MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
+        //TODO this is always slightly ugly, but prevents the big ugly of squishing then unsquishing.
+        MainActivity.colorNameView.setText(loadingText);
+    }
+
     @Override
     protected String doInBackground(Integer... colorButArray){
         final String baseColorNameUrl = "https://api.color.pizza/v1/";
@@ -79,91 +108,142 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     @Override
     protected void onPostExecute(String colorName) {
         super.onPostExecute(colorName);
-
-        MainActivity.colorNameView.setText(colorName);
-        /*
         try {
-            MainActivity.colorNameView.setText(colorName);
-        } catch(Exception e) {
-
+            setAppropriatelySizedText(MainActivity.colorNameView, colorName, viewWidthPercentOfScreen, originalTextSize);
+        } catch (Exception e) {
+            Log.e("S3US5", "Something wrong in updating color name textview: "+e);
         }
-        try {
-            MainActivity.editedColorNameView.setText(colorName);
-        } catch(Exception e) {
-
-        }
-        */
-        /*
-        for(int i = 0; i < numberOfViews; ++i){
-            if(textViewsToEditToColorNameShouldUpdate[i]) {
-                try {
-                    textViewsToEditToColorName[i].setText(colorName);
-                } catch (Exception e) {
-                    Log.w("S3US5", "Something wrong in updating textview "+i+": "+e);
-                }
-            }
-        }
-        */
-        //TODO
-        //Prevent the text from taking up multiple lines by reducing font size as required
-        //MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, originalTextSize);
-        //setAppropriatelySizedText(colorName);
     }
 
-    //TODO
-    //The color name being gotten is placed in each one of these textViews, and their font is resized to fit on a single line.
-    /*
-    private final TextView[] textViewsToEditToColorName = new TextView[]{
-            MainActivity.colorNameView,
-            MainActivity.editedColorNameView
-    };
-    private final int numberOfViews = 2;
-    private boolean[] textViewsToEditToColorNameShouldUpdate = new boolean[]{
-            true,
-            true
-    };
-    */
-    //TODO If this works, remove those comments above and remove that var from MainActivity.java
-    public static void updateViewWithColorName(TextView view, int pixelColor){
-        MainActivity.colorNameView = view;
-        //textViewsToEditToColorNameShouldUpdate[0] = true;
-        colorNameGetter tmp = new colorNameGetter();
-        tmp.execute(pixelColor);
-    }
-    //TODO maybe grab the size instead of hardcoding this
-    final float originalTextSize = 30;
-    //TODO maybe grab the weight instead of hardcoding this
-    final double nameDisplaySpacePercent = 0.60;
-    protected void setAppropriatelySizedText(String colorName){
+    //Starting size, in sp. This is essentially the maximum size, aka what it'll be set to if it
+    //  can already fit on one line. It'll be reduced as needed.
+    private static float originalTextSize;
+    private static double viewWidthPercentOfScreen;
 
-        MainActivity.colorNameView.setText(colorName);
-        //If the text takes more than one line, lets shrink the text size.
-        //First lets get the width of the text
-        // https://stackoverflow.com/a/37930140
-        MainActivity.colorNameView.measure(0, 0);
-        int textWidth = MainActivity.colorNameView.getMeasuredWidth();
-        //And now the width of the screen
-        //https://stackoverflow.com/a/31377616
-        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        //And the font size
-        //https://stackoverflow.com/a/14078085
-        //https://stackoverflow.com/a/10641257
-        DisplayMetrics metrics;
-        metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
-        float previousSize = MainActivity.colorNameView.getTextSize()/metrics.density;
-        Log.d("S3US5", "Found text width of "+textWidth
-                +" with font size of " + previousSize
-                +" and height width of "+screenWidth
-                +" and we're given "+nameDisplaySpacePercent+" of the screen space"
-                +"("+screenWidth*nameDisplaySpacePercent+")");
-        //TODO This doesn't seem to work, width takes the new line into account. Check height?
-        //  Could try adding a new line, testing height difference, using that to estimate the
-        //  height of a single line
-        if(textWidth > screenWidth*nameDisplaySpacePercent){
+    //TODO Actually it looks like it's already been done.
+    //https://stackoverflow.com/a/31399534
+    //And maybe https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
+
+    //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
+    //TODO handle weight better, probably don't need it as a parameter?
+    //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
+    public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
+        //Do this first so we don't trigger two changes.
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
+        //TODO The following statements are async, so there's no guarantee we're over two lines when we check
+        //TextWatcher's onTextChanged() may fix the problem?
+        //addWatcher(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+        //TODO I don't actually need to pass the colorName to helper, right?
+        view.setText(colorName);
+        //TODO remove watcher when done. From inside watcher call?
+
+        //If the watcher isn't working, I suppose we can just use a constant delay?
+        //Looks like the answer is no, that must be sleeping the textview as well
+        //https://stackoverflow.com/a/24104332
+        /*
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+        */
+
+        //Watcher isn't working any better than this.
+        setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+    }
+    protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        // The idea is to detect how much we need to reduce the font size by,
+        //   and then do that in one go
+        float fontSize = maximumFontSize;
+        if( view.getLineCount() > 1){
             Log.d("S3US5", "Ran over a line, changing fontsize");
-            MainActivity.colorNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,previousSize - 1);
-            setAppropriatelySizedText(colorName);
-        }
+            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
 
+            //First lets get the width of the text
+            // https://stackoverflow.com/a/37930140
+            view.measure(0, 0);
+            int textWidth = view.getMeasuredWidth();
+            //And now the width of the screen
+            //https://stackoverflow.com/a/31377616
+            int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth);
+
+            //TODO don't use hardcoded percent, take as a parameter or pull weights or something
+            //  Using .6 for 60% doesn't quite work? Error in my math or some sort of padding?
+            maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
+            double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
+            double reduceToThisPercent = maximumTextWidth / textWidth;
+            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+
+                    " maxPercent="+maximumViewWidthPercentOfScreen+" mtw="+maximumTextWidth
+                    +" rp="+reduceToThisPercent);
+            //Update font size to be smaller
+            fontSize = (int) (fontSize*(reduceToThisPercent));
+            //There's a bug where fitting text gets bigger to fully fit for some reason.
+            //  We could easily make it a feature and just ignore the max size and always resize to fit.
+            //  Just remove this if and the line count if.
+            if(fontSize < maximumFontSize) {
+                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            } else {
+                Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
+            }
+        } else {
+            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
+        }
     }
+    /*
+    //TODO we actually don't need screen size as a parameter
+    protected static void recursiveTextFix(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        if(view.getLineCount() > 1){
+            //TODO look at old code for grabbing font size from a view
+            //Get current font size
+            //https://stackoverflow.com/a/14078085
+            //https://stackoverflow.com/a/10641257
+            DisplayMetrics metrics;
+            metrics = MainActivity.colorNameView.getContext().getResources().getDisplayMetrics();
+            float fontSize = MainActivity.colorNameView.getTextSize()/metrics.density;
+            fontSize = fontSize - 1;
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+        } else if (view.getLineCount() == 0){
+            //We could maybe recurse here until it changes ? Ugly.
+            //Looks like this crashes the program. Needs an actual way to wait.
+            //recursiveTextFix(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+        } else {
+            //I suppose we could remove the watcher but I think it just overrides anyway?
+            //Maybe removing it would be good to prevent weird changes if anyone else uses it.
+            //TODO
+        }
+    }
+
+
+    //https://stackoverflow.com/a/8543479
+    protected static void addWatcher(final TextView view, final String colorName, final double maximumViewWidthPercentOfScreen, final float maximumFontSize){
+        view.addTextChangedListener(new TextWatcher() {
+            //This is the one we want I believe
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Log.d("S3US5", "Calling helper from onTextChanged");
+                //setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("S3US5", "Calling helper from afterTextChanged");
+                //TODO so basically this still isn't waiting for the text to finish changing, it says line # is 0.
+                recursiveTextFix(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+
+                // TODO Auto-generated method stub
+            }
+        });
+    }
+    */
+
 }

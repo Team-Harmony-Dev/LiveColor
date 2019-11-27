@@ -72,6 +72,7 @@ public class PalettesFragment extends Fragment {
         //will access palettes from database and put into MyPalette objects
         //TODO: Andrew's database code/method call will go here
         //Temporary Palettes atm:
+
         MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
         MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
         MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
@@ -110,10 +111,6 @@ public class PalettesFragment extends Fragment {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
-        //add divider decoration to make it match the assignment example?
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
         //then initialize the adapter, passing in the bookList
         MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView

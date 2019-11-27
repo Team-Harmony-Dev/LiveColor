@@ -1,8 +1,10 @@
 package com.harmony.livecolor;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,9 +69,10 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
                 ));
                 //set imageview to i's color
                 holder.displayColors.get(i).setBackgroundColor(Color.parseColor(thisColor.getHex()));
-                //set linear layout's weight sum to i? might not be needed
             }
         }
+
+        holder.paletteItem.setOnClickListener(getPaletteClickListener(position));
     }
 
     @Override
@@ -81,12 +84,12 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         TextView paletteName;
         ArrayList<ImageView> displayColors;
         ImageView color1, color2, color3, color4, color5, color6, color7, color8, color9, color10;
-        LinearLayout listItem;
+        CardView paletteItem;
 
         public ViewHolder(View view) {
             super(view);
             paletteName = view.findViewById(R.id.paletteName);
-            listItem = view.findViewById(R.id.paletteItem);
+            paletteItem = view.findViewById(R.id.paletteItem);
             color1 = view.findViewById(R.id.color1);
             color2 = view.findViewById(R.id.color2);
             color3 = view.findViewById(R.id.color3);
@@ -113,17 +116,17 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
 
     //TODO: uncomment method when PaletteInfoActivity is complete
     // separate method for the onClickListener in order to pass the position from onBVH in
-    /*View.OnClickListener getPaletteClickListener(final int position) {
+    View.OnClickListener getPaletteClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent
-                intent.putExtra("palette",myPalettes.get(position));
+                intent.putExtra("PALETTE",myPalettes.get(position));
                 //start new activity with this intent
                 context.startActivity(intent);
             }
         };
-    }*/
+    }
 }

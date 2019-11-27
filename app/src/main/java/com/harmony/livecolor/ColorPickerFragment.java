@@ -221,7 +221,7 @@ public class ColorPickerFragment extends Fragment {
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //colorDB.addColorInfoData(name, hex, rgb, hsv);
                 isButtonClicked = !isButtonClicked;
                 saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
@@ -230,6 +230,8 @@ public class ColorPickerFragment extends Fragment {
                 }else{
                     saveButton.setColorFilter(null);
                 }
+                CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
+                pickerDialog.showSaveDialog();
             }
         });
 
@@ -239,7 +241,6 @@ public class ColorPickerFragment extends Fragment {
             public void onClick (View view){
                 updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
-                startCIA.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startCIA);
             }
         });
@@ -250,7 +251,6 @@ public class ColorPickerFragment extends Fragment {
             public void onClick (View view){
                 updateColorName(getView());
                 Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
-                startEditColorActivity.putExtra("get_hex", Integer.toString(colorT));
                 startActivity(startEditColorActivity);
             }
         });
@@ -274,8 +274,8 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && data != null) {
-            if(requestCode == RESULT_LOAD_IMAGE) {
+        if(resultCode == Activity.RESULT_OK) {
+            if(requestCode == RESULT_LOAD_IMAGE && data != null) {
                 imageUri = data.getData(); // only needed for gallery images
             }
             pickingImage.setImageURI(imageUri); // updates the view
@@ -385,12 +385,22 @@ public class ColorPickerFragment extends Fragment {
 
             //If you click in the image and then drag outside the image this function still fires,
             //  but with invalid x & y, causing a crash on bitmap.getPixel()
+            boolean wasValidClick = true;
             if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
-                return true; //I'm not sure if our return value really matters.
+                wasValidClick = false;
             }
             //get color int from said pixel coordinates using the source image
-            int pixel = bitmap.getPixel((int) x, (int) y);
+            int pixel;
+            if(wasValidClick){
+                pixel = bitmap.getPixel((int) x, (int) y);
+            } else {
+                //This is a bug fix for dragging outside of the valid area not getting the color
+                // name (previously we returned above, but then that ended up with no color name)
+                //So lets just get the last valid color, which was stored in the imageview
+                ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
+                pixel = imgWithOurColor.getSolidColor();
+            }
             //send to Gabby's script to updated the displayed values on screen
             //if android doesn't like us sending the whole color object we can send the color string
             //and use Color.valueOf() on Gabby's end
@@ -404,12 +414,10 @@ public class ColorPickerFragment extends Fragment {
             //It takes a second to load and I don't want to spam the API so lets only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
-                /*
-                MainActivity.colorNameView = getActivity().findViewById(R.id.colorName);
-                colorNameGetter tmp = new colorNameGetter();
-                tmp.execute(pixel);
-                 */
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                final double viewWidthPercentOfScreen = 0.60;
+                final float maxFontSize = 30;
+                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
                 colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel);
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
@@ -482,24 +490,36 @@ public class ColorPickerFragment extends Fragment {
         // To load saved color onto fragment, default/initial load is white?
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
+
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
-            ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
+            final double viewWidthPercentOfScreen = 0.60;
+            final float maxFontSize = 30;
+            TextView view = getActivity().findViewById(R.id.colorName);
+            //A full API call should be unnecessary since we already saved the name.
+            colorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            //Log.d("S3US5", "Loading color name into textview using function to ensure it fits on one line...");
+            //Just set the text and make sure it fits on a single line.
+            //colorNameGetter.setAppropriatelySizedText(view, savedColorName, viewWidthPercentOfScreen, maxFontSize);
+            //Old, simple code. Doesn't prevent text from going to a new line.
+            //((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
         }
+
         updateColorValues(getView(), savedColorInt);
 //        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
+    //This function actually saves, not loads
     public void updateColorName(View view){
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         TextView colorNameView = getActivity().findViewById(R.id.colorName);
         String input = colorNameView.getText().toString();
+        Log.d("S3US5", "saved colorname input="+input);
         editor.putString("colorName", input);
         editor.apply();
     }
 
-    //TODO a fully transparent color displays as black (0,0,0), even though our background is white.
     public void updateColorValues(View view, int colorNew){
         Log.d("DEBUG", "updateColorValues: called");
         Log.d("DEBUG", "updateColorValues: color int = " + colorNew);

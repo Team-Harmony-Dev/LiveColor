@@ -33,6 +33,7 @@ import static android.graphics.Color.parseColor;
 public class ColorInfoActivity extends AppCompatActivity {
     private SavedColorsFragment.OnListFragmentInteractionListener listener;
     int colorValue, RV, GV, BV, hue;
+    String hexValue;
     float[] hsvArray;
     private ArrayList<MyColor> colorList;
     ColorDatabase newColorDatabase;
@@ -42,8 +43,8 @@ public class ColorInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_info);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        final Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -65,24 +66,36 @@ public class ColorInfoActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         String colorNameT = preferences.getString("colorName","Default");
 
+        Log.d("DEBUG", "Color set to background = " + colorString);
+        colorValue = Integer.parseInt(colorString);
+        if (intent.getExtras() != null) {
+            Log.d("ColorInfoActivity", "BUNDLE!! hex: " + bundle.getString("hex"));
+            String hex = bundle.getString("hex");
+            colorValue = parseColor(hex);
+        }
+
         // Edit color listener
         ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
         editColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+                if(intent.getExtras() != null){
+                    Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
+                    startEditColorActivity.putExtra("colorValue", colorValue);
+                }
                 startActivity(startEditColorActivity);
             }
         });
 
         colorValue = Integer.parseInt(colorString);
 
-        /*Log.d("DEBUG", "Color set to background = " + colorString);
+        Log.d("DEBUG", "Color set to background = " + colorString);
         colorValue = Integer.parseInt(colorString);
         if (bundle != null) {
             String hex = bundle.getString("hex");
             colorValue = parseColor(hex);
-        }*/
+        }
 
 
         // UPDATE VALUES
@@ -91,14 +104,16 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
-        /*if (bundle != null) {
+        if (intent.getExtras() != null) {
+            Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
-        }*/
+        }
         colorNameView.setText(colorNameT);
 
         //HEX
 
-        String hexValue = String.format("HEX: #%06X", (0xFFFFFF & colorValue)); //get the hex representation minus the first ff
+        hexValue = String.format("HEX: #%06X", (0xFFFFFF & colorValue)); //get the hex representation minus the first ff
+        Log.d("ColorInfoActivity", "hexValue: " + hexValue);
         TextView hexDisplay = (TextView) findViewById(R.id.HexText);
         hexDisplay.setText(hexValue);
 
@@ -158,6 +173,16 @@ public class ColorInfoActivity extends AppCompatActivity {
                 clipboard.setPrimaryClip(clip);
 
                 Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        Button harmonyButton = findViewById(R.id.harmonyButton);
+        harmonyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
+                intent.putExtra("color_hsv", hsvArray);
+                startActivity(intent);
             }
         });
 

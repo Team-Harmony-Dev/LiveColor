@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -30,11 +31,13 @@ import com.airbnb.lottie.LottieAnimationView;
 import java.util.zip.Inflater;
 
 import static android.graphics.Color.RGBToHSV;
+import static android.graphics.Color.parseColor;
 
 public class EditColorActivity extends AppCompatActivity {
     int colorValue;
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
+    String name, hex, rgb, hsv;
     private boolean isButtonClicked = false;
     private boolean isButtonClickedNew = false;
     ImageButton saveNC;
@@ -43,11 +46,17 @@ public class EditColorActivity extends AppCompatActivity {
     private int m_Text = 0;
     String colorNameT;
     ScaleAnimation scaleAnimation;
+    ColorDatabase colorDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_color);
+        colorDB = new ColorDatabase(this);
+
+
+        Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
 
         colorNNView = findViewById(R.id.colorNN);
 
@@ -63,6 +72,11 @@ public class EditColorActivity extends AppCompatActivity {
         String colorString = preferences.getString("colorString","Default");
         colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
+        if (intent.getExtras() != null) {
+            Log.d("EditColorActivity", "BUNDLE!!");
+            colorValue = bundle.getInt("colorValue");
+            Log.d("EditColorActivity", "BUNDLE getting color: " + colorValue);
+        }
         int RV = Color.red(colorValue);
         int GV = Color.green(colorValue);
         int BV = Color.blue(colorValue);
@@ -73,10 +87,6 @@ public class EditColorActivity extends AppCompatActivity {
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
         colorNewS.setBackgroundColor(colorValue);
 
-        TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameT);
-        TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText(colorNameT);
 
         seekRed = findViewById(R.id.seekBarRed);
         seekRed.setProgress(RV);
@@ -85,6 +95,17 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        TextView colorNameView = findViewById(R.id.colorN);
+        colorNameView.setText(colorNameT);
+        //When you press edit color on a saved color, the name is incorrect. This should fix it...
+        //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
+        final double viewWidthPercentOfScreen = 0.50;
+        final float maxFontSize = 30;
+        //colorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+
+        TextView colorNameN = findViewById(R.id.colorNN);
+        //colorNameN.setText(colorNameT);
+        updateColorName();
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
@@ -335,10 +356,25 @@ public class EditColorActivity extends AppCompatActivity {
                         int hue = seekRed.getProgress();
                         int sat = seekGreen.getProgress();
                         int val = seekBlue.getProgress();
+                        updateColorName();
+                        hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                         int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
                         colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+                        rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
+                        hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
+                        colorDB.addColorInfoData(name, hex, rgb, hsv);
                     } else {
                         colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+                        int red = seekRed.getProgress();
+                        int green = seekGreen.getProgress();
+                        int blue = seekBlue.getProgress();
+                        updateColorName();
+                        rgb = String.format("(%1$d, %2$d, %3$d)", red, green, blue);
+                        hex = String.format( "#%02X%02X%02X", red, green, blue);
+                        int[] hue = convertRGBtoHSV(red,green,blue);
+                        hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
+                        colorDB.addColorInfoData(name, hex, rgb, hsv);
+
                     }
                     saveNC.setColorFilter(colorI);
                 }else{
@@ -413,7 +449,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     // Converts the current values in HSV to RGB and stores them in RV, GV, BV
-    public int[] convertHSVtoRGB(int hue, int saturation, int value){
+    public static int[] convertHSVtoRGB(int hue, int saturation, int value){
         float[] hsv = new float[3];
         hsv[0] = hue;
         hsv[1] = ((float) saturation) / 100;
@@ -462,9 +498,17 @@ public class EditColorActivity extends AppCompatActivity {
         }
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        colorNameGetter cng = new colorNameGetter();
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI);
-        cng.execute(colorI);
+        //colorNameGetter cng = new colorNameGetter();
+        final double viewWidthPercentOfScreen = 0.50;
+        final float maxFontSize = 30;
+        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
+        //cng.execute(colorI);
+        //TODO this probably won't work,
+        // the name won't be updated by the time this code runs.
+        // This is where it gets the text to save if you save the color.
+        //I think the easiest way to solve this would be to just call colorNameGetter for each
+        //  saved color, since those already are having problems with names going to multiple lines.
+        name = colorNNView.getText().toString();
     }
 
     public void updateColorPicker(){
