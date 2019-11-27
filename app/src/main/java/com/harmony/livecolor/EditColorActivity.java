@@ -207,7 +207,6 @@ public class EditColorActivity extends AppCompatActivity {
                         colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
                         rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
                         hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
-                        colorDB.addColorInfoData(name, hex, rgb, hsv);
                     } else {
                         colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                         int red = seekRed.getProgress();
@@ -218,9 +217,9 @@ public class EditColorActivity extends AppCompatActivity {
                         hex = String.format( "#%02X%02X%02X", red, green, blue);
                         int[] hue = convertRGBtoHSV(red,green,blue);
                         hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
-                        colorDB.addColorInfoData(name, hex, rgb, hsv);
-
                     }
+                    CustomDialog saveDialog = new CustomDialog(EditColorActivity.this,name,hex,rgb,hsv);
+                    saveDialog.showSaveDialog();
                     saveNC.setColorFilter(colorI);
                 }else{
                     saveNC.setColorFilter(null);
