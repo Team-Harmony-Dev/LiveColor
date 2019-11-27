@@ -156,6 +156,16 @@ public class ColorInfoActivity extends AppCompatActivity {
                 Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        Button harmonyButton = findViewById(R.id.harmonyButton);
+        harmonyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
+                intent.putExtra("color_hsv", hsvArray);
+                startActivity(intent);
+            }
+        });
     }
 
 }

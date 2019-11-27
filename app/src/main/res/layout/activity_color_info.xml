@@ -151,6 +151,20 @@
                 android:text="@android:string/copy" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/harmonyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See harmonies" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/textView6"
             android:layout_width="match_parent"

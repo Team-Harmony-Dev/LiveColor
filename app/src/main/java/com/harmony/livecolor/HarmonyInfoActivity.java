@@ -1,10 +1,14 @@
 package com.harmony.livecolor;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
@@ -19,15 +23,32 @@ public class HarmonyInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_harmony_info);
+
+        //removes action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
+        //set back button to leave activity
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         initPalettes();
         initRecycler();
+
     }
 
 
     public void initPalettes(){
         //initialize ArrayList<MyPalette> here
         paletteList = new ArrayList<>();
-        //will access palettes from database and put into MyPalette objects
+
+        float[] hsv = getIntent().getFloatArrayExtra("color_hsv");
+        Log.d("S4US4", "Received hsv "+hsv);
 
         //TODO should probably have a helper function for these tests.
         //Note: fragment_palettes.xml limits the number of colors displayed per palette on the menu to 10.
