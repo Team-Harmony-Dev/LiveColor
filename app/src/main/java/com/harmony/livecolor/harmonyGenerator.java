@@ -79,15 +79,20 @@ public class harmonyGenerator {
         float[] color = new float[] {complementHue, saturation, value};
         return color;
     }
+    public static float complementHue(float hue){
+        float complementHue = hue + 180;
+        complementHue = checkHueForOverflow(complementHue);
+        return complementHue;
+    }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
     public static float[][] analogousScheme(float hue, float saturation, float value, int degrees, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
         float[][] analogousColors = new float[numberOfColors][numberOfComponents];
+        int middleIndex = numberOfColors / 2;
         for(int i = 0; i < numberOfColors; ++i){
             float analogHue;
-            int middleIndex = numberOfColors / 2;
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
                 analogHue = hue + (degrees * numberOfColorsLeftFromMiddle);
@@ -130,9 +135,9 @@ public class harmonyGenerator {
         float differenceLeft = distanceFromLeft * percent / numberOfColorsLeft;
         float differenceRight = distanceFromRight * percent / numberOfColorsRight;
         Log.d("S4US4", "v="+value+" dfl="+distanceFromLeft+" dl="+differenceLeft + " dfr="+distanceFromRight+" dr="+differenceRight);
+        int middleIndex = numberOfColors / 2;
         for(int i = 0; i < numberOfColors; ++i){
             float monoValue;
-            int middleIndex = numberOfColors / 2;
             //I actually messed up left and right, meant left to mean lighter, right to mean darker.
             //So this just does the reverse of what the names imply.
             //TODO cleanup
@@ -157,7 +162,38 @@ public class harmonyGenerator {
         return monochromaticColors;
     }
 
-    //TODO triadic scheme, just do analog of complement, with the original color as the middle value.
+    public static float[][] triadicScheme(float hue, float saturation, float value, int degrees, int numberOfColors){
+        //Hue, saturation, value. Three numbers to store in each array.
+        final int numberOfComponents = 3;
+        Log.d("S4US4", "Getting analogous colors for triadic...");
+        float[][] triadicColors = analogousScheme(complementHue(hue), saturation, value, degrees, numberOfColors);//new float[numberOfColors][numberOfComponents];
+        int middleIndex = numberOfColors / 2;
+        /*
+        for(int i = 0; i < numberOfColors; ++i){
+            float triadicHue;
+            if(i < middleIndex){
+                int numberOfColorsLeftFromMiddle = middleIndex - i;
+                triadicHue = 180 + hue + (degrees * numberOfColorsLeftFromMiddle);
+                Log.d("S4US4", "Calculated triadic color -"+numberOfColorsLeftFromMiddle
+                        +" :"+triadicHue);
+            } else {
+                int numberOfColorsRightFromMiddle = i - middleIndex;
+                triadicHue = 180 + hue - (degrees * numberOfColorsRightFromMiddle);
+                Log.d("S4US4", "Calculated triadic color +"+numberOfColorsRightFromMiddle
+                        +" :"+triadicHue);
+            }
+
+            triadicHue = checkHueForOverflow(triadicHue);
+
+            float[] color = new float[] {triadicHue, saturation, value};
+            triadicColors[i] = color;
+        }
+        */
+        float[] originalColor = new float[] {hue, saturation, value};
+        triadicColors[middleIndex] = originalColor;
+
+        return triadicColors;
+    }
 
     //https://www.tigercolor.com/color-lab/color-theory/color-harmonies.htm
     //Complement could actually just call this.

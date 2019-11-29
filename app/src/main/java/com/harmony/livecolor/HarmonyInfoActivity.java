@@ -79,15 +79,24 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 5);
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
-        //TODO triadic test
 
+        //TODO I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
+        float[][] testTriadic = harmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
+        ArrayList<MyColor> testTriadicMyColors = harmonyGenerator.colorsToMyColors(testTriadic, 3);
+        MyPalette testTriadicPalette = new MyPalette("3", "Split-Complementary", testTriadicMyColors);
+        paletteList.add(testTriadicPalette);
+
+        //Testing getting some colors spaced evenly on the color wheel
+        float[][] testOddEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 3);
+        ArrayList<MyColor> testOddEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testOddEvenSpaced, 3);
+        MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced on color wheel", testOddEvenSpacedMyColors);
+        paletteList.add(testOddEvenSpacedPalette);
 
         //Testing getting some colors spaced evenly on the color wheel
         float[][] testEvenEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
         ArrayList<MyColor> testEvenEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
-        MyPalette testEvenEvenSpacedPalette = new MyPalette("4", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
+        MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
         paletteList.add(testEvenEvenSpacedPalette);
-
     }
 
     public void initRecycler(){
