@@ -62,31 +62,32 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //Note: fragment_palettes.xml limits the number of colors displayed per palette on the menu to 10.
         // also the edit button when you select a palette does nothing.
 
+        //TODO probably remove this, it's useful for testing though.
         float[][] testBasicColor = new float[][] {new float[] {hue, saturation, value}};
         ArrayList<MyColor> testBasicColorMyColors = harmonyGenerator.colorsToMyColors(testBasicColor, 1);
-        MyPalette testBasicColorPalette = new MyPalette("1", "Single color", testBasicColorMyColors);
+        MyPalette testBasicColorPalette = new MyPalette("1", "Original color", testBasicColorMyColors);
         paletteList.add(testBasicColorPalette);
 
-        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+        //Testing getting the analogous colors each a # of degrees to each side of the given color.
         float[][] testAnalogous = harmonyGenerator.analogousScheme(hue, saturation, value, 20, 5);
         ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 5);
         MyPalette testAnalogousPalette = new MyPalette("1", "Analogous", testAnalogousMyColors);
         paletteList.add(testAnalogousPalette);
 
-        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+        //Testing getting the monochromatic colors to each side of the given color based on percent.
         float[][] testMonochromatic = harmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5);
         ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 5);
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
         //TODO triadic test
 
-        /*
-        //Testing getting the analogous colors 15 degrees to each side of the given color ().
+
+        //Testing getting some colors spaced evenly on the color wheel
         float[][] testEvenEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
         ArrayList<MyColor> testEvenEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
         MyPalette testEvenEvenSpacedPalette = new MyPalette("4", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
         paletteList.add(testEvenEvenSpacedPalette);
-        */
+
     }
 
     public void initRecycler(){
