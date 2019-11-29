@@ -50,8 +50,8 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         float[] hsv = getIntent().getFloatArrayExtra("color_hsv");
         Log.d("S4US4", "Received hsv "+hsv[0]+" "+hsv[1]+" "+hsv[2]);
         float hue = hsv[0];
-        float saturation = hsv[1]*100;
-        float value = hsv[2]*100;
+        float saturation = hsv[1];
+        float value = hsv[2];
 
         /*
         hue = 180;
@@ -72,15 +72,15 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 5);
         MyPalette testAnalogousPalette = new MyPalette("1", "Analogous", testAnalogousMyColors);
         paletteList.add(testAnalogousPalette);
-        /*
+
         //Testing getting the analogous colors 15 degrees to each side of the given color ().
-        float[][] testMonochromatic = harmonyGenerator.monochromaticScheme(hue, saturation, value, 50, 3);
-        ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 3);
+        float[][] testMonochromatic = harmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5);
+        ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 5);
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
         //TODO triadic test
 
-
+        /*
         //Testing getting the analogous colors 15 degrees to each side of the given color ().
         float[][] testEvenEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
         ArrayList<MyColor> testEvenEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);

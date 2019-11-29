@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
+import static java.lang.StrictMath.abs;
 
 //Contains functions for generating colors for palettes based on a given color.
 public class harmonyGenerator {
@@ -115,26 +116,36 @@ public class harmonyGenerator {
     }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
-    public static float[][] monochromaticScheme(float hue, float saturation, float value, int percent, int numberOfColors){
+    //TODO how to handle parcent? Currently it does a percent of available space in each direction,
+    //  meaning left and right colors are equally spaced with respect to their sides but not the opposite side.
+    public static float[][] monochromaticScheme(float hue, float saturation, float value, float percent, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
         float[][] monochromaticColors = new float[numberOfColors][numberOfComponents];
-        float distance_from_right = 100-value;
-        float distance_from_left = value;
+        float distanceFromRight = 1-value;
+        float distanceFromLeft = value;
+        final int numberOfColorsLeft = (int) (numberOfColors / 2);
+        final int numberOfColorsRight = numberOfColorsLeft;
+        //How much spacing between each color.
+        float differenceLeft = distanceFromLeft * percent / numberOfColorsLeft;
+        float differenceRight = distanceFromRight * percent / numberOfColorsRight;
+        Log.d("S4US4", "v="+value+" dfl="+distanceFromLeft+" dl="+differenceLeft + " dfr="+distanceFromRight+" dr="+differenceRight);
         for(int i = 0; i < numberOfColors; ++i){
             float monoValue;
             int middleIndex = numberOfColors / 2;
-            if(i < middleIndex){
+            //I actually messed up left and right, meant left to mean lighter, right to mean darker.
+            //So this just does the reverse of what the names imply.
+            //TODO cleanup
+            if(i > middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
-                //TODO I don't think this is the correct formula
-                monoValue = hue + (percent * numberOfColorsLeftFromMiddle);
-                Log.d("S4US4", "Calculated mono color -"+numberOfColorsLeftFromMiddle
-                        +" :"+monoValue);
+                monoValue = value + (differenceLeft * numberOfColorsLeftFromMiddle);
+                Log.d("S4US4", "Calculated mono color  left "+numberOfColorsLeftFromMiddle
+                        +" : "+monoValue);
             } else {
                 int numberOfColorsRightFromMiddle = i - middleIndex;
-                monoValue = hue - (percent * numberOfColorsRightFromMiddle);
-                Log.d("S4US4", "Calculated mono color +"+numberOfColorsRightFromMiddle
-                        +" :"+monoValue);
+                monoValue = value - (differenceRight * numberOfColorsRightFromMiddle);
+                Log.d("S4US4", "Calculated mono color right "+numberOfColorsRightFromMiddle
+                        +" : "+monoValue);
             }
 
             //An overflow would just be an error, right?
