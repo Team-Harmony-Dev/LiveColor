@@ -18,7 +18,7 @@ public class harmonyGenerator {
     //TODO tests
 
     //Each color[] should be the hsv like what is returned by the rest of the functions in this file.
-    public static ArrayList<MyColor> colorsToMyColors(int[][] colors, int numberOfColors){
+    public static ArrayList<MyColor> colorsToMyColors(float[][] colors, int numberOfColors){
         ArrayList<MyColor> myColorArrayList = new ArrayList<>();
         for(int i = 0; i < numberOfColors; ++i){
             MyColor color = hsvToMyColor(colors[i], i);
@@ -27,7 +27,7 @@ public class harmonyGenerator {
         return myColorArrayList;
     }
 
-    public static MyColor hsvToMyColor(int[] color, int id){
+    public static MyColor hsvToMyColor(float[] color, int id){
         String hex = hsvToStringHex(color);
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
@@ -37,33 +37,33 @@ public class harmonyGenerator {
     //For all these functions, currently I'm using hue (0..359) saturation (0..100) value (0..100)
 
     //Returns something like "FFFFFF"
-    public static String hsvToStringHex(int[] color){
+    public static String hsvToStringHex(float[] color){
         //Easiest way to get hex is probably to convert to decimal rgb, and then to hex.
-        int hue = color[0];
-        int saturation = color[1];
-        int value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB(hue, saturation, value);
+        float hue = color[0];
+        float saturation = color[1];
+        float value = color[2];
+        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //https://stackoverflow.com/a/3607942
         String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
         return hex;
     }
 
     //Returns something like "(0, 0 ,0)"
-    public static String hsvToStringRgb(int[] color){
-        int hue = color[0];
-        int saturation = color[1];
-        int value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB(hue, saturation, value);
+    public static String hsvToStringRgb(float[] color){
+        float hue = color[0];
+        float saturation = color[1];
+        float value = color[2];
+        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         String strRgb = "("+rgb[0]+", "+rgb[1]+", "+rgb[2]+")";
         return strRgb;
     }
     //TODO need to decide on a format for this.
-    public static String hsvToStringHsv(int[] color){
+    public static String hsvToStringHsv(float[] color){
         //Easiest way to get proper hsv is to use the built in function like we did in ColorPickerFragment.
-        int hue = color[0];
-        int saturation = color[1];
-        int value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB(hue, saturation, value);
+        float hue = color[0];
+        float saturation = color[1];
+        float value = color[2];
+        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //Stores the result values
         float[] hsvArray = new float[3];
         RGBToHSV(rgb[0],rgb[1],rgb[2],hsvArray);
@@ -72,20 +72,20 @@ public class harmonyGenerator {
     }
 
     //Complement is just the opposite hue
-    public static int[] complement(int hue, int saturation, int value){
-        int complementHue = hue + 180;
+    public static float[] complement(float hue, float saturation, float value){
+        float complementHue = hue + 180;
         complementHue = checkHueForOverflow(complementHue);
-        int[] color = new int[] {complementHue, saturation, value};
+        float[] color = new float[] {complementHue, saturation, value};
         return color;
     }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
-    public static int[][] analogousScheme(int hue, int saturation, int value, int degrees, int numberOfColors){
+    public static float[][] analogousScheme(float hue, float saturation, float value, int degrees, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
-        int[][] analogousColors = new int[numberOfColors][numberOfComponents];
+        float[][] analogousColors = new float[numberOfColors][numberOfComponents];
         for(int i = 0; i < numberOfColors; ++i){
-            int analogHue;
+            float analogHue;
             int middleIndex = numberOfColors / 2;
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
@@ -101,7 +101,7 @@ public class harmonyGenerator {
 
             analogHue = checkHueForOverflow(analogHue);
 
-            int[] color = new int[] {analogHue, saturation, value};
+            float[] color = new float[] {analogHue, saturation, value};
             analogousColors[i] = color;
         }
         return analogousColors;
@@ -109,20 +109,20 @@ public class harmonyGenerator {
 
     //This seems not great. Maybe https://www.w3schools.com/colors/colors_monochromatic.asp ?
     //Unneeded parameters but I sorta want to stay consistent.
-    public static int[] monochrome(int hue, int saturation, int value){
-        int[] color = new int[] {0, 0, value};
+    public static float[] monochrome(float hue, float saturation, float value){
+        float[] color = new float[] {0, 0, value};
         return color;
     }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
-    public static int[][] monochromaticScheme(int hue, int saturation, int value, int percent, int numberOfColors){
+    public static float[][] monochromaticScheme(float hue, float saturation, float value, int percent, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
-        int[][] monochromaticColors = new int[numberOfColors][numberOfComponents];
-        int distance_from_right = 100-value;
-        int distance_from_left = value;
+        float[][] monochromaticColors = new float[numberOfColors][numberOfComponents];
+        float distance_from_right = 100-value;
+        float distance_from_left = value;
         for(int i = 0; i < numberOfColors; ++i){
-            int monoValue;
+            float monoValue;
             int middleIndex = numberOfColors / 2;
             if(i < middleIndex){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
@@ -138,9 +138,9 @@ public class harmonyGenerator {
             }
 
             //An overflow would just be an error, right?
-            monoValue = checkValueForOverflow(monoValue);
+            //monoValue = checkValueForOverflow(monoValue);
 
-            int[] color = new int[] {hue, saturation, monoValue};
+            float[] color = new float[] {hue, saturation, monoValue};
             monochromaticColors[i] = color;
         }
         return monochromaticColors;
@@ -150,33 +150,35 @@ public class harmonyGenerator {
 
     //https://www.tigercolor.com/color-lab/color-theory/color-harmonies.htm
     //Complement could actually just call this.
-    public static int[][] evenlySpacedScheme(int hue, int saturation, int value, int numberOfColors){
+    public static float[][] evenlySpacedScheme(float hue, float saturation, float value, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
-        int[][] resultColors = new int[numberOfColors][numberOfComponents];
+        float[][] resultColors = new float[numberOfColors][numberOfComponents];
         int degrees = 360 / numberOfColors;
         for(int i = 0; i < numberOfColors; ++i){
-            int resultHue = hue + (i * degrees);
+            float resultHue = hue + (i * degrees);
             resultHue = checkHueForOverflow(resultHue);
 
-            int[] color = new int[] {resultHue, saturation, value};
+            float[] color = new float[] {resultHue, saturation, value};
             resultColors[i] = color;
         }
         return resultColors;
     }
 
-    private static int checkHueForOverflow(int hue){
+    private static float checkHueForOverflow(float hue){
         if(hue >= 360){
             return hue - 360;
         } else {
             return hue;
         }
     }
-    private static int checkValueForOverflow(int value){
+    /*I'm not sure this is actually meaningful
+    private static float checkValueForOverflow(float value){
         if(value >= 100){
             return value - 100;
         } else {
             return value;
         }
     }
+    */
 }
