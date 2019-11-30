@@ -508,7 +508,7 @@ public class EditColorActivity extends AppCompatActivity {
         //If we want it on at most 2 lines: (Note that the original name view is still unrestricted)
         final double viewWidthPercentOfScreen = 1.0;
         final float maxFontSize = 30;
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
+        ColorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
         //TODO this probably won't work,
         // the name won't be updated by the time this code runs.
         // This is where it gets the text to save if you save the color.

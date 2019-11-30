@@ -417,7 +417,7 @@ public class ColorPickerFragment extends Fragment {
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                 final double viewWidthPercentOfScreen = 0.60;
                 final float maxFontSize = 30;
-                colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
@@ -495,7 +495,7 @@ public class ColorPickerFragment extends Fragment {
             final float maxFontSize = 30;
             TextView view = getActivity().findViewById(R.id.colorName);
             //A full API call should be unnecessary since we already saved the name.
-            colorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
             //Log.d("S3US5", "Loading color name into textview using function to ensure it fits on one line...");
             //Just set the text and make sure it fits on a single line.
             //colorNameGetter.setAppropriatelySizedText(view, savedColorName, viewWidthPercentOfScreen, maxFontSize);

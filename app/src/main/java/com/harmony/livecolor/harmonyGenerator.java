@@ -8,7 +8,7 @@ import static android.graphics.Color.RGBToHSV;
 import static java.lang.StrictMath.abs;
 
 //Contains functions for generating colors for palettes based on a given color.
-public class harmonyGenerator {
+public class HarmonyGenerator {
 
     //TODO Determine what input we want to support. Can overload I guess.
     //  Currently I'm using hue (0..359) saturation (0..100) value (0..100)
@@ -32,6 +32,7 @@ public class harmonyGenerator {
         String hex = hsvToStringHex(color);
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
+        //TODO how to name them? API call needs a textView. I could go "left 1, original, right 1...."
         MyColor colorObj = new MyColor(""+id, ("Test"+id), hex, rgb, hsv);
         return colorObj;
     }

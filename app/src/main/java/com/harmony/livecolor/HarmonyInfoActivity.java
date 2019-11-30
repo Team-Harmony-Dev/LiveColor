@@ -64,37 +64,37 @@ public class HarmonyInfoActivity extends AppCompatActivity {
 
         //TODO probably remove this, it's useful for testing though.
         float[][] testBasicColor = new float[][] {new float[] {hue, saturation, value}};
-        ArrayList<MyColor> testBasicColorMyColors = harmonyGenerator.colorsToMyColors(testBasicColor, 1);
+        ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 1);
         MyPalette testBasicColorPalette = new MyPalette("1", "Original color", testBasicColorMyColors);
         paletteList.add(testBasicColorPalette);
 
         //Testing getting the analogous colors each a # of degrees to each side of the given color.
-        float[][] testAnalogous = harmonyGenerator.analogousScheme(hue, saturation, value, 20, 5);
-        ArrayList<MyColor> testAnalogousMyColors = harmonyGenerator.colorsToMyColors(testAnalogous, 5);
+        float[][] testAnalogous = HarmonyGenerator.analogousScheme(hue, saturation, value, 20, 5);
+        ArrayList<MyColor> testAnalogousMyColors = HarmonyGenerator.colorsToMyColors(testAnalogous, 5);
         MyPalette testAnalogousPalette = new MyPalette("1", "Analogous", testAnalogousMyColors);
         paletteList.add(testAnalogousPalette);
 
         //Testing getting the monochromatic colors to each side of the given color based on percent.
-        float[][] testMonochromatic = harmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5);
-        ArrayList<MyColor> testMonochromaticMyColors = harmonyGenerator.colorsToMyColors(testMonochromatic, 5);
+        float[][] testMonochromatic = HarmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5);
+        ArrayList<MyColor> testMonochromaticMyColors = HarmonyGenerator.colorsToMyColors(testMonochromatic, 5);
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
 
         //TODO I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
-        float[][] testTriadic = harmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
-        ArrayList<MyColor> testTriadicMyColors = harmonyGenerator.colorsToMyColors(testTriadic, 3);
+        float[][] testTriadic = HarmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
+        ArrayList<MyColor> testTriadicMyColors = HarmonyGenerator.colorsToMyColors(testTriadic, 3);
         MyPalette testTriadicPalette = new MyPalette("3", "Split-Complementary", testTriadicMyColors);
         paletteList.add(testTriadicPalette);
 
         //Testing getting some colors spaced evenly on the color wheel
-        float[][] testOddEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 3);
-        ArrayList<MyColor> testOddEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testOddEvenSpaced, 3);
+        float[][] testOddEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 3);
+        ArrayList<MyColor> testOddEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testOddEvenSpaced, 3);
         MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced on color wheel", testOddEvenSpacedMyColors);
         paletteList.add(testOddEvenSpacedPalette);
 
         //Testing getting some colors spaced evenly on the color wheel
-        float[][] testEvenEvenSpaced = harmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
-        ArrayList<MyColor> testEvenEvenSpacedMyColors = harmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
+        float[][] testEvenEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
+        ArrayList<MyColor> testEvenEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
         MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
         paletteList.add(testEvenEvenSpacedPalette);
     }
