@@ -64,7 +64,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         paletteInfoContentValues.put(PAL2, name);
         paletteInfoContentValues.put(PAL3, id);
 
-        long insertResult = db.insert(TABLE_NAME, null, paletteInfoContentValues);
+        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteInfoContentValues);
 
         if (insertResult == -1) {
             return false;

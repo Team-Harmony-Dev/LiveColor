@@ -1,9 +1,11 @@
 package com.harmony.livecolor;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
     private ArrayList<MyPalette> myPalettes;
     private OnListFragmentInteractionListener listener;
     private Context context;
+    ColorDatabase newColorDatabase;
 
     public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
         Log.d("S3US2", "PaletteColorsRecyclerViewAdapter: Constructed");
@@ -83,7 +86,7 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         TextView paletteName;
         ArrayList<ImageView> displayColors;
         ImageView color1, color2, color3, color4, color5, color6, color7, color8, color9, color10;
-        LinearLayout paletteItem;
+        CardView paletteItem;
 
         public ViewHolder(View view) {
             super(view);
@@ -119,11 +122,17 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newColorDatabase = new ColorDatabase(context);
+                final Cursor colorData = newColorDatabase.getColorInfoData();
+                final Cursor paletteData = newColorDatabase.getPaletteInfoData();
+
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent
-                intent.putExtra("PALETTE",myPalettes.get(position));
-                //start new activity with this intent
+                intent.putExtra("id", paletteData.getString(0));
+                intent.putExtra("name", paletteData.getString(1));
+                intent.putExtra("ref", colorData.getString(2));
+             //start new activity with this intent
                 context.startActivity(intent);
             }
         };

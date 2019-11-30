@@ -53,7 +53,18 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.color.setBackgroundColor(Color.parseColor(myColors.get(position).getHex()));
         holder.colorName.setText(myColors.get(position).getName());
-        holder.colorHex.setText(myColors.get(position).getHex());
+
+        String hex = myColors.get(position).getHex();
+        /*
+        //Get the last 6 digits, the actual hex characters
+        String hexValue = hex.substring(hex.length()-6, hex.length());
+        Log.d("Bugfix saved colorname", "HexValue = "+hexValue);
+        int pixel = 0;
+        final double viewWidthPercentOfScreen = 0.80;
+        final float maxFontSize = 26;
+        colorNameGetter.updateViewWithColorName(holder.colorName, pixel, );
+        */
+        holder.colorHex.setText(hex);
 
         holder.colorItem.setOnClickListener(getColorClickListener(position));
     }
