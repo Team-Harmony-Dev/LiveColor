@@ -123,10 +123,6 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
             @Override
             public void onClick(View view) {
                 newColorDatabase = new ColorDatabase(context);
-                final Cursor colorData = newColorDatabase.getColorInfoData();
-                final Cursor paletteData = newColorDatabase.getPaletteInfoData();
-                paletteData.moveToFirst();
-                colorData.moveToPosition(1);
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent

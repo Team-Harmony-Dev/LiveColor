@@ -118,7 +118,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             @Override
             public void onClick(View v) {
                 //TODO: add database addition specifically to saved colors palette
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                Log.d("shit", Long.toString(colorDB.addColorInfoData(name, hex, rgb, hsv)));
                 alertDialogSave.dismiss();
                 Toast.makeText(context,
                         "Color has been saved to Saved Colors",
@@ -214,8 +214,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 if(newColor) {
                     Cursor colorData = colorDB.getColorInfoData();
                     Log.d("WTF", "WTF");
-                    colorDB.addColorInfoData(name, hex, rgb, hsv);
-                    colorData.moveToLast();
+                    long i = colorDB.addColorInfoData(name, hex, rgb, hsv);
+                    Log.d("shit", Long.toString(i));
+                    colorData.move(Math.toIntExact(i));
                     colorDB.addPaletteInfoData(newName, colorData.getString(0));
 
                     //create new palette database item with the above color

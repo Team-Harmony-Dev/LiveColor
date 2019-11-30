@@ -35,6 +35,7 @@ public class PalettesFragment extends Fragment {
     private ArrayList<MyPalette> paletteList;
     private ArrayList<MyColor> colorList;
     private ArrayList<MyColor> colorList1;
+    private ArrayList<MyColor> colorList2;
 
     ColorDatabase newColorDatabase;
 
@@ -84,6 +85,7 @@ public class PalettesFragment extends Fragment {
         paletteList = new ArrayList<>();
         colorList = new ArrayList<>();
         colorList1 = new ArrayList<>();
+        colorList2 = new ArrayList<>();
 
 
         if (paletteData != null && paletteData.getCount() > 0) {
@@ -99,6 +101,12 @@ public class PalettesFragment extends Fragment {
                             colorData.getString(1) + "", colorData.getString(2) + "",
                             colorData.getString(3) + "", colorData.getString(4) + ""));
                     paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList1));
+                }
+                if(colorData.moveToNext() && paletteData.moveToNext()) {
+                    colorList2.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                    paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList2));
                 }
             }         while (paletteData.moveToNext() && colorData.moveToNext());
         }

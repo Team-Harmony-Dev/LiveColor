@@ -41,7 +41,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addColorInfoData(String name, String hex, String rgb, String hsv) {
+    public long addColorInfoData(String name, String hex, String rgb, String hsv) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues colorInfoContentValues = new ContentValues();
         colorInfoContentValues.put(COL2, name);
@@ -51,11 +51,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
 
         long insertResult = db.insert(TABLE_NAME, null, colorInfoContentValues);
 
-        if (insertResult == -1) {
-            return false;
-        } else {
-            return true;
-        }
+
+        return insertResult;
     }
 
     public boolean addPaletteInfoData(String name, String id) { // new palette
