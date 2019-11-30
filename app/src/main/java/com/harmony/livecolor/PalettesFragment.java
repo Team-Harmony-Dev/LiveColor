@@ -94,8 +94,7 @@ public class PalettesFragment extends Fragment {
                         colorData.getString(1) + "", colorData.getString(2) + "",
                         colorData.getString(3) + "", colorData.getString(4) + ""));
                 paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList));
-
-                if(colorData.moveToNext()) {
+                if(colorData.moveToNext() && paletteData.moveToNext()) {
                     colorList1.add(new MyColor(colorData.getString(0) + "",
                             colorData.getString(1) + "", colorData.getString(2) + "",
                             colorData.getString(3) + "", colorData.getString(4) + ""));
