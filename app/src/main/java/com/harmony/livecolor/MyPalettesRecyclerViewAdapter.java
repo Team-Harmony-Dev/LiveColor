@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
     private ArrayList<MyPalette> myPalettes;
     private OnListFragmentInteractionListener listener;
     private Context context;
+    ColorDatabase newColorDatabase;
 
     public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
         Log.d("S3US2", "PaletteColorsRecyclerViewAdapter: Constructed");
@@ -120,10 +122,16 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newColorDatabase = new ColorDatabase(context);
+                final Cursor colorData = newColorDatabase.getColorInfoData();
+                final Cursor paletteData = newColorDatabase.getPaletteInfoData();
+                paletteData.moveToFirst();
+                colorData.moveToPosition(1);
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent
                 intent.putExtra("PALETTE",myPalettes.get(position));
+
                 //start new activity with this intent
                 context.startActivity(intent);
             }

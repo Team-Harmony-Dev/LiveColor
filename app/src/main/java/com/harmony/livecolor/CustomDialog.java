@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -204,14 +206,20 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         builder.setPositiveButton("Save Palette", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String newName = newPaletteName.getText().toString();
+
                 if(newColor) {
+                    Cursor colorData = colorDB.getColorInfoData();
+                    Log.d("WTF", "WTF");
                     colorDB.addColorInfoData(name, hex, rgb, hsv);
+                    colorData.moveToLast();
+                    colorDB.addPaletteInfoData(newName, colorData.getString(0));
+
                     //create new palette database item with the above color
                     //TODO: addColorInfoData returns id for easy adding into palette
                     // otherwise handle addColorInfoData within addPaletteInfoData
                 }
                 dialog.dismiss();
-                String newName = newPaletteName.getText().toString();
                 Toast.makeText(context,
                         "New palette \"" + newName + "\" created!",
                         Toast.LENGTH_SHORT).show();
