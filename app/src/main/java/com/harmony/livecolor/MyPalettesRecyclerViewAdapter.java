@@ -125,14 +125,14 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
                 newColorDatabase = new ColorDatabase(context);
                 final Cursor colorData = newColorDatabase.getColorInfoData();
                 final Cursor paletteData = newColorDatabase.getPaletteInfoData();
-
+                paletteData.moveToFirst();
+                colorData.moveToPosition(1);
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent
-                intent.putExtra("id", paletteData.getString(0));
-                intent.putExtra("name", paletteData.getString(1));
-                intent.putExtra("ref", colorData.getString(2));
-             //start new activity with this intent
+                intent.putExtra("PALETTE",myPalettes.get(position));
+
+                //start new activity with this intent
                 context.startActivity(intent);
             }
         };

@@ -34,6 +34,8 @@ public class PalettesFragment extends Fragment {
     private View view;
     private ArrayList<MyPalette> paletteList;
     private ArrayList<MyColor> colorList;
+    private ArrayList<MyColor> colorList1;
+
     ColorDatabase newColorDatabase;
 
     /**
@@ -81,17 +83,25 @@ public class PalettesFragment extends Fragment {
         Cursor paletteData = newColorDatabase.getPaletteInfoData();
         paletteList = new ArrayList<>();
         colorList = new ArrayList<>();
+        colorList1 = new ArrayList<>();
+
 
         if (paletteData != null && paletteData.getCount() > 0) {
             paletteData.moveToFirst();
-            colorData.move(1);
+            colorData.moveToFirst();
             do {
-                //Log.d(TAG,  paletteDataData.getString(2));
                 colorList.add(new MyColor(colorData.getString(0) + "",
                         colorData.getString(1) + "", colorData.getString(2) + "",
                         colorData.getString(3) + "", colorData.getString(4) + ""));
                 paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList));
-                }         while (colorData.moveToNext());
+
+                if(colorData.moveToNext()) {
+                    colorList1.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                    paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList1));
+                }
+            }         while (paletteData.moveToNext() && colorData.moveToNext());
         }
     }
 
