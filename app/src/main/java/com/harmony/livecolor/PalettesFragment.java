@@ -72,6 +72,7 @@ public class PalettesFragment extends Fragment {
         //will access palettes from database and put into MyPalette objects
         //TODO: Andrew's database code/method call will go here
         //Temporary Palettes atm:
+
         MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
         MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
         MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");

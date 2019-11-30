@@ -3,22 +3,31 @@ package com.harmony.livecolor;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
+import com.airbnb.lottie.LottieAnimationView;
 import java.util.zip.Inflater;
 
 import static android.graphics.Color.RGBToHSV;
@@ -34,6 +43,9 @@ public class EditColorActivity extends AppCompatActivity {
     ImageButton saveNC;
     ToggleButton simpleToggleButton;
     Boolean ToggleButtonState;
+    private int m_Text = 0;
+    String colorNameT;
+    ScaleAnimation scaleAnimation;
     ColorDatabase colorDB;
 
     @Override
@@ -58,7 +70,7 @@ public class EditColorActivity extends AppCompatActivity {
 
         SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
-        String colorNameT = preferences.getString("colorName","Default");
+        colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
         if (intent.getExtras() != null) {
             Log.d("EditColorActivity", "BUNDLE!!");
@@ -75,10 +87,6 @@ public class EditColorActivity extends AppCompatActivity {
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
         colorNewS.setBackgroundColor(colorValue);
 
-        TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameT);
-        TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText(colorNameT);
 
         seekRed = findViewById(R.id.seekBarRed);
         seekRed.setProgress(RV);
@@ -87,10 +95,27 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        TextView colorNameView = findViewById(R.id.colorN);
+        colorNameView.setText(colorNameT);
+        //When you press edit color on a saved color, the name is incorrect. This should fix it...
+        //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
+        final double viewWidthPercentOfScreen = 0.50;
+        final float maxFontSize = 30;
+        //colorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+
+        TextView colorNameN = findViewById(R.id.colorNN);
+        //colorNameN.setText(colorNameT);
+        updateColorName();
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
         updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //buttonView.startAnimation(scaleAnimation);
                 if (isChecked) {
                     // The toggle is enabled: HSV mode
                     int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
@@ -160,12 +185,16 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        Button reset = findViewById(R.id.resetColor);
+        final RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(250);
+        rotate.setInterpolator(new LinearInterpolator());
+
+        final ImageButton reset = findViewById(R.id.resetColor);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ToggleButtonState = simpleToggleButton.isChecked();
-
+                reset.startAnimation(rotate);
                 if(!ToggleButtonState){
                     updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
                     updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
@@ -176,22 +205,148 @@ public class EditColorActivity extends AppCompatActivity {
                 }
 
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-                updateColorName();
+                TextView colorNameN = findViewById(R.id.colorNN);
+                colorNameN.setText(colorNameT);
+                resetBookmark();
             }
         });
 
-        ImageButton backB = findViewById(R.id.backBut);
+        final ImageButton backB = findViewById(R.id.backBut);
         backB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //backB.startAnimation(scaleAnimation);
                 finish();
             }
         });
 
+        TextView redText = findViewById(R.id.textRorH);
+        redText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Hue in the range (0,360):");
+                } else{
+                    builder.setTitle("Input a value for Red in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekRed.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        TextView greenText = findViewById(R.id.textGorS);
+        greenText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Saturation in the range (0,100):");
+                } else{
+                    builder.setTitle("Input a value for Green in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekGreen.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        TextView blueText = findViewById(R.id.textBorV);
+        blueText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditColorActivity.this);
+                ToggleButtonState = simpleToggleButton.isChecked();
+                if(ToggleButtonState){
+                    builder.setTitle("Input a value for Value in the range (0,100):");
+                } else{
+                    builder.setTitle("Input a value for Blue in the range (0,255):");
+                }
+
+                // Set up the input
+                final EditText input = new EditText(EditColorActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = Integer.parseInt(input.getText().toString());
+                        seekBlue.setProgress(m_Text);
+                        updateColorName();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        // TODO: ANDREW put your code here
+        // |
+        // |
+        // V
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(scaleAnimation);
                 // Code for making the save button change color when clicked
+                //saveNC.playAnimation();
                 isButtonClickedNew = !isButtonClickedNew;
                 saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 if(isButtonClickedNew){
@@ -293,7 +448,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     // Converts the current values in HSV to RGB and stores them in RV, GV, BV
-    public int[] convertHSVtoRGB(int hue, int saturation, int value){
+    public static int[] convertHSVtoRGB(int hue, int saturation, int value){
         float[] hsv = new float[3];
         hsv[0] = hue;
         hsv[1] = ((float) saturation) / 100;
@@ -342,9 +497,16 @@ public class EditColorActivity extends AppCompatActivity {
         }
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        colorNameGetter cng = new colorNameGetter();
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI);
-        cng.execute(colorI);
+        //colorNameGetter cng = new colorNameGetter();
+        final double viewWidthPercentOfScreen = 0.50;
+        final float maxFontSize = 30;
+        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
+        //cng.execute(colorI);
+        //TODO this probably won't work,
+        // the name won't be updated by the time this code runs.
+        // This is where it gets the text to save if you save the color.
+        //I think the easiest way to solve this would be to just call colorNameGetter for each
+        //  saved color, since those already are having problems with names going to multiple lines.
         name = colorNNView.getText().toString();
     }
 
