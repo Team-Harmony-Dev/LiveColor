@@ -3,8 +3,10 @@ package com.harmony.livecolor;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class ColorDatabase extends SQLiteOpenHelper {
 
@@ -41,7 +43,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addColorInfoData(String name, String hex, String rgb, String hsv) {
+    public long addColorInfoData(String name, String hex, String rgb, String hsv) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues colorInfoContentValues = new ContentValues();
         colorInfoContentValues.put(COL2, name);
@@ -50,12 +52,9 @@ public class ColorDatabase extends SQLiteOpenHelper {
         colorInfoContentValues.put(COL5, hsv);
 
         long insertResult = db.insert(TABLE_NAME, null, colorInfoContentValues);
+        Log.d("PAIGE", "addColorInfoData: id of inserted color = " + insertResult);
 
-        if (insertResult == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return insertResult;
     }
 
     public boolean addPaletteInfoData(String name, String id) { // new palette
@@ -65,6 +64,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
         paletteInfoContentValues.put(PAL3, id);
 
         long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteInfoContentValues);
+        Log.d("PAIGE", "addPaletteInfoData: id of new palette = " + insertResult);
+        Log.d("PAIGE", "addPaletteInfoData: id of color added to new palette = " + id);
 
         if (insertResult == -1) {
             return false;
@@ -89,5 +90,21 @@ public class ColorDatabase extends SQLiteOpenHelper {
         return paletteData;
     }
 
+    //method for renaming existing palette
+    public boolean changePaletteName(String id, String newName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
+                + " SET NAME = \'" + newName + "\'"
+                + " WHERE ID = \'" + id + "\'";
+
+        try {
+            db.execSQL(updateQuery);
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

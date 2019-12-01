@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,25 +34,33 @@ public class PaletteInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        //set back button to leave activity
+        //get extra containing the palette object
+        Intent intent = getIntent();
+        palette = (MyPalette) intent.getSerializableExtra("PALETTE");
+
+        //get palette name textview and set name of palette on activity
+        final TextView paletteName = findViewById(R.id.paletteName);
+        paletteName.setText(palette.getName());
+
+        //Color arraylist is initialized here. Gets arraylist of colors from palette object
+        paletteColors = palette.getColors();
+
+        //set back button to leave activity, and edit button to change palette name
         ImageButton backButton = findViewById(R.id.backButton);
+        ImageButton editButton = findViewById(R.id.editButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-
-        //get extra containing the palette object
-        Intent intent = getIntent();
-        palette = (MyPalette) intent.getSerializableExtra("PALETTE");
-
-        //get palette name textview and set name of palette on activity
-        TextView paletteName = findViewById(R.id.paletteName);
-        paletteName.setText(palette.getName());
-
-        //Color arraylist is initialized here. Gets arraylist of colors from palette object
-        paletteColors = palette.getColors();
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog setNameDialog = new CustomDialog(PaletteInfoActivity.this,palette.getId());
+                setNameDialog.showSetNameDialog();
+            }
+        });
 
         //initialize the recycler
         initRecycler();

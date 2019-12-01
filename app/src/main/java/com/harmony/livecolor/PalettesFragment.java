@@ -30,6 +30,7 @@ import java.util.List;
 public class PalettesFragment extends Fragment {
 
     private OnListFragmentInteractionListener listener;
+    private MyPalettesRecyclerViewAdapter adapter;
     private Context context;
     private View view;
     private ArrayList<MyPalette> paletteList;
@@ -73,6 +74,9 @@ public class PalettesFragment extends Fragment {
         return view;
     }
 
+    /**
+     * initialize palette list from database to pass into activity's recycler
+     */
     public void initPalettes(){
         //initialize ArrayList<MyPalette> here
         //will access palettes from database and put into MyPalette objects
@@ -89,11 +93,19 @@ public class PalettesFragment extends Fragment {
         if (paletteData != null && paletteData.getCount() > 0) {
             paletteData.moveToFirst();
             colorData.moveToFirst();
+            Log.d("PAIGE", "Pre-incrementing, palette id = " + paletteData.getString(0)
+                    + " " + paletteData.getString(1)
+                    + " " + paletteData.getString(2));
+            Log.d("PAIGE", "Pre-incrementing, color id = " + colorData.getString(0));
             do {
                 colorList.add(new MyColor(colorData.getString(0) + "",
                         colorData.getString(1) + "", colorData.getString(2) + "",
                         colorData.getString(3) + "", colorData.getString(4) + ""));
                 paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList));
+                Log.d("PAIGE", "initPalettes: this color = " + colorList.get(colorList.size()-1).getId()
+                        + " " + colorList.get(colorList.size()-1).getName());
+                Log.d("PAIGE", "initPalettes: this color added to palette = " + paletteList.get(paletteList.size()-1).getId()
+                        + " " + paletteList.get(paletteList.size()-1).getName());
                 if(colorData.moveToNext() && paletteData.moveToNext()) {
                     colorList1.add(new MyColor(colorData.getString(0) + "",
                             colorData.getString(1) + "", colorData.getString(2) + "",
@@ -104,11 +116,14 @@ public class PalettesFragment extends Fragment {
         }
     }
 
+    /**
+     * initialize recycler
+     */
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
-        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
+        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -145,5 +160,13 @@ public class PalettesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    //reinitialize palettes and recycler onResume to update any changed color names or added palettes
+    @Override
+    public void onResume() {
+        initPalettes();
+        initRecycler();
+        super.onResume();
     }
 }
