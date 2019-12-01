@@ -2,6 +2,7 @@ package com.harmony.livecolor;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -236,7 +237,11 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
+        Cursor colorData = colorDB.getColorInfoData();
         colorDB.addColorInfoData(name, hex, rgb, hsv);
+        long i = colorDB.addColorInfoData(name, hex, rgb, hsv);
+        colorData.move(Math.toIntExact(i));
+        colorDB.updateID(newName, colorData.getString(0));
         alertDialogSave.dismiss();
         Toast.makeText(context,
                 "Saved color to \"" + palette.getName() + "\"",

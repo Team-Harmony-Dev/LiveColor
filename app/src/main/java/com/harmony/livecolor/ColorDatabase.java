@@ -70,6 +70,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public void updateID(String name, String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("REF", id);
+        db.("PALETTE_TABLE_NAME", cv, )
+    }
+
+
     //might need new method for adding to an existing palette
 
     public Cursor getColorInfoData() {

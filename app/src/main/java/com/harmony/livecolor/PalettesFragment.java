@@ -33,6 +33,8 @@ public class PalettesFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyPalette> paletteList;
+    private ArrayList<MyPalette> paletteList1;
+    private ArrayList<MyPalette> paletteList2;
     private ArrayList<MyColor> colorList;
     private ArrayList<MyColor> colorList1;
     private ArrayList<MyColor> colorList2;
@@ -83,6 +85,8 @@ public class PalettesFragment extends Fragment {
         Cursor colorData = newColorDatabase.getColorInfoData();
         Cursor paletteData = newColorDatabase.getPaletteInfoData();
         paletteList = new ArrayList<>();
+        paletteList1 = new ArrayList<>();
+        paletteList2 = new ArrayList<>();
         colorList = new ArrayList<>();
         colorList1 = new ArrayList<>();
         colorList2 = new ArrayList<>();
