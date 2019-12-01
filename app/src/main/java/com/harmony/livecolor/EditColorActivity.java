@@ -96,6 +96,7 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue.setProgress(BV);
 
         TextView colorNameView = findViewById(R.id.colorN);
+        //TODO When coming from a saved color, this sets the incorrect name.
         colorNameView.setText(colorNameT);
         //When you press edit color on a saved color, the name is incorrect. This should fix it...
         //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
