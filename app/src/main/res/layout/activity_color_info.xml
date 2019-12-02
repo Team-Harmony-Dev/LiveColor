@@ -82,10 +82,10 @@
                 android:textSize="30sp" />
 
             <Button
-                android:id="@+id/harmonyButton"
+                android:id="@+id/harmonyButtonV2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.3"
+                android:layout_weight="0.0"
                 android:text="See harmonies" />
         </LinearLayout>
 
