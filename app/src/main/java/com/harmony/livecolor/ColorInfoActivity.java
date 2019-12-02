@@ -108,7 +108,11 @@ public class ColorInfoActivity extends AppCompatActivity {
             Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
         }
-        colorNameView.setText(colorNameT);
+
+        final double viewWidthPercentOfScreen = 1.0;
+        final float maxFontSize = 30;
+        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+        //colorNameView.setText(colorNameT);
 
         //HEX
 
