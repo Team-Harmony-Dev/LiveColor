@@ -88,6 +88,16 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
+        colorValue = Integer.parseInt(colorString);
+
+        Log.d("DEBUG", "Color set to background = " + colorString);
+        colorValue = Integer.parseInt(colorString);
+        if (bundle != null) {
+            String hex = bundle.getString("hex");
+            colorValue = parseColor(hex);
+        }
+
+
         // UPDATE VALUES
         ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
@@ -195,11 +205,6 @@ public class ColorInfoActivity extends AppCompatActivity {
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
-        //add divider decoration to make it match the assignment example?
-        //RecyclerView.ItemDecoration itemDecoration = new
-                //DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //recyclerView.addItemDecoration(itemDecoration);
-        //then initialize the adapter, passing in the bookList
         MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
