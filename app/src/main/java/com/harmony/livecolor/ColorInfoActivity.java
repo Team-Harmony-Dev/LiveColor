@@ -188,12 +188,12 @@ public class ColorInfoActivity extends AppCompatActivity {
 
         newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
 
-        initColors();
+        //initColors();
 
-        initRecycler();
+        //initRecycler();
     }
 
-    public void initColors(){
+    /*public void initColors(){
         //initialize ArrayList<MyColors> here
         String TAG = "COLORS";
         Cursor colorData = newColorDatabase.getColorInfoData();
@@ -220,6 +220,6 @@ public class ColorInfoActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
+    } */
 
 }

@@ -70,7 +70,7 @@ public class EditColorActivity extends AppCompatActivity {
 
         SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
-        colorNameT = preferences.getString("colorName","Default");
+        //colorNameT = preferences.getString("colorName","Default");
         colorValue = Integer.parseInt(colorString);
         if (intent.getExtras() != null) {
             Log.d("EditColorActivity", "BUNDLE!!");
@@ -95,8 +95,6 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
-        TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameT);
         //When you press edit color on a saved color, the name is incorrect. This should fix it...
         //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
         final double viewWidthPercentOfScreen = 0.50;
@@ -106,6 +104,8 @@ public class EditColorActivity extends AppCompatActivity {
         TextView colorNameN = findViewById(R.id.colorNN);
         //colorNameN.setText(colorNameT);
         updateColorName();
+        TextView colorNameView = findViewById(R.id.colorN);
+        colorNameView.setText(colorNameN.getText());
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
