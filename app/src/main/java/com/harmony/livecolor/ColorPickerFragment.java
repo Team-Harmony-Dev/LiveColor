@@ -302,8 +302,6 @@ public class ColorPickerFragment extends Fragment {
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
-    //TODO there's clearly some sort of error in either getting the coordinates or turning them into a color. Not quite sure where.
-    //TODO maybe the image view's size is changing, maybe the image dimensions do not match the imageview size (stretched/compressed to fit)
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
         @Override
@@ -343,21 +341,6 @@ public class ColorPickerFragment extends Fragment {
                 newImageHeight = originalImageHeight * newImageMaxWidth / originalImageWidth;
             }
 
-            //TODO delete this frame resize if the other fix (translating x y at line 185) worked.
-
-            //TODO For some reason, the image gets smaller when the ImageView resizes.
-            //  The ImageView seems to perfectly contain the image though.
-            //TODO Actually we'd want to do this when loading the image or the first click would be off
-            //TODO We want to be able to undo this as well for when we select a new image. Save the coordinates somewhere?
-            //TODO This, and many other things, should be in their own functions
-            //If you delete this, also delete the FrameLayout import.
-            // https://stackoverflow.com/a/8233084
-            // Now change ImageView's dimensions to match the scaled image
-            //FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) pickedImage.getLayoutParams();
-            //params.width = (int) newImageWidth;
-            //params.height = (int) newImageHeight;
-            //pickedImage.setLayoutParams(params);
-
             Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
                     +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
 
@@ -390,7 +373,7 @@ public class ColorPickerFragment extends Fragment {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 wasValidClick = false;
             }
-            //get color int from said pixel coordinates using the source image
+            //Get color int from said pixel coordinates using the source image
             int pixel;
             if(wasValidClick){
                 pixel = bitmap.getPixel((int) x, (int) y);
@@ -410,8 +393,7 @@ public class ColorPickerFragment extends Fragment {
             saveColorB.setImageResource(R.drawable.ic_action_name);
             saveColorB.setColorFilter(null);
             //Get the color name from an API call
-            //TODO if the name is very long it may go to a new line and shrink the buttons.
-            //It takes a second to load and I don't want to spam the API so lets only call it when we release
+            //It takes a second to load and I don't want to spam the API so we only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
                 TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
@@ -496,11 +478,6 @@ public class ColorPickerFragment extends Fragment {
             TextView view = getActivity().findViewById(R.id.colorName);
             //A full API call should be unnecessary since we already saved the name.
             ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
-            //Log.d("S3US5", "Loading color name into textview using function to ensure it fits on one line...");
-            //Just set the text and make sure it fits on a single line.
-            //colorNameGetter.setAppropriatelySizedText(view, savedColorName, viewWidthPercentOfScreen, maxFontSize);
-            //Old, simple code. Doesn't prevent text from going to a new line.
-            //((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
         }
         updateColorValues(getView(), savedColorInt);
 //        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
