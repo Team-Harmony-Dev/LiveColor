@@ -7,9 +7,14 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/palettesRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="0dp"
+        android:layout_weight="0.9"></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>
