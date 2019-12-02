@@ -9,15 +9,6 @@ import static java.lang.StrictMath.abs;
 
 //Contains functions for generating colors for palettes based on a given color.
 public class HarmonyGenerator {
-
-    //TODO Determine what input we want to support. Can overload I guess.
-    //  Currently I'm using hue (0..359) saturation (0..100) value (0..100)
-    //  It's be nice to be able to do something like analogous(complement())
-    //TODO Best format for returning? I can use arrays I guess.
-    // Helper functions if I need decide on a different format.
-
-    //TODO tests
-
     //Each color[] should be the hsv like what is returned by the rest of the functions in this file.
     public static ArrayList<MyColor> colorsToMyColors(float[][] colors, int numberOfColors){
         ArrayList<MyColor> myColorArrayList = new ArrayList<>();
@@ -33,7 +24,7 @@ public class HarmonyGenerator {
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
         //TODO how to name them? API call needs a textView. I could go "left 1, original, right 1...."
-        MyColor colorObj = new MyColor(""+id, ("Test"+id), hex, rgb, hsv);
+        MyColor colorObj = new MyColor(""+id, ("Color "+id), hex, rgb, hsv);
         return colorObj;
     }
     //For all these functions, currently I'm using hue (0..359) saturation (0..100) value (0..100)
