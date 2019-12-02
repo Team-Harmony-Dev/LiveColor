@@ -510,12 +510,6 @@ public class EditColorActivity extends AppCompatActivity {
         final double viewWidthPercentOfScreen = 1.0;
         final float maxFontSize = 30;
         ColorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
-        //TODO this probably won't work,
-        // the name won't be updated by the time this code runs.
-        // This is where it gets the text to save if you save the color.
-        //I think the easiest way to solve this would be to just call colorNameGetter for each
-        //  saved color, since those already are having problems with names going to multiple lines.
-        //name = colorNNView.getText().toString();
     }
 
     public void updateColorPicker(){
