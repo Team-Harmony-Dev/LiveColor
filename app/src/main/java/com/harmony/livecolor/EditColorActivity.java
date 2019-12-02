@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,11 +25,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import com.airbnb.lottie.LottieAnimationView;
-import java.util.zip.Inflater;
 
 import static android.graphics.Color.RGBToHSV;
-import static android.graphics.Color.parseColor;
 
 public class EditColorActivity extends AppCompatActivity {
     int colorValue;
@@ -70,7 +65,7 @@ public class EditColorActivity extends AppCompatActivity {
 
         SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String colorString = preferences.getString("colorString","Default");
-        //colorNameT = preferences.getString("colorName","Default");
+
         colorValue = Integer.parseInt(colorString);
         if (intent.getExtras() != null) {
             Log.d("EditColorActivity", "BUNDLE!!");
@@ -95,17 +90,19 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue = findViewById(R.id.seekBarBlue);
         seekBlue.setProgress(BV);
 
+        TextView colorNameView = findViewById(R.id.colorN);
+        colorNameView.setText(colorNameT);
         //When you press edit color on a saved color, the name is incorrect. This should fix it...
         //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
         final double viewWidthPercentOfScreen = 0.50;
         final float maxFontSize = 30;
-        //colorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
 
         TextView colorNameN = findViewById(R.id.colorNN);
-        //colorNameN.setText(colorNameT);
-        updateColorName();
-        TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameN.getText());
+        colorNameN.setText(" ");
+
+        TextView colorNameV = findViewById(R.id.colorN);
+        updateColorNameWithView(colorNameV);
+
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
@@ -115,7 +112,6 @@ public class EditColorActivity extends AppCompatActivity {
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //buttonView.startAnimation(scaleAnimation);
                 if (isChecked) {
                     // The toggle is enabled: HSV mode
                     int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
@@ -144,7 +140,8 @@ public class EditColorActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 updateText(progressChangedValue, seekGreen.getProgress(), seekBlue.getProgress());
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-                updateColorName();
+                EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                updateColorNameWithView(colorNNView);
                 resetBookmark();
             }
         });
@@ -162,7 +159,8 @@ public class EditColorActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 updateText(seekRed.getProgress(), progressChangedValue, seekBlue.getProgress());
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-                updateColorName();
+                EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                updateColorNameWithView(colorNNView);
                 resetBookmark();
             }
         });
@@ -180,7 +178,8 @@ public class EditColorActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 updateText(seekRed.getProgress(), seekGreen.getProgress(), progressChangedValue);
                 updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-                updateColorName();
+                EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                updateColorNameWithView(colorNNView);
                 resetBookmark();
             }
         });
@@ -215,7 +214,6 @@ public class EditColorActivity extends AppCompatActivity {
         backB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //backB.startAnimation(scaleAnimation);
                 finish();
             }
         });
@@ -233,19 +231,17 @@ public class EditColorActivity extends AppCompatActivity {
                     builder.setTitle("Input a value for Red in the range (0,255):");
                 }
 
-                // Set up the input
                 final EditText input = new EditText(EditColorActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 builder.setView(input);
 
-                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = Integer.parseInt(input.getText().toString());
                         seekRed.setProgress(m_Text);
-                        updateColorName();
+                        EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                        updateColorNameWithView(colorNNView);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -272,19 +268,17 @@ public class EditColorActivity extends AppCompatActivity {
                     builder.setTitle("Input a value for Green in the range (0,255):");
                 }
 
-                // Set up the input
                 final EditText input = new EditText(EditColorActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 builder.setView(input);
 
-                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = Integer.parseInt(input.getText().toString());
                         seekGreen.setProgress(m_Text);
-                        updateColorName();
+                        EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                        updateColorNameWithView(colorNNView);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -311,19 +305,17 @@ public class EditColorActivity extends AppCompatActivity {
                     builder.setTitle("Input a value for Blue in the range (0,255):");
                 }
 
-                // Set up the input
                 final EditText input = new EditText(EditColorActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 builder.setView(input);
 
-                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = Integer.parseInt(input.getText().toString());
                         seekBlue.setProgress(m_Text);
-                        updateColorName();
+                        EditColorActivity.colorNNView = findViewById(R.id.colorNN);
+                        updateColorNameWithView(colorNNView);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -337,16 +329,10 @@ public class EditColorActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: ANDREW put your code here
-        // |
-        // |
-        // V
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view.startAnimation(scaleAnimation);
-                // Code for making the save button change color when clicked
-                //saveNC.playAnimation();
                 isButtonClickedNew = !isButtonClickedNew;
                 saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
                 if(isButtonClickedNew){
@@ -356,7 +342,9 @@ public class EditColorActivity extends AppCompatActivity {
                         int hue = seekRed.getProgress();
                         int sat = seekGreen.getProgress();
                         int val = seekBlue.getProgress();
-                        updateColorName();
+
+                        name = colorNNView.getText().toString();
+
                         hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                         int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
                         colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
@@ -368,13 +356,12 @@ public class EditColorActivity extends AppCompatActivity {
                         int red = seekRed.getProgress();
                         int green = seekGreen.getProgress();
                         int blue = seekBlue.getProgress();
-                        updateColorName();
+                        name = colorNNView.getText().toString();
                         rgb = String.format("(%1$d, %2$d, %3$d)", red, green, blue);
                         hex = String.format( "#%02X%02X%02X", red, green, blue);
                         int[] hue = convertRGBtoHSV(red,green,blue);
                         hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
                         colorDB.addColorInfoData(name, hex, rgb, hsv);
-
                     }
                     saveNC.setColorFilter(colorI);
                 }else{
@@ -438,6 +425,7 @@ public class EditColorActivity extends AppCompatActivity {
         }
     }
 
+    //Takes in three ints representing RGB values and returns an HSV array
     public int[] convertRGBtoHSV(int red, int green, int blue){
         float[] hsvArray = new float[3];
         RGBToHSV(red,green,blue,hsvArray);
@@ -448,7 +436,7 @@ public class EditColorActivity extends AppCompatActivity {
         return convertedHSVForSeekbars;
     }
 
-    // Converts the current values in HSV to RGB and stores them in RV, GV, BV
+    // Converts given HSV ints to RGB values and returns them in an array
     public static int[] convertHSVtoRGB(int hue, int saturation, int value){
         float[] hsv = new float[3];
         hsv[0] = hue;
@@ -462,15 +450,13 @@ public class EditColorActivity extends AppCompatActivity {
         return newRGBValues;
     }
 
+    //Update the "new color" image with given int values
     public void updateColorNewInput(int redOrHue, int greenOrSat, int blueOrVal){
         ImageView colorNewS = (ImageView) findViewById(R.id.colorNewShow);
-
-        //Get the current state of the toggle button - RGB or HSV
         ToggleButtonState = simpleToggleButton.isChecked();
 
         int colorI = 0;
         if(ToggleButtonState){
-            // In HSV mode
             int[] getRGBValue = convertHSVtoRGB(redOrHue, greenOrSat, blueOrVal);
             colorI = getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
         }else {
@@ -478,11 +464,10 @@ public class EditColorActivity extends AppCompatActivity {
         }
 
         colorNewS.setBackgroundColor(colorI);
-
-        //updateColorPicker();
     }
 
-    public void updateColorName(){
+    //Update the passed textview thisView with the current color
+    public void updateColorNameWithView(TextView thisView){
         ToggleButtonState = simpleToggleButton.isChecked();
 
         int redOrHue = seekRed.getProgress();
@@ -497,22 +482,9 @@ public class EditColorActivity extends AppCompatActivity {
             colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
 
-        EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        //colorNameGetter cng = new colorNameGetter();
-        final double viewWidthPercentOfScreen = 0.50;
+        final double viewWidthPercentOfScreen = 1.0;
         final float maxFontSize = 30;
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
-        //cng.execute(colorI);
-        //TODO this probably won't work,
-        // the name won't be updated by the time this code runs.
-        // This is where it gets the text to save if you save the color.
-        //I think the easiest way to solve this would be to just call colorNameGetter for each
-        //  saved color, since those already are having problems with names going to multiple lines.
-        name = colorNNView.getText().toString();
-    }
-
-    public void updateColorPicker(){
-        //TODO: Decide if returning new color to color picker or keeping the old
+        ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen, maxFontSize);
     }
 
     public int getIntFromColor(int Red, int Green, int Blue){

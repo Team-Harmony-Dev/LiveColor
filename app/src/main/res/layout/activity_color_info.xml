@@ -11,7 +11,8 @@
         android:id="@+id/colorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:background="#03A9F4"
+        android:gravity="center|top"
         android:orientation="vertical"
         tools:context=".ColorInfoActivity">
 
@@ -19,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.05"
+            android:background="#FFFFFF"
             android:orientation="horizontal">
 
             <ImageButton
@@ -62,6 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
+            android:background="#FCFCFD"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -150,16 +154,17 @@
                     android:layout_weight="0.2"
                     android:fontFamily="@font/lato_regular"
                     android:text="@android:string/copy" />
+
             </LinearLayout>
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/harmonyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_regular"
+                android:text="View Color Harmonies" />
 
-        <Button
-            android:id="@+id/harmonyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lato_regular"
-            android:text="View Color Harmonies" />
+        </LinearLayout>
 
     </LinearLayout>
 

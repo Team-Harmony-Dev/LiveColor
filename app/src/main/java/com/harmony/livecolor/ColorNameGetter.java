@@ -28,13 +28,13 @@ import java.net.URL;
 // Takes the color int, "returns" a string of the color name by placing it in the TextView
 // Automatically reduces the font size of the TextView to ensure that the name fits on one line.
 //Example of use:
-//colorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
+//ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen);
 //
 // Retrieves names from https://github.com/meodai/color-names
 // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
 // Relies on ColorPickerFragment.colorToHex()
-//TODO doing some weird stuff with static? Currently assumes only one call at a time?
-public class colorNameGetter extends AsyncTask<Integer, Void, String> {
+//TODO currently haven't tested doing multiple calls at the same time. Some static stuff should but might not support that.
+public class ColorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //TODO If this works, remove some commented code
     //Font size is in sp.
@@ -45,7 +45,7 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
 
         viewWidthPercentOfScreen = maximumViewWidthPercentOfScreen;
         //activityViewIsIn = activityThatYourViewIsIn;
-        colorNameGetter tmp = new colorNameGetter();
+        ColorNameGetter tmp = new ColorNameGetter();
         tmp.execute(pixelColor);
     }
 
@@ -124,7 +124,6 @@ public class colorNameGetter extends AsyncTask<Integer, Void, String> {
     //https://stackoverflow.com/a/31399534
     //And maybe https://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
 
-    //TODO store the original text size and somehow link it to the view? User shouldn't have to manage it?
     //TODO handle weight better, probably don't need it as a parameter?
     //TODO make this function work without calling the whole class? Because sometimes we may just store the name, no need for a full api call.
     public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
