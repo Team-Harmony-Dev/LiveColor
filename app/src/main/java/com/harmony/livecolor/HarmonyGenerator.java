@@ -184,9 +184,12 @@ public class HarmonyGenerator {
         return resultColors;
     }
 
+    //Valid hue values are 0 thru 360, inclusive.
     private static float checkHueForOverflow(float hue){
-        if(hue >= 360){
-            return hue - 360;
+        if(hue > 360){
+            return hue - 361;
+        } else if(hue < 0){
+            return hue + 361;
         } else {
             return hue;
         }

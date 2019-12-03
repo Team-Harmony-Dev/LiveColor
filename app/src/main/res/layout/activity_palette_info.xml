@@ -53,9 +53,9 @@
             android:layout_height="0dp"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:layout_weight=".1"
-            android:gravity="center"
-            android:text="Palette Name"
-            android:textSize="30sp"
+            android:gravity="center|top"
+            android:text="Palette Name is Super Long and Annoying"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
