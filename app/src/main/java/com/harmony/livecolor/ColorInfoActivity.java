@@ -4,11 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -17,17 +22,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
 
 public class ColorInfoActivity extends AppCompatActivity {
-
+    private SavedColorsFragment.OnListFragmentInteractionListener listener;
     int colorValue, RV, GV, BV, hue;
     String hexValue;
     float[] hsvArray;
+    private ArrayList<MyColor> colorList;
+    ColorDatabase newColorDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +89,22 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
+        colorValue = Integer.parseInt(colorString);
+
+        Log.d("DEBUG", "Color set to background = " + colorString);
+        colorValue = Integer.parseInt(colorString);
+        if (bundle != null) {
+            String hex = bundle.getString("hex");
+            colorValue = parseColor(hex);
+        }
+
+
         // UPDATE VALUES
-        ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
+        ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
+
+        LinearLayout wholeLayout = findViewById(R.id.colorLayout);
+        wholeLayout.setBackgroundColor(colorValue);
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
@@ -89,7 +112,11 @@ public class ColorInfoActivity extends AppCompatActivity {
             Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
         }
-        colorNameView.setText(colorNameT);
+
+        final double viewWidthPercentOfScreen = 1.0;
+        final float maxFontSize = 30;
+        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+        //colorNameView.setText(colorNameT);
 
         //HEX
 
@@ -166,6 +193,42 @@ public class ColorInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
+
+        //initColors();
+
+        //initRecycler();
     }
+
+    /*public void initColors(){
+        //initialize ArrayList<MyColors> here
+        String TAG = "COLORS";
+        Cursor colorData = newColorDatabase.getColorInfoData();
+        colorList = new ArrayList<>();
+
+        if (colorData != null && colorData.getCount() > 0) {
+            if (colorData.moveToFirst()) {
+                do {
+                    Log.d(TAG,  colorData.getString(2));
+                    colorList.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                }         while (colorData.moveToNext());
+
+            }
+        }
+    }
+
+    public void initRecycler(){
+        //get the RecyclerView from the view
+        RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
+        //and set the adapter for the RecyclerView
+        recyclerView.setAdapter(adapter);
+        //and set the layout manager as well
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+    } */
 
 }
