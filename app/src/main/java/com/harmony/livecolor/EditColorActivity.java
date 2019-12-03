@@ -332,10 +332,11 @@ public class EditColorActivity extends AppCompatActivity {
         saveNC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.startAnimation(scaleAnimation);
-                isButtonClickedNew = !isButtonClickedNew;
-                saveNC.setImageResource(isButtonClickedNew ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
-                if(isButtonClickedNew){
+
+                if(!isButtonClickedNew){
+                    view.startAnimation(scaleAnimation);
+                    isButtonClickedNew = !isButtonClickedNew;
+                    saveNC.setImageResource(R.drawable.bookmark_selected);
                     ToggleButtonState = simpleToggleButton.isChecked();
                     int colorI = 0;
                     if(ToggleButtonState) {
@@ -364,8 +365,6 @@ public class EditColorActivity extends AppCompatActivity {
                         colorDB.addColorInfoData(name, hex, rgb, hsv);
                     }
                     saveNC.setColorFilter(colorI);
-                }else{
-                    saveNC.setColorFilter(null);
                 }
 
             }
