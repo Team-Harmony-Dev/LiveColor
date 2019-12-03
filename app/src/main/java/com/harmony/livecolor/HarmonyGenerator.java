@@ -187,6 +187,8 @@ public class HarmonyGenerator {
     private static float checkHueForOverflow(float hue){
         if(hue >= 360){
             return hue - 360;
+        } else if(hue < 0){
+            return hue + 360;
         } else {
             return hue;
         }
