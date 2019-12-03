@@ -108,7 +108,11 @@ public class ColorInfoActivity extends AppCompatActivity {
             Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
         }
-        colorNameView.setText(colorNameT);
+
+        final double viewWidthPercentOfScreen = 1.0;
+        final float maxFontSize = 30;
+        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+        //colorNameView.setText(colorNameT);
 
         //HEX
 
@@ -176,16 +180,6 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
-        Button harmonyButton = findViewById(R.id.harmonyButton);
-        harmonyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
-                intent.putExtra("color_hsv", hsvArray);
-                startActivity(intent);
-            }
-        });
-
         newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
 
         initColors();
@@ -220,6 +214,16 @@ public class ColorInfoActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Button harmonyButton = findViewById(R.id.harmonyButton);
+        harmonyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
+                intent.putExtra("color_hsv", hsvArray);
+                startActivity(intent);
+            }
+        });
     }
 
 }
