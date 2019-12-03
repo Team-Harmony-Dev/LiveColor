@@ -83,13 +83,13 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //Testing getting some colors spaced evenly on the color wheel
         float[][] testOddEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 3);
         ArrayList<MyColor> testOddEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testOddEvenSpaced, 3);
-        MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced on color wheel", testOddEvenSpacedMyColors);
+        MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced hues", testOddEvenSpacedMyColors);
         paletteList.add(testOddEvenSpacedPalette);
 
         //Testing getting some colors spaced evenly on the color wheel
         float[][] testEvenEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
         ArrayList<MyColor> testEvenEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
-        MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
+        MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced hues", testEvenEvenSpacedMyColors);
         paletteList.add(testEvenEvenSpacedPalette);
     }
 
