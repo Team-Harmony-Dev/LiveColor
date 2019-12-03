@@ -215,20 +215,14 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         builder.setPositiveButton("Save Palette", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String newName = newPaletteName.getText().toString();
-
                 if(newColor) {
-                    Cursor colorData = colorDB.getColorInfoData();
-                    Log.d("WTF", "WTF");
                     colorDB.addColorInfoData(name, hex, rgb, hsv);
-                    colorData.moveToLast();
-                    colorDB.addPaletteInfoData(newName, colorData.getString(0));
-
                     //create new palette database item with the above color
                     //TODO: addColorInfoData returns id for easy adding into palette
                     // otherwise handle addColorInfoData within addPaletteInfoData
                 }
                 dialog.dismiss();
+                String newName = newPaletteName.getText().toString();
                 Toast.makeText(context,
                         "New palette \"" + newName + "\" created!",
                         Toast.LENGTH_SHORT).show();
@@ -242,6 +236,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
         colorDB.addColorInfoData(name, hex, rgb, hsv);
+        //TODO: implement palette database part
         alertDialogSave.dismiss();
         Toast.makeText(context,
                 "Saved color to \"" + palette.getName() + "\"",
