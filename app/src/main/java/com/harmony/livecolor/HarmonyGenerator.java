@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
-import static java.lang.StrictMath.abs;
 
 //Contains functions for generating colors for palettes based on a given color.
 public class HarmonyGenerator {
@@ -50,7 +49,7 @@ public class HarmonyGenerator {
         String strRgb = "("+rgb[0]+", "+rgb[1]+", "+rgb[2]+")";
         return strRgb;
     }
-    //TODO need to decide on a format for this.
+
     public static String hsvToStringHsv(float[] color){
         //Easiest way to get proper hsv is to use the built in function like we did in ColorPickerFragment.
         float hue = color[0];
@@ -61,6 +60,7 @@ public class HarmonyGenerator {
         float[] hsvArray = new float[3];
         RGBToHSV(rgb[0],rgb[1],rgb[2],hsvArray);
         //TODO decide on a format for the string.
+        // We aren't actually using this anyway currently since palettes aren't finished.
         return "TODO harmonyGenerator.hsvToStringHsv()";
     }
 
@@ -113,7 +113,7 @@ public class HarmonyGenerator {
     }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
-    //TODO how to handle parcent? Currently it does a percent of available space in each direction,
+    //TODO how should we handle percent? Currently it does a percent of available space in each direction,
     //  meaning left and right colors are equally spaced with respect to their sides but not the opposite side.
     public static float[][] monochromaticScheme(float hue, float saturation, float value, float percent, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
@@ -160,27 +160,7 @@ public class HarmonyGenerator {
         Log.d("S4US4", "Getting analogous colors for triadic...");
         float[][] triadicColors = analogousScheme(complementHue(hue), saturation, value, degrees, numberOfColors);//new float[numberOfColors][numberOfComponents];
         int middleIndex = numberOfColors / 2;
-        /*
-        for(int i = 0; i < numberOfColors; ++i){
-            float triadicHue;
-            if(i < middleIndex){
-                int numberOfColorsLeftFromMiddle = middleIndex - i;
-                triadicHue = 180 + hue + (degrees * numberOfColorsLeftFromMiddle);
-                Log.d("S4US4", "Calculated triadic color -"+numberOfColorsLeftFromMiddle
-                        +" :"+triadicHue);
-            } else {
-                int numberOfColorsRightFromMiddle = i - middleIndex;
-                triadicHue = 180 + hue - (degrees * numberOfColorsRightFromMiddle);
-                Log.d("S4US4", "Calculated triadic color +"+numberOfColorsRightFromMiddle
-                        +" :"+triadicHue);
-            }
 
-            triadicHue = checkHueForOverflow(triadicHue);
-
-            float[] color = new float[] {triadicHue, saturation, value};
-            triadicColors[i] = color;
-        }
-        */
         float[] originalColor = new float[] {hue, saturation, value};
         triadicColors[middleIndex] = originalColor;
 
@@ -204,20 +184,14 @@ public class HarmonyGenerator {
         return resultColors;
     }
 
+    //Valid hue values are 0 thru 360, inclusive.
     private static float checkHueForOverflow(float hue){
-        if(hue >= 360){
-            return hue - 360;
+        if(hue > 360){
+            return hue - 361;
+        } else if(hue < 0){
+            return hue + 361;
         } else {
             return hue;
         }
     }
-    /*I'm not sure this is actually meaningful
-    private static float checkValueForOverflow(float value){
-        if(value >= 100){
-            return value - 100;
-        } else {
-            return value;
-        }
-    }
-    */
 }

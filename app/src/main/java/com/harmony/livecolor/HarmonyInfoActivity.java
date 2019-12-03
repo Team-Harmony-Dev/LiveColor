@@ -44,7 +44,6 @@ public class HarmonyInfoActivity extends AppCompatActivity {
 
 
     public void initPalettes(){
-        //initialize ArrayList<MyPalette> here
         paletteList = new ArrayList<>();
 
         float[] hsv = getIntent().getFloatArrayExtra("color_hsv");
@@ -53,12 +52,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         float saturation = hsv[1];
         float value = hsv[2];
 
-        /*
-        hue = 180;
-        saturation = 100;
-        value = 100;
-        */
-        //TODO should probably have a helper function for these tests.
+        //TODO should probably have a helper function for these tests. Also, they're no longer "test"s
         //Note: fragment_palettes.xml limits the number of colors displayed per palette on the menu to 10.
         // also the edit button when you select a palette does nothing.
 
@@ -80,7 +74,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
 
-        //TODO I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
+        //TODO (refactor) I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
         float[][] testTriadic = HarmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
         ArrayList<MyColor> testTriadicMyColors = HarmonyGenerator.colorsToMyColors(testTriadic, 3);
         MyPalette testTriadicPalette = new MyPalette("3", "Split-Complementary", testTriadicMyColors);
@@ -89,13 +83,13 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //Testing getting some colors spaced evenly on the color wheel
         float[][] testOddEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 3);
         ArrayList<MyColor> testOddEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testOddEvenSpaced, 3);
-        MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced on color wheel", testOddEvenSpacedMyColors);
+        MyPalette testOddEvenSpacedPalette = new MyPalette("4", "Three evenly spaced hues", testOddEvenSpacedMyColors);
         paletteList.add(testOddEvenSpacedPalette);
 
         //Testing getting some colors spaced evenly on the color wheel
         float[][] testEvenEvenSpaced = HarmonyGenerator.evenlySpacedScheme(hue, saturation, value, 4);
         ArrayList<MyColor> testEvenEvenSpacedMyColors = HarmonyGenerator.colorsToMyColors(testEvenEvenSpaced, 4);
-        MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced on color wheel", testEvenEvenSpacedMyColors);
+        MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced hues", testEvenEvenSpacedMyColors);
         paletteList.add(testEvenEvenSpacedPalette);
     }
 
