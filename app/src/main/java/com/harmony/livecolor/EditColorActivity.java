@@ -96,6 +96,7 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue.setProgress(BV);
 
         TextView colorNameView = findViewById(R.id.colorN);
+        //TODO When coming from a saved color, this sets the incorrect name.
         colorNameView.setText(colorNameT);
         //When you press edit color on a saved color, the name is incorrect. This should fix it...
         //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
@@ -356,7 +357,10 @@ public class EditColorActivity extends AppCompatActivity {
                         int hue = seekRed.getProgress();
                         int sat = seekGreen.getProgress();
                         int val = seekBlue.getProgress();
-                        updateColorName();
+                        //TODO Why get an update here ? Just grab the name ?
+                        //updateColorName();
+                        name = colorNNView.getText().toString();
+
                         hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                         int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
                         colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
@@ -368,7 +372,9 @@ public class EditColorActivity extends AppCompatActivity {
                         int red = seekRed.getProgress();
                         int green = seekGreen.getProgress();
                         int blue = seekBlue.getProgress();
-                        updateColorName();
+                        //TODO Why get an update here ? Just grab the name ?
+                        //updateColorName();
+                        name = colorNNView.getText().toString();
                         rgb = String.format("(%1$d, %2$d, %3$d)", red, green, blue);
                         hex = String.format( "#%02X%02X%02X", red, green, blue);
                         int[] hue = convertRGBtoHSV(red,green,blue);
@@ -498,17 +504,12 @@ public class EditColorActivity extends AppCompatActivity {
         }
 
         EditColorActivity.colorNNView = this.findViewById(R.id.colorNN);
-        //colorNameGetter cng = new colorNameGetter();
-        final double viewWidthPercentOfScreen = 0.50;
+        //If we want it on a single line:
+        //final double viewWidthPercentOfScreen = 0.50;
+        //If we want it on at most 2 lines: (Note that the original name view is still unrestricted)
+        final double viewWidthPercentOfScreen = 1.0;
         final float maxFontSize = 30;
-        colorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
-        //cng.execute(colorI);
-        //TODO this probably won't work,
-        // the name won't be updated by the time this code runs.
-        // This is where it gets the text to save if you save the color.
-        //I think the easiest way to solve this would be to just call colorNameGetter for each
-        //  saved color, since those already are having problems with names going to multiple lines.
-        name = colorNNView.getText().toString();
+        ColorNameGetter.updateViewWithColorName(colorNNView, colorI, viewWidthPercentOfScreen, maxFontSize);
     }
 
     public void updateColorPicker(){
