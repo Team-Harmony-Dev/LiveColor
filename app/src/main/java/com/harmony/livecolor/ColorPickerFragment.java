@@ -129,43 +129,12 @@ public class ColorPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        ImageButton button = (ImageButton) rootView.findViewById(R.id.openCameraButton);
-
         colorDB = new ColorDatabase(getActivity());
 
         editName = rootView.findViewById(R.id.colorName);
         editHex = rootView.findViewById(R.id.plainHex);
         editRgb = rootView.findViewById(R.id.plainRgb);
         editHsv = rootView.findViewById(R.id.plainHsv);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, "New Picture");
-                values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
-                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
-                }
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
-            }
-        });
-
-        ImageButton viewGallery = (ImageButton) rootView.findViewById(R.id.viewGalleryButton);
-        viewGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
-                }
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
-            }
-        });
 
         add = rootView.findViewById(R.id.addButton);
         add.setOnClickListener(new View.OnClickListener(){
@@ -216,26 +185,24 @@ public class ColorPickerFragment extends Fragment {
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.startAnimation(scaleAnimation);
                 String name = editName.getText().toString();
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
-                //colorDB.addColorInfoData(name, hex, rgb, hsv);
-                isButtonClicked = !isButtonClicked;
-                saveColorB.setImageResource(isButtonClicked ? R.drawable.bookmark_selected : R.drawable.ic_action_name);
-                ImageButton saveButton = (ImageButton) rootView.findViewById(R.id.saveButton);
-                if(isButtonClicked){
+
+                ImageButton saveButton = rootView.findViewById(R.id.saveButton);
+                if(!isButtonClicked){
+                    view.startAnimation(scaleAnimation);
+                    saveColorB.setImageResource(R.drawable.bookmark_selected );
                     saveButton.setColorFilter(colorT);
-                }else{
-                    saveButton.setColorFilter(null);
+                    isButtonClicked = !isButtonClicked;
+                    CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
+                    pickerDialog.showSaveDialog();
                 }
-                CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
-                pickerDialog.showSaveDialog();
             }
         });
 
-        final ImageButton infoColorB = (ImageButton) rootView.findViewById(R.id.infoButton);
+        final ImageButton infoColorB = rootView.findViewById(R.id.infoButton);
         infoColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
@@ -384,9 +351,7 @@ public class ColorPickerFragment extends Fragment {
                 ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
                 pixel = imgWithOurColor.getSolidColor();
             }
-            //send to Gabby's script to updated the displayed values on screen
-            //if android doesn't like us sending the whole color object we can send the color string
-            //and use Color.valueOf() on Gabby's end
+
             updateColorValues(view, pixel);
             isButtonClicked = false;
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
@@ -408,13 +373,6 @@ public class ColorPickerFragment extends Fragment {
             return true;
         }
     };
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -439,13 +397,6 @@ public class ColorPickerFragment extends Fragment {
         mListener = null;
     }
 
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.add_menu, popup.getMenu());
-        popup.show();
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -468,7 +419,6 @@ public class ColorPickerFragment extends Fragment {
     }
 
     public void loadColorView() {
-        // To load saved color onto fragment, default/initial load is white?
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
@@ -476,11 +426,9 @@ public class ColorPickerFragment extends Fragment {
             final double viewWidthPercentOfScreen = 0.60;
             final float maxFontSize = 30;
             TextView view = getActivity().findViewById(R.id.colorName);
-            //A full API call should be unnecessary since we already saved the name.
             ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
         }
         updateColorValues(getView(), savedColorInt);
-//        updateColorValues(getView(), getResources().getColor(R.color.colorPicked));
     }
 
     //This function actually saves, not loads
@@ -509,14 +457,13 @@ public class ColorPickerFragment extends Fragment {
         String rgb = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
         String fullRGB = String.format("RGB: %1$s",rgb);  //add "RGB: " and rgb together
         Log.d("DEBUG", "updateColorValues: fullRGB = " + fullRGB);
-        //I (Dustin) changed all the calls to view.findViewById to getActivity().findViewById.
-        //Is the view argument to updateColorValues needed?
+
         TextView plainRgbDisplay = getActivity().findViewById(R.id.plainRgb);
         TextView rgbDisplay = getActivity().findViewById(R.id.RGBText);//get the textview that displays the RGB value
         plainRgbDisplay.setText(rgb);
         rgbDisplay.setText(fullRGB); //set the textview to the new RGB: rgbvalue
 
-        //update the HEX value displayed
+        //update the HEX value
         String hexValue = String.format("#%06X", (0xFFFFFF & colorNew)); //get the hex representation minus the first ff
         String fullHEX = String.format("HEX: %1$s",hexValue);
         Log.d("DEBUG", "updateColorValues: fullHEX = " + fullHEX);
@@ -525,7 +472,7 @@ public class ColorPickerFragment extends Fragment {
         plainHexDisplay.setText(hexValue);
         hexDisplay.setText(fullHEX);
 
-        //update the HSV value displayed
+        //update the HSV value
         float[] hsvArray = new float[3];
         RGBToHSV(RV,GV,BV,hsvArray);
         int hue = Math.round(hsvArray[0]);

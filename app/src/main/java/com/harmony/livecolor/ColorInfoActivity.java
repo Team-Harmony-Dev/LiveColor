@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -99,8 +100,11 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
         // UPDATE VALUES
-        ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
+        ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
+
+        LinearLayout wholeLayout = findViewById(R.id.colorLayout);
+        wholeLayout.setBackgroundColor(colorValue);
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
