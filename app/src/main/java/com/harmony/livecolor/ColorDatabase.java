@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class ColorDatabase extends SQLiteOpenHelper {
@@ -109,7 +110,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * add a color existing in the color database to an existing palette if not already in the palette
      * @param paletteId id of the palette to be added to
      * @param colorId id of the color to add to the palette
-     * @return
+     * @return true if update is success, false if update is failure
      */
     public boolean addColorToPalette(String paletteId, String colorId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -180,15 +181,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
 
     /**
      * ?
-     * searches the database for all colors with the given input name or hex
-     * @param input name or hex of the color to be searched for in the database
+     * searches the database for a specific color by id
+     * @param id of the color to be searched for in the database
      * @return the cursor for the query results
      */
-    public Cursor getColorInfo(String input) {
+    public Cursor getColorInfoById(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_NAME
-                + " WHERE NAME LIKE \'" + input + "\'"
-                + " OR HEX LIKE \'" + input + "\'";
+                + " WHERE ID = \'" + id + "\'";
         Cursor colorData = db.rawQuery(selectQuery, null);
         return colorData;
     }
@@ -289,4 +289,42 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     //TODO: helper methods to populate lists?
+    public ArrayList<MyColor> getPaletteColorList(String id) {
+        ArrayList<MyColor> colorList = new ArrayList<>();
+        //get string ref of color ids in given palette
+        String colorIds = getPaletteColors(id).trim();
+        String[] splitIds = colorIds.split("\\s+");
+        //get each color by id
+        for(int i = 0; i < splitIds.length; i++) {
+            String colorId = splitIds[i];
+            Cursor cursor = getColorInfoById(colorId);
+            String name = cursor.getString(1);
+            String hex = cursor.getString(2);
+            String rgb = cursor.getString(3);
+            String hsv = cursor.getString(4);
+            colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+        }
+        return colorList;
+    }
+
+    /**
+     * get all user made palettes (aka all palettes excluding Saved Colors (id = 1)
+     * @return arraylist of palette objects for recycler display
+     */
+    public ArrayList<MyPalette> getPaletteList() {
+        ArrayList<MyPalette> paletteList = new ArrayList<>();
+        //get palette data
+        Cursor cursor = getPaletteInfoData();
+        //skip Saved Colors (id = 1)
+        cursor.moveToFirst();
+        cursor.moveToNext();
+        while(cursor != null){
+            String paletteId = cursor.getString(0);
+            String paletteName = cursor.getString(1);
+            ArrayList<MyColor> colorList = getPaletteColorList(paletteId);
+            paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+            cursor.moveToNext();
+        }
+        return paletteList;
+    }
 }

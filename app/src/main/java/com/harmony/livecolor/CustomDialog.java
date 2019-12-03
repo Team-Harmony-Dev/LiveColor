@@ -38,7 +38,6 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
     Activity activity;
 
     ColorDatabase colorDB;
-    //TODO: add palette database
 
     AlertDialog alertDialogSave, alertDialogName;
     AlertDialog.Builder builder;
@@ -60,7 +59,6 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         activity = (Activity) context;
 
         colorDB = new ColorDatabase(activity);
-        //TODO: initialize PaletteDatabase
 
         this.name = name;
         this.hex = hex;
@@ -82,7 +80,6 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         activity = (Activity) context;
 
         colorDB = new ColorDatabase(activity);
-        //TODO: initialize PaletteDatabase
 
         this.id = id;
         this.name = "";
@@ -121,12 +118,21 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         savedColorsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //fetch new or existing color id for given color
+                long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
                 //TODO: implement palette database part
-                alertDialogSave.dismiss();
-                Toast.makeText(context,
-                        "Color has been saved to Saved Colors",
-                        Toast.LENGTH_SHORT).show();
+                //save color to Saved Colors palette (id = 1)
+                if(colorDB.addColorToPalette("1",Long.toString(colorId))) {
+                    alertDialogSave.dismiss();
+                    Toast.makeText(context,
+                            "Color has been saved to Saved Colors",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDialogSave.dismiss();
+                    Toast.makeText(context,
+                            "Sorry, there was an error saving the color to Saved Colors.",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -143,40 +149,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         paletteList = new ArrayList<>();
         //will access palettes from database and put into MyPalette objects
         //TODO: Andrew's database code/method call will go here
-        //Temporary Palettes atm:
-        MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
-        MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
-        MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
-        //test 3 colors
-        ArrayList<MyColor> colorList1 = new ArrayList<>();
-        colorList1.add(magenta);
-        colorList1.add(yellow);
-        colorList1.add(cyan);
-        paletteList.add(new MyPalette("2","Three Colors",colorList1));
-        //test 6 colors
-        ArrayList<MyColor> colorList2 = new ArrayList<>();
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        paletteList.add(new MyPalette("3","Six Colors",colorList2));
-        //test 10+ colors
-        ArrayList<MyColor> colorList3 = new ArrayList<>();
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
+        //palette lists
     }
 
     /**
