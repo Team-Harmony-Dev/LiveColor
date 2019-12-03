@@ -27,7 +27,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createColorInfoTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " NAME TEXT, HEX TEXT, RGB TEXT, HSV TEXT)";
+                " NAME TEXT UNIQUE, HEX TEXT UNIQUE, RGB TEXT, HSV TEXT)";
         String createPaletteInfoTable = "CREATE TABLE " + PALETTE_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " NAME TEXT, REF TEXT, FOREIGN KEY(REF) REFERENCES TABLE_NAME(ID))";
         db.execSQL(createColorInfoTable);
@@ -41,7 +41,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addColorInfoData(String name, String hex, String rgb, String hsv) {
+    public long addColorInfoData(String name, String hex, String rgb, String hsv) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues colorInfoContentValues = new ContentValues();
         colorInfoContentValues.put(COL2, name);
@@ -51,11 +51,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
 
         long insertResult = db.insert(TABLE_NAME, null, colorInfoContentValues);
 
-        if (insertResult == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return insertResult;
     }
 
     public boolean addPaletteInfoData(String name, String id) { // new palette

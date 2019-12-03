@@ -118,11 +118,17 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             @Override
             public void onClick(View v) {
                 //TODO: add database addition specifically to saved colors palette
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                long j = colorDB.addColorInfoData(name, hex, rgb, hsv);
                 alertDialogSave.dismiss();
-                Toast.makeText(context,
-                        "Color has been saved to Saved Colors",
-                        Toast.LENGTH_SHORT).show();
+                if (j > -1) {
+                    Toast.makeText(context,
+                            "Color has been saved to Saved Colors",
+                            Toast.LENGTH_SHORT).show();
+                }
+                if (j == -1) {
+                    Toast.makeText(context, "Color is a duplicate",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
