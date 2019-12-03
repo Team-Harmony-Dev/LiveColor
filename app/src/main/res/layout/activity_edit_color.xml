@@ -81,24 +81,26 @@
                 android:id="@+id/colorN"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="0.5"
                 android:fontFamily="@font/lato_bold"
                 android:lineSpacingMultiplier="0.9"
                 android:text="Color Name"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/colorNN"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0.5"
                 android:fontFamily="@font/lato_bold"
                 android:lineSpacingMultiplier="0.9"
                 android:text="Color Name Newy"
-                android:textAlignment="center"
+                android:textAlignment="textEnd"
                 android:textSize="30sp" />
 
         </LinearLayout>
