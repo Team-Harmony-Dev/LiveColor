@@ -184,18 +184,22 @@ public class ColorPickerFragment extends Fragment {
                                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
                                 }
-                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
-                                return true;
+                                else {
+                                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                                    startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+                                    return true;
+                                }
                             case R.id.gallery:
                                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
                                 }
-                                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                galleryIntent.setType("image/*");
-                                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
-                                return true;
+                                else {
+                                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    galleryIntent.setType("image/*");
+                                    startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+                                    return true;
+                                }
                             default:
                                 return false;
                         }
