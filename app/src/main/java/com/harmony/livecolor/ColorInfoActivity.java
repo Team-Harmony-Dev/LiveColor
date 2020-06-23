@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -103,7 +104,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
 
-        LinearLayout wholeLayout = findViewById(R.id.colorLayout);
+        ConstraintLayout wholeLayout = findViewById(R.id.colorLayout);
         wholeLayout.setBackgroundColor(colorValue);
 
 
