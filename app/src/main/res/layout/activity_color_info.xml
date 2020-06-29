@@ -108,12 +108,12 @@
             android:id="@+id/copyRGB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/lato_regular"
             android:text="@android:string/copy"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/harmonyButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/colorNameCIA"
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="168dp" />
 
@@ -121,10 +121,11 @@
             android:id="@+id/copyHSV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/lato_regular"
             android:text="@android:string/copy"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/copyRGB"
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="168dp" />
@@ -135,10 +136,11 @@
             style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/lato_regular"
             android:text="@android:string/copy"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/copyHSV"
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="168dp" />
@@ -152,9 +154,8 @@
             android:fontFamily="@font/lato_regular"
             android:text="View Color Harmonies"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/copyHEX"
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="198dp" />
 
@@ -163,12 +164,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
             android:fontFamily="@font/lato_regular"
             android:text="RGB: "
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/copyRGB"
-            app:layout_constraintTop_toBottomOf="@+id/harmonyButton"
+            app:layout_constraintBaseline_toBaselineOf="@+id/copyRGB"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_conversion_absoluteHeight="27dp"
             tools:layout_conversion_absoluteWidth="168dp" />
 
@@ -183,7 +183,7 @@
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/copyHEX"
+            app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="34dp"
             tools:layout_conversion_absoluteWidth="337dp" />
 
@@ -196,7 +196,7 @@
             android:text="HEX: "
             android:textSize="24sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/copyHEX"
-            app:layout_constraintStart_toEndOf="@+id/copyHEX"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_conversion_absoluteHeight="27dp"
             tools:layout_conversion_absoluteWidth="168dp" />
 
@@ -209,7 +209,7 @@
             android:text="HSV: "
             android:textSize="24sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/copyHSV"
-            app:layout_constraintStart_toEndOf="@+id/copyHSV"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_conversion_absoluteHeight="27dp"
             tools:layout_conversion_absoluteWidth="168dp" />
 
