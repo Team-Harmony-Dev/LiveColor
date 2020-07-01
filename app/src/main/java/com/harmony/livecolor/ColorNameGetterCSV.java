@@ -1,13 +1,19 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
+
+//Credit for color name stuff:
+//https://github.com/meodai/color-names
+//https://github.com/meodai/ClosestVector
+
+//Assumption: Names never contain commas, hopefully, because it's a CSV.
 
 //So many probs with API, try CSV instead.
 //TODO load from res/raw/colornames.csv
@@ -17,7 +23,7 @@ public class ColorNameGetterCSV extends android.app.Application { //TODO extends
     private InputStream inputStream;
     //Might be redundant
     private boolean haveAlreadyReadNames = false;
-    private List colorNames;
+    private ArrayList<String[]> colorNames;
 
     /*
     //https://stackoverflow.com/a/8238658
@@ -38,12 +44,18 @@ public class ColorNameGetterCSV extends android.app.Application { //TODO extends
         this.inputStream = inputStream;
     }
 
-    private List read(){
-        List resultList = new ArrayList<String>();
+     private ArrayList<String[]> read(){
+         ArrayList<String[]> resultList = new ArrayList<String[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String csvLine;
             while ((csvLine = reader.readLine()) != null) {
+                //Ignore any names marked as not a good name
+                char badNameChar = 'x';
+                if(csvLine.length() > 0 && csvLine.charAt(csvLine.length() - 1) == badNameChar){
+                    continue;
+                }
+                //Each row should contain two elements: A name, and a hex value (including the #)
                 String[] row = csvLine.split(",");
                 resultList.add(row);
             }
@@ -62,21 +74,47 @@ public class ColorNameGetterCSV extends android.app.Application { //TODO extends
         return resultList;
     }
 
-    private void readColors(){
+    //TODO private?
+    public void readColors(){
+        /*
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+        */
         //TODO is this the best way to do this?
-        this.colorNames = colors.read();
+        this.colorNames = this.read();
+        Log.d("V2S1 colorname", "Read: "+this.colorNames);
+        Log.d("V2S1 colorname", "type: "+this.colorNames.getClass().getName());
+        Log.d("V2S1 colorname", "EachLine: "+this.colorNames.get(0));
+        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0).getClass().getName());
+        Log.d("V2S1 colorname", "InnerElem: "+this.colorNames.get(0)[0]);
+        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0)[0].getClass().getName());
+
+        //printArr();
     }
 
-    public String getName(){
+    //https://github.com/meodai/color-names/blob/master/scripts/server.js
+    public String getName(String hex){
+        //TODO static?
+        /*
         if(!haveAlreadyReadNames) {
             readColors();
             haveAlreadyReadNames = true;
         }
+        */
         //Use this list of names, do some rounding to find nearest
         //TODO
 
         return "Black?";//I bet it's Black
+    }
+
+    //For debug
+    public void printArr(){
+        //Note: Assumes each line has 2 String elements: Name, Hex
+        for(int i = 0; i < this.colorNames.size(); i++){
+            //TODO check style
+            String nameHexGood = this.colorNames.get(i)[0] + ", "
+                    + this.colorNames.get(i)[1];
+            Log.d("V2S1 colorname", "Color"+i+": "+nameHexGood);
+        }
     }
 }

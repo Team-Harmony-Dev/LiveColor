@@ -22,6 +22,8 @@ import android.widget.TextView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
+import java.io.InputStream;
+
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
 // -- Display camera and gallery view (requires permissions for both)
@@ -71,6 +73,14 @@ public class MainActivity extends AppCompatActivity
         colorNameView = findViewById(R.id.colorName);
 
         checkAndRequestPermissions();
+
+        //Load color names from CSV
+        //TODO streamline
+        InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+        ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+        colors.readColors();
+        String testInit = colors.getName("#000000");
+        Log.d("V2S1 colorname", "init: "+testInit);
     }
 
     //checks if given fragment exists, and loads it if possible
