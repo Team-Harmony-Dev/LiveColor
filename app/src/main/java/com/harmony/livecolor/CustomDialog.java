@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -114,6 +118,8 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             }
         });
 
+        
+
         savedColorsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,13 +127,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 long j = colorDB.addColorInfoData(name, hex, rgb, hsv);
                 alertDialogSave.dismiss();
                 if (j > -1) {
-                    Toast.makeText(context,
-                            "Color has been saved to Saved Colors",
-                            Toast.LENGTH_SHORT).show();
+                    makeToast("Color has been saved to Saved Colors");
                 }
                 if (j == -1) {
-                    Toast.makeText(context, "Color is a duplicate",
-                            Toast.LENGTH_SHORT).show();
+                    makeToast("Color is a duplicate");
                 }
             }
         });
@@ -223,9 +226,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 }
                 dialog.dismiss();
                 String newName = newPaletteName.getText().toString();
-                Toast.makeText(context,
-                        "New palette \"" + newName + "\" created!",
-                        Toast.LENGTH_SHORT).show();
+                makeToast("New palette \"" + newName + "\" created!");
             }
         });
 
@@ -238,8 +239,20 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         colorDB.addColorInfoData(name, hex, rgb, hsv);
         //TODO: implement palette database part
         alertDialogSave.dismiss();
-        Toast.makeText(context,
-                "Saved color to \"" + palette.getName() + "\"",
-                Toast.LENGTH_SHORT).show();
+        makeToast("Saved color to \"" + palette.getName() + "\"");
+    }
+
+    //Creates custom toast and displays it with the passed message
+    public void makeToast(String toasty){
+        Toast toast = Toast.makeText(context,
+                toasty,
+                Toast.LENGTH_SHORT);
+        View view = toast.getView();
+
+        view.setBackgroundResource(R.color.colorDark);
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(Color.WHITE);
+
+        toast.show();
     }
 }

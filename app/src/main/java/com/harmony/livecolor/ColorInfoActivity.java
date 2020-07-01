@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -51,8 +53,8 @@ public class ColorInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        ImageButton button2 = (ImageButton) findViewById(R.id.backButton);
-        button2.setOnClickListener(new View.OnClickListener() {
+        ImageButton backbut = (ImageButton) findViewById(R.id.backButton);
+        backbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -146,17 +148,14 @@ public class ColorInfoActivity extends AppCompatActivity {
         TextView hsvDisplay = (TextView) findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
 
-
+        // Copy Button Listeners
 
         Button copy1 = findViewById(R.id.copyHEX);
+
         copy1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "HEX value copied to clipboard!", Snackbar.LENGTH_SHORT).show();
+                copyToClip("HEX");
             }
         });
 
@@ -164,11 +163,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         copy2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)", RV, GV, BV));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "RGB values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
+                copyToClip("RGB");
             }
         });
 
@@ -176,11 +171,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         copy3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)", hue, hsvArray[1], hsvArray[2]));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
+                copyToClip("HSV");
             }
         });
 
@@ -194,41 +185,34 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
-        newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
-
-        //initColors();
-
-        //initRecycler();
+        //newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
     }
 
-    /*public void initColors(){
-        //initialize ArrayList<MyColors> here
-        String TAG = "COLORS";
-        Cursor colorData = newColorDatabase.getColorInfoData();
-        colorList = new ArrayList<>();
+    //Method that copies the selected values to the clipboard and produces the custom toast
+    void copyToClip(String type){
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip;
+        final Context cont = getApplicationContext();
 
-        if (colorData != null && colorData.getCount() > 0) {
-            if (colorData.moveToFirst()) {
-                do {
-                    Log.d(TAG,  colorData.getString(2));
-                    colorList.add(new MyColor(colorData.getString(0) + "",
-                            colorData.getString(1) + "", colorData.getString(2) + "",
-                            colorData.getString(3) + "", colorData.getString(4) + ""));
-                }         while (colorData.moveToNext());
-
-            }
+        if(type == "HEX"){
+            clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
+        } else if (type == "HSV"){
+            clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)", hue, hsvArray[1], hsvArray[2]));
+        } else {
+            clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)", RV, GV, BV));
         }
-    }
+        clipboard.setPrimaryClip(clip);
 
-    public void initRecycler(){
-        //get the RecyclerView from the view
-        RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
-        //and set the adapter for the RecyclerView
-        recyclerView.setAdapter(adapter);
-        //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Toast toast = Toast.makeText(cont,
+                type + " values copied to clipboard!",
+                Toast.LENGTH_SHORT);
+        View view = toast.getView();
+
+        view.setBackgroundResource(R.color.colorDark);
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(Color.WHITE);
+
+        toast.show();
     }
-    } */
 
 }
