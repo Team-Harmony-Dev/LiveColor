@@ -13,14 +13,17 @@
         android:id="@+id/listViewButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:foregroundGravity="center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5"
         app:srcCompat="@drawable/list_view" />
 
     <ImageButton
         android:id="@+id/gridViewButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:foregroundGravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/listViewButton"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,4 +38,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridViewButton"></androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
