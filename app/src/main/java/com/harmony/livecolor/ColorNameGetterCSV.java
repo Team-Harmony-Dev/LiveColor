@@ -12,11 +12,12 @@ import java.util.ArrayList;
 //Credit for color name stuff:
 //https://github.com/meodai/color-names
 //https://github.com/meodai/ClosestVector
+//https://github.com/dtao/nearest-color
 
 //Assumption: Names never contain commas, hopefully, because it's a CSV.
 
 //So many probs with API, try CSV instead.
-//TODO load from res/raw/colornames.csv
+//Load from res/raw/colornames.csv
 //https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
 public class ColorNameGetterCSV extends android.app.Application { //TODO extends gives context for getresources? Is that right?
 
