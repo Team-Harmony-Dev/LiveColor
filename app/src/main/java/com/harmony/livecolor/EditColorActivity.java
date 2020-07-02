@@ -375,16 +375,23 @@ public class EditColorActivity extends AppCompatActivity {
 
     }
 
-    // Resets the "save" button for the new color to the "unsaved" state
+    /**
+     * Resets the "save" button for the new color to the "unsaved" state
+     */
     public void resetBookmark(){
         if(isButtonClickedNew){
-            saveNC.setImageResource(R.drawable.ic_action_name);
+            saveNC.setImageResource(R.drawable.unsaved);
             saveNC.setColorFilter(null);
             isButtonClickedNew = false;
         }
     }
 
-    // Updates the seekbars to the HSV values
+    /**
+     * Updates the seekbars to the passed HSV values
+     * @param hue
+     * @param saturation
+     * @param value
+     */
     public void updateSeekbarsHSV(int hue, int saturation, int value){
         seekRed.setMax(360);
         seekRed.setProgress(hue);
@@ -394,7 +401,12 @@ public class EditColorActivity extends AppCompatActivity {
         seekBlue.setProgress(value);
     }
 
-    // Updates the seekbars to the RGB values
+    /**
+     * Updates the seekbars to the passed RGB values, different from updateSeekbarsHSV because the max values are different
+     * @param red
+     * @param green
+     * @param blue
+     */
     public void updateSeekbarsRGB(int red, int green, int blue){
         seekRed.setMax(255);
         seekRed.setProgress(red);
