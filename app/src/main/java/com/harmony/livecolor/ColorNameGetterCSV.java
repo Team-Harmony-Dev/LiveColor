@@ -112,10 +112,9 @@ public class ColorNameGetterCSV extends android.app.Application { //TODO extends
     public void printArr(){
         //Note: Assumes each line has 2 String elements: Name, Hex
         for(int i = 0; i < this.colorNames.size(); i++){
-            //TODO check style
-            String nameHexGood = this.colorNames.get(i)[0] + ", "
+            String nameAndHex = this.colorNames.get(i)[0] + ", "
                     + this.colorNames.get(i)[1];
-            Log.d("V2S1 colorname", "Color"+i+": "+nameHexGood);
+            Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
         }
     }
 }
