@@ -251,12 +251,13 @@
                     android:background="@android:color/transparent"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_action_name"
+                    android:src="@drawable/unsaved"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/editButton"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

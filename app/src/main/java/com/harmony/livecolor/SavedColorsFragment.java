@@ -100,7 +100,10 @@ public class SavedColorsFragment extends Fragment {
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        //Set the layout to be reverse and stacked from the end so that the newest colors appear at the top of the list
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
+        recyclerView.setLayoutManager(layoutManager);
+        layoutManager.setStackFromEnd(true);
     }
 
 
