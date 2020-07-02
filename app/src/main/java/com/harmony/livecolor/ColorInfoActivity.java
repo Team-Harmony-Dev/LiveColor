@@ -188,7 +188,11 @@ public class ColorInfoActivity extends AppCompatActivity {
         //newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
     }
 
-    //Method that copies the selected values to the clipboard and produces the custom toast
+    /**
+     * copyToClip copies the selected color info to the user's clipboard and produces the custom toast
+     * @param type the type of color info being copied - RGB, HEX, or HSV
+     * @author Gabby
+     */
     void copyToClip(String type){
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip;

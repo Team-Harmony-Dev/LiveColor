@@ -242,7 +242,11 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         makeToast("Saved color to \"" + palette.getName() + "\"");
     }
 
-    //Creates custom toast and displays it with the passed message
+    /**
+     * Creates custom toast and displays it with the passed message
+     * @param toasty (passed message - string)
+     * @author Gabby
+     */
     public void makeToast(String toasty){
         Toast toast = Toast.makeText(context,
                 toasty,
