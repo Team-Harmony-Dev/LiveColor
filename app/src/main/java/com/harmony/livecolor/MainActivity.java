@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         colors.readColors();
-        String testInit = colors.getName("#000000");
+        String testInit = colors.getName("#100000");
         Log.d("V2S1 colorname", "init: "+testInit);
     }
 

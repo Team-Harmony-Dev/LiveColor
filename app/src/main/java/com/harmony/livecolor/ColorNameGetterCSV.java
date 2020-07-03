@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 //Assumption: Names never contain commas, hopefully, because it's a CSV.
 
-//So many probs with API, try CSV instead.
+//A lot of our bugs with color names are from using the async API call, so lets try reading from a local CSV.
 //Load from res/raw/colornames.csv
 //https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
-public class ColorNameGetterCSV extends android.app.Application { //TODO extends gives context for getresources? Is that right?
+public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
     //Might be redundant
@@ -94,16 +94,44 @@ public class ColorNameGetterCSV extends android.app.Application { //TODO extends
     }
 
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
+    //TODO static?
     public String getName(String hex){
-        //TODO static?
+        //This is returned if something goes wrong
+        final String errorColorName = "Error";
         /*
         if(!haveAlreadyReadNames) {
             readColors();
             haveAlreadyReadNames = true;
         }
         */
-        //Use this list of names, do some rounding to find nearest
-        //TODO
+        //Use the list of names, do some rounding to find nearest
+        //Naive approach with no caching to begin with, see how fast that is.
+
+        //Expects #RRGGBB (includes the #, and has  no alpha)
+        if(hex.length() != 7) {
+            //TODO some sort of error message?
+            Log.d("V2S1 colorname", "Hex " + hex + " not valid");
+            return errorColorName;
+        }
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        for(int i = 1; i < hex.length(); i+=2){
+            //Substring excludes the end index itself, so +2 instead of +1.
+            String hexPiece = hex.substring(i, i+2);
+            int color = Integer.parseInt(hexPiece,16);
+            if(i == 1){
+                red = color;
+            } else if (i == 3) {
+                green = color;
+            } else if (i == 5) {
+                blue = color;
+            } else {
+                Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
+                return errorColorName;
+            }
+        }
+        //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
 
         return "Black?";//I bet it's Black
     }
