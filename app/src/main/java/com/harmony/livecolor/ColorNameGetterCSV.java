@@ -93,6 +93,12 @@ public class ColorNameGetterCSV extends android.app.Application {
         //printArr();
     }
 
+    private int getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
+        //TODO
+        return 0;
+    }
+
+
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
     //TODO static?
     public String getName(String hex){
@@ -133,13 +139,36 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
 
+        //Now lets do the actual comparisons to tell which color is closest
+        int shortestDistance = Integer.MAX_VALUE;
+        int indexOfbestMatch = -1;
+        for(int i = 0; i < this.colorNames.size(); ++i){
+            //Lets get this index's rgb
+            //TODO we probably should be storing this directly
+            int ired = 0;
+            int igreen = 0;
+            int iblue = 0;
+            int distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
+            if(distance < shortestDistance){
+                shortestDistance = distance;
+                indexOfbestMatch = i;
+            }
+        }
+        if(indexOfbestMatch < 0 || indexOfbestMatch > this.colorNames.size()){
+            Log.d("V2S1 colorname", "Something weird happened when finding distance");
+            return errorColorName;
+        }
+        //TODO make the index a constant probably.
+        //return this.colorNames.get(indexOfBestMatch)[1];
+
+
         return "Black?";//I bet it's Black
     }
 
     //For debug
     public void printArr(){
         //Note: Assumes each line has 2 String elements: Name, Hex
-        for(int i = 0; i < this.colorNames.size(); i++){
+        for(int i = 0; i < this.colorNames.size(); ++i){
             String nameAndHex = this.colorNames.get(i)[0] + ", "
                     + this.colorNames.get(i)[1];
             Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
