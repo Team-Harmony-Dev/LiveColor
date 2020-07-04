@@ -93,9 +93,8 @@ public class ColorNameGetterCSV extends android.app.Application {
         //printArr();
     }
 
-    private int getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
-        //TODO
-        return 0;
+    private double getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
+        return Math.sqrt((r1-r2)^2+(g1-g2)^2+(b1-b2)^2);
     }
 
 
@@ -140,29 +139,26 @@ public class ColorNameGetterCSV extends android.app.Application {
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
 
         //Now lets do the actual comparisons to tell which color is closest
-        int shortestDistance = Integer.MAX_VALUE;
-        int indexOfbestMatch = -1;
+        double shortestDistance = Double.MAX_VALUE;
+        int indexOfBestMatch = -1;
         for(int i = 0; i < this.colorNames.size(); ++i){
             //Lets get this index's rgb
             //TODO we probably should be storing this directly
             int ired = 0;
             int igreen = 0;
             int iblue = 0;
-            int distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
+            double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
                 shortestDistance = distance;
-                indexOfbestMatch = i;
+                indexOfBestMatch = i;
             }
         }
-        if(indexOfbestMatch < 0 || indexOfbestMatch > this.colorNames.size()){
+        if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
         }
         //TODO make the index a constant probably.
-        //return this.colorNames.get(indexOfBestMatch)[1];
-
-
-        return "Black?";//I bet it's Black
+        return this.colorNames.get(indexOfBestMatch)[1];
     }
 
     //For debug
