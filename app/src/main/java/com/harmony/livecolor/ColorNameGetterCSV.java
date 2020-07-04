@@ -25,6 +25,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     //Might be redundant
     private boolean haveAlreadyReadNames = false;
     private ArrayList<String[]> colorNames;
+    private final int NAME_INDEX = 0;
+    private final int HEX_INDEX = 1;
 
     /*
     //https://stackoverflow.com/a/8238658
@@ -83,6 +85,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         */
         //TODO is this the best way to do this?
         this.colorNames = this.read();
+        //Debug
         Log.d("V2S1 colorname", "Read: "+this.colorNames);
         Log.d("V2S1 colorname", "type: "+this.colorNames.getClass().getName());
         Log.d("V2S1 colorname", "EachLine: "+this.colorNames.get(0));
@@ -93,10 +96,10 @@ public class ColorNameGetterCSV extends android.app.Application {
         //printArr();
     }
 
+    //TODO Closest vector doesn't sqrt. Probably unnecessary right? Because we're only checking if one is greater than the other.
     private double getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
         return Math.sqrt((r1-r2)^2+(g1-g2)^2+(b1-b2)^2);
     }
-
 
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
     //TODO static?
@@ -138,15 +141,35 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
 
+        Log.d("V2S1 colorname", "pretest");
         //Now lets do the actual comparisons to tell which color is closest
         double shortestDistance = Double.MAX_VALUE;
         int indexOfBestMatch = -1;
         for(int i = 0; i < this.colorNames.size(); ++i){
             //Lets get this index's rgb
-            //TODO we probably should be storing this directly
             int ired = 0;
             int igreen = 0;
             int iblue = 0;
+            //TODO probably store directly rather than split each and every one.
+            hex = this.colorNames.get(i)[HEX_INDEX];
+            Log.d("V2S1 colorname", "midtest");
+            //TODO this crashes
+            for(int x = 1; x < hex.length(); x+=2){
+                //Substring excludes the end index itself, so +2 instead of +1.
+                String hexPiece = hex.substring(x, x+2);
+                int color = Integer.parseInt(hexPiece,16);
+                if(x == 1){
+                    ired = color;
+                } else if (x == 3) {
+                    igreen = color;
+                } else if (x == 5) {
+                    iblue = color;
+                } else {
+                    Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
+                    return errorColorName;
+                }
+            }
+            Log.d("V2S1 colorname", "test"+i);
             double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
                 shortestDistance = distance;
@@ -158,7 +181,7 @@ public class ColorNameGetterCSV extends android.app.Application {
             return errorColorName;
         }
         //TODO make the index a constant probably.
-        return this.colorNames.get(indexOfBestMatch)[1];
+        return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
 
     //For debug
