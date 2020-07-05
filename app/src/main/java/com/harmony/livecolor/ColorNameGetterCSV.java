@@ -52,7 +52,14 @@ public class ColorNameGetterCSV extends android.app.Application {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String csvLine;
+            //First line is columns, we need to skip that
+            boolean firstLine = true;
             while ((csvLine = reader.readLine()) != null) {
+                //Ignore the column name line
+                if(firstLine){
+                    firstLine = false;
+                    continue;
+                }
                 //Ignore any names marked as not a good name
                 char badNameChar = 'x';
                 if(csvLine.length() > 0 && csvLine.charAt(csvLine.length() - 1) == badNameChar){
@@ -141,7 +148,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
 
-        Log.d("V2S1 colorname", "pretest");
         //Now lets do the actual comparisons to tell which color is closest
         double shortestDistance = Double.MAX_VALUE;
         int indexOfBestMatch = -1;
@@ -152,7 +158,7 @@ public class ColorNameGetterCSV extends android.app.Application {
             int iblue = 0;
             //TODO probably store directly rather than split each and every one.
             hex = this.colorNames.get(i)[HEX_INDEX];
-            Log.d("V2S1 colorname", "midtest");
+            //Log.d("V2S1 colorname", "midtest i="+i+" hi="+HEX_INDEX+" hex="+hex);
             //TODO this crashes
             for(int x = 1; x < hex.length(); x+=2){
                 //Substring excludes the end index itself, so +2 instead of +1.
@@ -169,7 +175,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                     return errorColorName;
                 }
             }
-            Log.d("V2S1 colorname", "test"+i);
+
             double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
                 shortestDistance = distance;
@@ -180,7 +186,7 @@ public class ColorNameGetterCSV extends android.app.Application {
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
         }
-        //TODO make the index a constant probably.
+
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
 
