@@ -60,11 +60,13 @@ public class ColorNameGetterCSV extends android.app.Application {
                     firstLine = false;
                     continue;
                 }
+                /* API actually seems to give both. https://api.color.pizza/v1/100000 gives "Dark Matter" which is marked
                 //Ignore any names marked as not a good name
                 char badNameChar = 'x';
                 if(csvLine.length() > 0 && csvLine.charAt(csvLine.length() - 1) == badNameChar){
                     continue;
                 }
+                */
                 //Each row should contain two elements: A name, and a hex value (including the #)
                 String[] row = csvLine.split(",");
                 resultList.add(row);
@@ -105,7 +107,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     //TODO Closest vector doesn't sqrt. Probably unnecessary right? Because we're only checking if one is greater than the other.
     private double getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
-        return Math.sqrt((r1-r2)^2+(g1-g2)^2+(b1-b2)^2);
+        return Math.sqrt(Math.pow(r1-r2, 2)+Math.pow(g1-g2, 2)+Math.pow(b1-b2, 2));
     }
 
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
@@ -180,12 +182,15 @@ public class ColorNameGetterCSV extends android.app.Application {
             if(distance < shortestDistance){
                 shortestDistance = distance;
                 indexOfBestMatch = i;
+                //Log.d("V2S1 colorname", "Found better distance to "+hex+" ("+ired+", "+igreen+", "+iblue+"), now is "+shortestDistance);
             }
         }
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
         }
+
+        //Log.d("V2S1 colorname", "Found name. Distance is "+shortestDistance);
 
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
@@ -194,8 +199,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void printArr(){
         //Note: Assumes each line has 2 String elements: Name, Hex
         for(int i = 0; i < this.colorNames.size(); ++i){
-            String nameAndHex = this.colorNames.get(i)[0] + ", "
-                    + this.colorNames.get(i)[1];
+            String nameAndHex = this.colorNames.get(i)[NAME_INDEX] + ", "
+                    + this.colorNames.get(i)[HEX_INDEX];
             Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
         }
     }
