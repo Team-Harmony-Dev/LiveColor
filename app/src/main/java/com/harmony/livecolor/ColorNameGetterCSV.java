@@ -16,6 +16,10 @@ import java.util.ArrayList;
 
 //Assumption: Names never contain commas, hopefully, because it's a CSV.
 
+//TODO test how slow this is on main activity
+//TODO proper function commenting
+//TODO static everything might work best since we should only need to read from the file once.
+
 //A lot of our bugs with color names are from using the async API call, so lets try reading from a local CSV.
 //Load from res/raw/colornames.csv
 //https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
@@ -27,21 +31,6 @@ public class ColorNameGetterCSV extends android.app.Application {
     private ArrayList<String[]> colorNames;
     private final int NAME_INDEX = 0;
     private final int HEX_INDEX = 1;
-
-    /*
-    //https://stackoverflow.com/a/8238658
-    private static ColorNameGetterCSV mApp = null;
-    @Override
-    public void onCreate()
-    {
-        super.onCreate();
-        mApp = this;
-    }
-    public static Context context()
-    {
-        return mApp.getApplicationContext();
-    }
-     */
 
     public ColorNameGetterCSV(InputStream inputStream){
         this.inputStream = inputStream;
@@ -60,7 +49,10 @@ public class ColorNameGetterCSV extends android.app.Application {
                     firstLine = false;
                     continue;
                 }
-                /* API actually seems to give both. https://api.color.pizza/v1/100000 gives "Dark Matter" which is marked
+                /*
+                //API actually seems to give both. https://api.color.pizza/v1/100000 gives "Dark Matter" which is marked
+                //TODO should probably not store the "x" if we aren't using it for anything
+
                 //Ignore any names marked as not a good name
                 char badNameChar = 'x';
                 if(csvLine.length() > 0 && csvLine.charAt(csvLine.length() - 1) == badNameChar){
