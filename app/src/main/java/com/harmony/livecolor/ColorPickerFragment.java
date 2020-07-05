@@ -361,10 +361,29 @@ public class ColorPickerFragment extends Fragment {
             //It takes a second to load and I don't want to spam the API so we only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
-                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                final double viewWidthPercentOfScreen = 0.60;
-                final float maxFontSize = 30;
-                ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+                final boolean USE_API_FOR_NAMES = false;
+
+                if(USE_API_FOR_NAMES) {
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    final double viewWidthPercentOfScreen = 0.60;
+                    final float maxFontSize = 30;
+                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                } else {
+                    InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+                    ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+                    colors.readColors();
+                    String hex = "#"+colorToHex(pixel);
+                    String colorName = colors.getName(hex);
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    viewToUpdateColorName.setText(colorName);
+
+                    Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+                }
+
+                //I believe this is the button to select an image or take a picture.
+                //  It disappears when dragging so it doesn't cover any part of the image.
+                //  So after you're done dragging it needs to reappear.
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
