@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout19"
+    android:id="@+id/constraintLayoutColorPicker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
@@ -11,12 +11,12 @@
     tools:context=".ColorPickerFragment">
 
     <FrameLayout
-        android:id="@+id/frameLayout3"
+        android:id="@+id/frameLayoutImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".75"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout16"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayoutBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout20"
+        android:id="@+id/linearLayoutPopButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -73,7 +73,7 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout16"
+        android:id="@+id/constraintLayoutBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_default="percent"
@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayoutImageView">
 
         <ImageView
             android:id="@+id/pickedColorDisplayView"
@@ -100,7 +100,7 @@
             android:paddingTop="16dp"
             android:paddingVertical="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/linearLayout15"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayoutInfoOptions"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -109,7 +109,7 @@
             app:layout_constraintWidth_percent=".4" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout15"
+            android:id="@+id/constraintLayoutInfoOptions"
             android:layout_width="0dp"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent=".6"
@@ -124,6 +124,7 @@
                 android:id="@+id/HEXText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="@string/colorHEX"
@@ -192,6 +193,7 @@
                 android:id="@+id/colorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_bold"
                 android:text="@string/colorValues"
@@ -200,7 +202,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/linearLayout14"
+                android:id="@+id/constraintLayoutOptionButtons"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
