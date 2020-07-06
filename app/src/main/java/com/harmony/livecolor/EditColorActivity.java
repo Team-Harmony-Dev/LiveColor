@@ -59,7 +59,7 @@ public class EditColorActivity extends AppCompatActivity {
         colorNNView = findViewById(R.id.colorNN);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        //actionBar.hide();
 
         saveNC = findViewById(R.id.saveNewColor);
 

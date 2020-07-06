@@ -1,33 +1,25 @@
 package com.harmony.livecolor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -35,6 +27,10 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
 
 public class ColorInfoActivity extends AppCompatActivity {
+
+    // ToolBar
+    Toolbar toolBar;
+
     private SavedColorsFragment.OnListFragmentInteractionListener listener;
     int colorValue, RV, GV, BV, hue;
     String hexValue;
@@ -50,9 +46,8 @@ public class ColorInfoActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
 
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+       ActionBar actionBar = getSupportActionBar();
+       //actionBar.hide();
 
         ImageButton backbut = (ImageButton) findViewById(R.id.backButton);
         backbut.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +101,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
 
-        ConstraintLayout wholeLayout = findViewById(R.id.colorLayout);
+        ConstraintLayout wholeLayout = findViewById(R.id.constraintLayoutColor);
         wholeLayout.setBackgroundColor(colorValue);
 
 
@@ -186,8 +181,16 @@ public class ColorInfoActivity extends AppCompatActivity {
             }
         });
 
-        //newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
+
+        newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
+
+        //initColors();
+
+        //initRecycler();
+
+
     }
+
 
     /**
      * copyToClip copies the selected color info to the user's clipboard and produces the custom toast
