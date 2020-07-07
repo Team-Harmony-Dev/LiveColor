@@ -17,5 +17,15 @@
     <string name="takepicture">Take Picture</string>
     <string name="color_info"> Color Information </string>
     <string name="button_press_me"> Press Me </string>
+    <string name="live_color_team">LiveColor Team</string>
+    <string name="team_member_headshot">Team Member\'s Headshot</string>
 
+    <string name="paige_riola">Paige Riola</string>
+    <string name="gabriella_lindsey">Gabriella Lindsey</string>
+    <string name="dustin_seltz">Dustin Seltz</string>
+    <string name="daniel_luft_martinez">Daniel Luft-Martinez</string>
+    <string name="shealtiel_mulder">Shealtiel Mulder</string>
+    <string name="placeholder_text">In slime rancher you can actually use the jetpack to skip the
+                                    gate leading into the Moss Blanket. This way you can save a slime key
+                                    for later.</string>
 </resources>

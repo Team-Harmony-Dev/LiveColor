@@ -17,8 +17,8 @@ public class CreditsActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credits);
         mtv = findViewById(R.id.helloWorldText);
-        Button myB = findViewById(R.id.my_button);
-        myB.setOnClickListener(this);
+        //Button myB = findViewById(R.id.my_button);
+        //myB.setOnClickListener(this);
     }
 
     public void buttonOnClick(View view){
