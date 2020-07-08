@@ -26,10 +26,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
+import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 
 public class ColorInfoActivity extends AppCompatActivity {
     private SavedColorsFragment.OnListFragmentInteractionListener listener;
@@ -113,10 +115,26 @@ public class ColorInfoActivity extends AppCompatActivity {
             colorNameT = bundle.getString("name");
         }
 
-        final double viewWidthPercentOfScreen = 1.0;
-        final float maxFontSize = 30;
-        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
-        //colorNameView.setText(colorNameT);
+        //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+        final boolean USE_API_FOR_NAMES = false;
+        if(USE_API_FOR_NAMES) {
+            final double viewWidthPercentOfScreen = 1.0;
+            final float maxFontSize = 30;
+            ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+            //colorNameView.setText(colorNameT);
+        } else {
+            //Get the file, read from it.
+            InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+            ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+            //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
+            //Get the hex, and then name that corresponds to the hex
+            String hex = "#"+colorToHex(colorValue);
+            String colorName = colors.getName(hex);
+            //Display the name
+            colorNameView.setText(colorName);
+
+            Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+        }
 
         //HEX
 
