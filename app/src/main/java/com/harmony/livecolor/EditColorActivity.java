@@ -26,7 +26,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.InputStream;
+
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 
 public class EditColorActivity extends AppCompatActivity {
     int colorValue;
@@ -481,9 +484,26 @@ public class EditColorActivity extends AppCompatActivity {
             colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
 
-        final double viewWidthPercentOfScreen = 1.0;
-        final float maxFontSize = 30;
-        ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen, maxFontSize);
+
+        //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+        final boolean USE_API_FOR_NAMES = false;
+        if(USE_API_FOR_NAMES) {
+            final double viewWidthPercentOfScreen = 1.0;
+            final float maxFontSize = 30;
+            ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen, maxFontSize);
+        } else {
+            //Get the file, read from it.
+            InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+            ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+            //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
+            //Get the hex, and then name that corresponds to the hex
+            String hex = "#"+colorToHex(colorI);
+            String colorName = colors.getName(hex);
+            //Display the name
+            thisView.setText(colorName);
+
+            Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+        }
     }
 
     public int getIntFromColor(int Red, int Green, int Blue){

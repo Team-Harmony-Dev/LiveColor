@@ -29,7 +29,7 @@ public class HarmonyGenerator {
         InputStream inputStream = null;//getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         String colorName = colors.getName(hex);
-        //TODO the name works now, but opening harmonies takes a few seconds because it does it for all palettes at once. 
+        //TODO the name works now, but opening harmonies takes a few seconds because it does it for all palettes at once.
         MyColor colorObj = new MyColor(""+id, colorName, hex, rgb, hsv);
         return colorObj;
     }
