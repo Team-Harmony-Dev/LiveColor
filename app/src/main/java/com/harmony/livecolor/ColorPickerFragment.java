@@ -373,7 +373,7 @@ public class ColorPickerFragment extends Fragment {
                     //Get the file, read from it.
                     InputStream inputStream = getResources().openRawResource(R.raw.colornames);
                     ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-                    //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again. 
+                    //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
                     //Get the hex, and then name that corresponds to the hex
                     String hex = "#"+colorToHex(pixel);
                     String colorName = colors.getName(hex);
