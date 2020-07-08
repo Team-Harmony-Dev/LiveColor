@@ -370,11 +370,14 @@ public class ColorPickerFragment extends Fragment {
                     final float maxFontSize = 30;
                     ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
                 } else {
+                    //Get the file, read from it.
                     InputStream inputStream = getResources().openRawResource(R.raw.colornames);
                     ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-                    colors.readColors();
+                    //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again. 
+                    //Get the hex, and then name that corresponds to the hex
                     String hex = "#"+colorToHex(pixel);
                     String colorName = colors.getName(hex);
+                    //Display the name
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     viewToUpdateColorName.setText(colorName);
 

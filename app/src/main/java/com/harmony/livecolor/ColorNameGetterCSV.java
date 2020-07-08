@@ -27,10 +27,10 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
     //Might be redundant
-    private boolean haveAlreadyReadNames = false;
-    private ArrayList<String[]> colorNames;
-    private final int NAME_INDEX = 0;
-    private final int HEX_INDEX = 1;
+    private static boolean haveAlreadyReadNames = false;
+    private static ArrayList<String[]> colorNames;
+    private static final int NAME_INDEX = 0;
+    private static final int HEX_INDEX = 1;
 
     public ColorNameGetterCSV(InputStream inputStream){
         this.inputStream = inputStream;
