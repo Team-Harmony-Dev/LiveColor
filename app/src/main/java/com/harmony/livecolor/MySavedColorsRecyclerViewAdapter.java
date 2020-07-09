@@ -32,20 +32,38 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private ArrayList<MyColor> myColors;
     private OnListFragmentInteractionListener listener;
     private Context context;
+    private String selectedView;
     ColorDatabase newColorDatabase;
 
 
-    public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener) {
+    public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener, String selectedV) {
         Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myColors = myColors;
         this.listener = listener;
+        this.selectedView = selectedV;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_saved_colors,parent,false);
         ViewHolder holder = new ViewHolder(view);
+
+        if(this.selectedView != "list") {
+            Log.d("Weight", "Changing weights");
+
+            LinearLayout cardText = view.findViewById(R.id.listText);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                    cardText.getLayoutParams();
+            params.weight = 0f;
+
+            ImageView colorImage = view.findViewById(R.id.color);
+            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) colorImage.getLayoutParams();
+            params2.weight = 1.0f;
+
+            Log.d("Params are:", String.valueOf(params2));
+        }
+
         return holder;
     }
 
