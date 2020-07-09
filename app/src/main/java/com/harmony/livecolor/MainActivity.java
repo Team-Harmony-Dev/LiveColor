@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         loadFragment(new ColorPickerFragment());
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        //actionBar.hide();
 
         SharedPreferences myPrefs;
         myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);

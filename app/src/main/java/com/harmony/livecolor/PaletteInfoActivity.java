@@ -31,7 +31,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
         //removes action bar
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        //actionBar.hide();
 
         //set back button to leave activity
         ImageButton backButton = findViewById(R.id.backButton);
