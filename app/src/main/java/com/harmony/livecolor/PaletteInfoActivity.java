@@ -31,7 +31,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
         //removes action bar
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        //actionBar.hide();
 
         //set back button to leave activity
         ImageButton backButton = findViewById(R.id.backButton);
@@ -62,7 +62,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.paletteInfoRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener);
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener,"list");
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
