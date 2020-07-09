@@ -87,6 +87,7 @@ public class SavedColorsFragment extends Fragment {
             @Override
             public void onClick (View view){
                 initRecycler("list");
+                //Sets the image buttons to reflect current state
                 listButton.setImageResource(R.drawable.list_view_selected);
                 gridButton.setImageResource(R.drawable.grid_view);
             }
