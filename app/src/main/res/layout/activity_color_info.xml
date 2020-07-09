@@ -179,13 +179,14 @@
 
             <TextView
                 android:id="@+id/RGBText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="34dp"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="RGB: "
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/copyRGB"
+                app:layout_constraintEnd_toStartOf="@+id/copyRGB"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/copyRGB"
                 tools:layout_conversion_absoluteHeight="27dp"
@@ -208,13 +209,14 @@
 
             <TextView
                 android:id="@+id/HexText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="HEX: "
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/copyHEX"
+                app:layout_constraintEnd_toStartOf="@+id/copyHEX"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/copyHEX"
                 tools:layout_conversion_absoluteHeight="27dp"
@@ -222,13 +224,14 @@
 
             <TextView
                 android:id="@+id/HSVText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="HSV: "
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/copyHSV"
+                app:layout_constraintEnd_toStartOf="@+id/copyHSV"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/copyHSV"
                 tools:layout_conversion_absoluteHeight="27dp"
