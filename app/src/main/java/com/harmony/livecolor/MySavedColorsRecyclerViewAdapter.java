@@ -35,7 +35,13 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private String selectedView;
     ColorDatabase newColorDatabase;
 
-
+    /**
+     *
+     * @param context
+     * @param myColors
+     * @param listener
+     * @param selectedV - The selected view: "list" or "grid" - Gabby
+     */
     public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener, String selectedV) {
         Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
@@ -49,9 +55,10 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_saved_colors,parent,false);
         ViewHolder holder = new ViewHolder(view);
 
+        /**
+         * This changes the weights on the saved color cardView so that the text is "invisible" (weight 0) if the selected view is not list
+         */
         if(this.selectedView != "list") {
-            Log.d("Weight", "Changing weights");
-
             LinearLayout cardText = view.findViewById(R.id.listText);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
                     cardText.getLayoutParams();
@@ -60,8 +67,6 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
             ImageView colorImage = view.findViewById(R.id.color);
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) colorImage.getLayoutParams();
             params2.weight = 1.0f;
-
-            Log.d("Params are:", String.valueOf(params2));
         }
 
         return holder;

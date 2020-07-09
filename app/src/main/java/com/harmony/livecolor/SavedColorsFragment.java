@@ -76,6 +76,10 @@ public class SavedColorsFragment extends Fragment {
         String defaultView = "list";
         initRecycler(defaultView);
 
+        /**
+         * Button on click listeners for the grid/list buttons.
+         * On click, the recycler is re-initialized.
+         */
         final ImageButton listButton = view.findViewById(R.id.listViewButton);
         listButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +118,10 @@ public class SavedColorsFragment extends Fragment {
         }
     }
 
+    /**
+     * Initialize the recycler.
+     * @param selectedView - "list" or "grid" - Gabby
+     */
     public void initRecycler(String selectedView){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
@@ -124,6 +132,9 @@ public class SavedColorsFragment extends Fragment {
         //and set the layout manager as well
         //Set the layout to be reverse and stacked from the end so that the newest colors appear at the top of the list
 
+        /**
+         * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
+         */
         if(selectedView == "list"){
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
             recyclerView.setLayoutManager(layoutManager);
@@ -160,9 +171,5 @@ public class SavedColorsFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
-    }
-
-    public void changeView(String viewType){
-
     }
 }
