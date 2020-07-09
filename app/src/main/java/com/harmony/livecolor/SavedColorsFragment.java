@@ -141,7 +141,8 @@ public class SavedColorsFragment extends Fragment {
             layoutManager.setStackFromEnd(true);
         } else {
             int numberOfColumns = 3;
-            recyclerView.setLayoutManager(new GridLayoutManager(context, numberOfColumns));
+            GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
+            recyclerView.setLayoutManager(layoutManager);
         }
     }
 

@@ -20,6 +20,8 @@ import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     ColorDatabase newColorDatabase;
 
     /**
-     *
+     * MySavedColorsRecyclerViewAdapter
      * @param context
      * @param myColors
      * @param listener
@@ -46,6 +48,16 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myColors = myColors;
+
+        /* Makes a shallow copy of the saved color array, reverses it, and sets it as the arrayList used by the recycler adapter
+           This is so the grid layout will have the newest colors at the top - Gabby
+         */
+        if(selectedV != "list"){
+            ArrayList<MyColor> copyColors = new ArrayList<>(myColors);
+            Collections.reverse(copyColors);
+            this.myColors = copyColors;
+        }
+
         this.listener = listener;
         this.selectedView = selectedV;
     }
@@ -55,8 +67,8 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_saved_colors,parent,false);
         ViewHolder holder = new ViewHolder(view);
 
-        /**
-         * This changes the weights on the saved color cardView so that the text is "invisible" (weight 0) if the selected view is not list
+        /*
+         * This changes the weights on the saved color cardView so that the text is "invisible" (weight 0) if the selected view is not list - Gabby
          */
         if(this.selectedView != "list") {
             LinearLayout cardText = view.findViewById(R.id.listText);
@@ -66,6 +78,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
 
             ImageView colorImage = view.findViewById(R.id.color);
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) colorImage.getLayoutParams();
+            params2.setMargins(3, 3, 3, 3);
             params2.weight = 1.0f;
         }
 
