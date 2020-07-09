@@ -36,6 +36,8 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.InputStream;
+
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
