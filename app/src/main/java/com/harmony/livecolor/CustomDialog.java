@@ -54,7 +54,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
      * For when a new color needs to be saved to the database
      * @param context must be an Activity context
      */
-    public CustomDialog(Context context,String name, String hex, String rgb, String hsv){
+    public CustomDialog(Context context, String name, String hex, String rgb, String hsv){
         this.context = context;
         activity = (Activity) context;
 
