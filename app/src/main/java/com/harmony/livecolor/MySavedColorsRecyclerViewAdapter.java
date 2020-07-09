@@ -132,7 +132,13 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
             public void onClick(View view) {
                 newColorDatabase = new ColorDatabase(context);
                 final Cursor colorData = newColorDatabase.getColorInfoData();
-                colorData.moveToPosition(position);
+                int size = myColors.size();
+                if(selectedView == "list"){
+                    colorData.moveToPosition(position);
+                } else {
+                    colorData.moveToPosition(size - position - 1);
+                }
+
                 Intent intent=new Intent(context, ColorInfoActivity.class);
                 intent.putExtra("id", colorData.getString(0));
                 intent.putExtra("name", colorData.getString(1));
