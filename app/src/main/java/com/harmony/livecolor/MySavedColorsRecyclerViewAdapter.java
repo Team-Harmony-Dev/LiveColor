@@ -17,10 +17,7 @@ import android.widget.TextView;
 import com.harmony.livecolor.SavedColorsFragment.OnListFragmentInteractionListener;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -32,7 +29,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private ArrayList<MyColor> myColors;
     private OnListFragmentInteractionListener listener;
     private Context context;
-    ColorDatabase newColorDatabase;
+    ColorDatabase colorDB;
 
 
     public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener) {
@@ -89,13 +86,14 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         }
     }
 
+    //TODO: UPDATE TO WORK WITH PALETTE FORMAT
     //separate method for the onClickListener in order to pass the position from onBVH in
     View.OnClickListener getColorClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newColorDatabase = new ColorDatabase(context);
-                final Cursor colorData = newColorDatabase.getColorInfoData();
+                colorDB = new ColorDatabase(context);
+                final Cursor colorData = colorDB.getColorDatabaseCursor();
                 colorData.moveToPosition(position);
                 Intent intent=new Intent(context, ColorInfoActivity.class);
                 intent.putExtra("id", colorData.getString(0));

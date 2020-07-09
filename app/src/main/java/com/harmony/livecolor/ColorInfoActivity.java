@@ -204,7 +204,7 @@ public class ColorInfoActivity extends AppCompatActivity {
     /*public void initColors(){
         //initialize ArrayList<MyColors> here
         String TAG = "COLORS";
-        Cursor colorData = newColorDatabase.getColorInfoData();
+        Cursor colorData = newColorDatabase.getColorDatabaseCursor();
         colorList = new ArrayList<>();
 
         if (colorData != null && colorData.getCount() > 0) {

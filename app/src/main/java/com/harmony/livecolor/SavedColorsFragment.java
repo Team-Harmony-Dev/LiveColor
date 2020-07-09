@@ -1,12 +1,9 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,12 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -34,7 +28,8 @@ public class SavedColorsFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyColor> colorList;
-    ColorDatabase newColorDatabase;
+
+    ColorDatabase colorDatabase;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -64,7 +59,7 @@ public class SavedColorsFragment extends Fragment {
 
         context = view.getContext();
 
-        newColorDatabase = new ColorDatabase(getActivity());
+        colorDatabase = new ColorDatabase(getActivity());
 
         initColors();
 
@@ -73,23 +68,9 @@ public class SavedColorsFragment extends Fragment {
         return view;
     }
 
-    public void initColors(){
+    public void initColors() {
         //initialize ArrayList<MyColors> here
-        String TAG = "COLORS";
-        Cursor colorData = newColorDatabase.getColorInfoData();
-        colorList = new ArrayList<>();
-
-        if (colorData != null && colorData.getCount() > 0) {
-            if (colorData.moveToFirst()) {
-                do {
-                    Log.d(TAG,  colorData.getString(2));
-                    colorList.add(new MyColor(colorData.getString(0) + "",
-                            colorData.getString(1) + "", colorData.getString(2) + "",
-                            colorData.getString(3) + "", colorData.getString(4) + ""));
-                }         while (colorData.moveToNext());
-
-            }
-        }
+        colorList = colorDatabase.getColorList("1");
     }
 
     public void initRecycler(){
@@ -107,7 +88,12 @@ public class SavedColorsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnListFragmentInteractionListener) {
+                listener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override

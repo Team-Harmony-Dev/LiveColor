@@ -61,6 +61,7 @@ public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDial
             @Override
             public void onClick(View view) {
                 listener.onListFragmentInteraction(myPalettes.get(position));
+                //TODO: UPDATE TO WORK WITH PALETTE FORMAT
             }
         };
     }

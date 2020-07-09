@@ -116,17 +116,12 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         }
     }
 
-    //TODO: uncomment method when PaletteInfoActivity is complete
-    // separate method for the onClickListener in order to pass the position from onBVH in
+    //TODO: UPDATE TO WORK WITH PALETTE FORMAT
     View.OnClickListener getPaletteClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 newColorDatabase = new ColorDatabase(context);
-                final Cursor colorData = newColorDatabase.getColorInfoData();
-                final Cursor paletteData = newColorDatabase.getPaletteInfoData();
-                // paletteData.moveToFirst();
-                colorData.moveToPosition(1);
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent
