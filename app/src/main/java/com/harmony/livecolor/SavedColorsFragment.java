@@ -81,18 +81,23 @@ public class SavedColorsFragment extends Fragment {
          * On click, the recycler is re-initialized.
          */
         final ImageButton listButton = view.findViewById(R.id.listViewButton);
+        final ImageButton gridButton = view.findViewById(R.id.gridViewButton);
+
         listButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 initRecycler("list");
+                listButton.setImageResource(R.drawable.list_view_selected);
+                gridButton.setImageResource(R.drawable.grid_view);
             }
         });
 
-        final ImageButton gridButton = view.findViewById(R.id.gridViewButton);
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 initRecycler("grid");
+                listButton.setImageResource(R.drawable.list_view);
+                gridButton.setImageResource(R.drawable.grid_view_selected);
             }
         });
 
