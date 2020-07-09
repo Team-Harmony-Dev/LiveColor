@@ -49,13 +49,6 @@ public class ColorInfoActivity extends AppCompatActivity {
        ActionBar actionBar = getSupportActionBar();
        //actionBar.hide();
 
-        ImageButton backbut = (ImageButton) findViewById(R.id.backButton);
-        backbut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         //TODO: Move SharedPrefs to outside of the method
         // pass colors through MyColor and intent (talk with Gabby)
@@ -72,20 +65,6 @@ public class ColorInfoActivity extends AppCompatActivity {
             String hex = bundle.getString("hex");
             colorValue = parseColor(hex);
         }
-
-        // Edit color listener
-        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
-        editColorB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view){
-                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
-                if(intent.getExtras() != null){
-                    Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
-                    startEditColorActivity.putExtra("colorValue", colorValue);
-                }
-                startActivity(startEditColorActivity);
-            }
-        });
 
         colorValue = Integer.parseInt(colorString);
 
@@ -144,42 +123,6 @@ public class ColorInfoActivity extends AppCompatActivity {
         TextView hsvDisplay = (TextView) findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
 
-        // Copy Button Listeners
-
-        Button copy1 = findViewById(R.id.copyHEX);
-
-        copy1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                copyToClip("HEX");
-            }
-        });
-
-        Button copy2 = findViewById(R.id.copyRGB);
-        copy2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                copyToClip("RGB");
-            }
-        });
-
-        Button copy3 = findViewById(R.id.copyHSV);
-        copy3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                copyToClip("HSV");
-            }
-        });
-
-        Button harmonyButton = findViewById(R.id.harmonyButton);
-        harmonyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
-                intent.putExtra("color_hsv", hsvArray);
-                startActivity(intent);
-            }
-        });
 
 
         newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
@@ -189,6 +132,96 @@ public class ColorInfoActivity extends AppCompatActivity {
         //initRecycler();
 
 
+    }
+
+
+    /**
+     * ALL CAPS METHOD DESCRIPTION
+     * lowercase description of the means
+     * @param param breif description of param
+     * @return description as necessary of the return value
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+
+    /**
+     * TOOLBAR BACK BUTTON FINISH ACTIVITY
+     * call the return to finish activity
+     * @param view view
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickBackButton(View view){
+        finish();
+    }
+
+    /**
+     * TOOLBAR EDIT BUTTON SWITCH TO EDIT COLOR ACTIVITY
+     * starts edit color activity with current color
+     * @param view view for the button
+     *
+     * @author Daniel
+     * changed as part of the oncreate inner to outer method refactor
+     */
+    public void onClickEditButton(View view){
+        Intent intent = getIntent();
+        Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+        if(intent.getExtras() != null){
+            Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
+            startEditColorActivity.putExtra("colorValue", colorValue);
+        }
+        startActivity(startEditColorActivity);
+    }
+
+    /**
+     * COPY HEX VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyHEX(View view){
+        copyToClip("HEX");
+    }
+    /**
+     * COPY RGB VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyRGB(View view){
+        copyToClip("RGB");
+    }
+
+    /**
+     * COPY HSV VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyHSV(View view){
+        copyToClip("HSV");
+    }
+
+    /**
+     * GENERATE AND VIEW COLOR HARMONIES
+     * start the harmony info activity using current color hsv as basis
+     * @param view view of button
+     *
+     * @author Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickColorHarmonies(View view){
+        Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
+        intent.putExtra("color_hsv", hsvArray);
+        startActivity(intent);
     }
 
 
