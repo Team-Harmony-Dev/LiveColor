@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -14,6 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
@@ -58,6 +62,7 @@ public class SavedColorsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
 
         Log.d("Lifecycles", "onCreateView: SavedColorsFragment created");
@@ -68,7 +73,34 @@ public class SavedColorsFragment extends Fragment {
 
         initColors();
 
-        initRecycler();
+        String defaultView = "list";
+        initRecycler(defaultView);
+
+        /**
+         * Button on click listeners for the grid/list buttons.
+         * On click, the recycler is re-initialized.
+         */
+        final ImageButton listButton = view.findViewById(R.id.listViewButton);
+        final ImageButton gridButton = view.findViewById(R.id.gridViewButton);
+
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                initRecycler("list");
+                //Sets the image buttons to reflect current state
+                listButton.setImageResource(R.drawable.list_view_selected);
+                gridButton.setImageResource(R.drawable.grid_view);
+            }
+        });
+
+        gridButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view){
+                initRecycler("grid");
+                listButton.setImageResource(R.drawable.list_view);
+                gridButton.setImageResource(R.drawable.grid_view_selected);
+            }
+        });
 
         return view;
     }
@@ -92,18 +124,32 @@ public class SavedColorsFragment extends Fragment {
         }
     }
 
-    public void initRecycler(){
+    /**
+     * Initialize the recycler.
+     * @param selectedView - "list" or "grid" - Gabby
+     */
+    public void initRecycler(String selectedView){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context, colorList, listener, selectedView);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         //Set the layout to be reverse and stacked from the end so that the newest colors appear at the top of the list
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
-        recyclerView.setLayoutManager(layoutManager);
-        layoutManager.setStackFromEnd(true);
+
+        /**
+         * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
+         */
+        if(selectedView == "list"){
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
+            recyclerView.setLayoutManager(layoutManager);
+            layoutManager.setStackFromEnd(true);
+        } else {
+            int numberOfColumns = 3;
+            GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
+            recyclerView.setLayoutManager(layoutManager);
+        }
     }
 
 
