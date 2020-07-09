@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -99,8 +100,11 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
         // UPDATE VALUES
-        ImageView colorD = (ImageView) findViewById(R.id.colorDisplay);
+        ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
+
+        LinearLayout wholeLayout = findViewById(R.id.colorLayout);
+        wholeLayout.setBackgroundColor(colorValue);
 
 
         TextView colorNameView = findViewById(R.id.colorNameCIA);
@@ -108,7 +112,11 @@ public class ColorInfoActivity extends AppCompatActivity {
             Log.d("ColorInfoActivity", "BUNDLE!!");
             colorNameT = bundle.getString("name");
         }
-        colorNameView.setText(colorNameT);
+
+        final double viewWidthPercentOfScreen = 1.0;
+        final float maxFontSize = 30;
+        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+        //colorNameView.setText(colorNameT);
 
         //HEX
 
@@ -188,12 +196,12 @@ public class ColorInfoActivity extends AppCompatActivity {
 
         newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
 
-        initColors();
+        //initColors();
 
-        initRecycler();
+        //initRecycler();
     }
 
-    public void initColors(){
+    /*public void initColors(){
         //initialize ArrayList<MyColors> here
         String TAG = "COLORS";
         Cursor colorData = newColorDatabase.getColorInfoData();
@@ -221,5 +229,6 @@ public class ColorInfoActivity extends AppCompatActivity {
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+    } */
 
 }

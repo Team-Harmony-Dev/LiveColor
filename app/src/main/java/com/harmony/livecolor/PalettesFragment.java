@@ -1,7 +1,6 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -30,14 +29,9 @@ import java.util.List;
 public class PalettesFragment extends Fragment {
 
     private OnListFragmentInteractionListener listener;
-    private MyPalettesRecyclerViewAdapter adapter;
     private Context context;
     private View view;
     private ArrayList<MyPalette> paletteList;
-    private ArrayList<MyColor> colorList;
-    private ArrayList<MyColor> colorList1;
-
-    ColorDatabase newColorDatabase;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,8 +59,6 @@ public class PalettesFragment extends Fragment {
 
         context = view.getContext();
 
-        newColorDatabase = new ColorDatabase(getActivity());
-
         initPalettes();
 
         initRecycler();
@@ -74,56 +66,53 @@ public class PalettesFragment extends Fragment {
         return view;
     }
 
-    /**
-     * initialize palette list from database to pass into activity's recycler
-     */
     public void initPalettes(){
         //initialize ArrayList<MyPalette> here
+        paletteList = new ArrayList<>();
         //will access palettes from database and put into MyPalette objects
         //TODO: Andrew's database code/method call will go here
-        //initialize ArrayList<MyColors> here
-        String TAG = "PALETTES";
-        Cursor colorData = newColorDatabase.getColorInfoData();
-        Cursor paletteData = newColorDatabase.getPaletteInfoData();
-        paletteList = new ArrayList<>();
-        colorList = new ArrayList<>();
-        colorList1 = new ArrayList<>();
+        //Temporary Palettes atm:
 
-
-        if (paletteData != null && paletteData.getCount() > 0) {
-            paletteData.moveToFirst();
-            colorData.moveToFirst();
-            Log.d("PAIGE", "Pre-incrementing, palette id = " + paletteData.getString(0)
-                    + " " + paletteData.getString(1)
-                    + " " + paletteData.getString(2));
-            Log.d("PAIGE", "Pre-incrementing, color id = " + colorData.getString(0));
-            do {
-                colorList.add(new MyColor(colorData.getString(0) + "",
-                        colorData.getString(1) + "", colorData.getString(2) + "",
-                        colorData.getString(3) + "", colorData.getString(4) + ""));
-                paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList));
-                Log.d("PAIGE", "initPalettes: this color = " + colorList.get(colorList.size()-1).getId()
-                        + " " + colorList.get(colorList.size()-1).getName());
-                Log.d("PAIGE", "initPalettes: this color added to palette = " + paletteList.get(paletteList.size()-1).getId()
-                        + " " + paletteList.get(paletteList.size()-1).getName());
-                if(colorData.moveToNext() && paletteData.moveToNext()) {
-                    colorList1.add(new MyColor(colorData.getString(0) + "",
-                            colorData.getString(1) + "", colorData.getString(2) + "",
-                            colorData.getString(3) + "", colorData.getString(4) + ""));
-                    paletteList.add(new MyPalette (paletteData.getString(0), paletteData.getString(1), colorList1));
-                }
-            }         while (paletteData.moveToNext() && colorData.moveToNext());
-        }
+        MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
+        MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
+        MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
+        //test 3 colors
+        ArrayList<MyColor> colorList1 = new ArrayList<>();
+        colorList1.add(magenta);
+        colorList1.add(yellow);
+        colorList1.add(cyan);
+        paletteList.add(new MyPalette("2","Three Colors",colorList1));
+        //test 6 colors
+        ArrayList<MyColor> colorList2 = new ArrayList<>();
+        colorList2.add(magenta);
+        colorList2.add(yellow);
+        colorList2.add(cyan);
+        colorList2.add(magenta);
+        colorList2.add(yellow);
+        colorList2.add(cyan);
+        paletteList.add(new MyPalette("3","Six Colors",colorList2));
+        //test 10+ colors
+        ArrayList<MyColor> colorList3 = new ArrayList<>();
+        colorList3.add(magenta);
+        colorList3.add(yellow);
+        colorList3.add(cyan);
+        colorList3.add(magenta);
+        colorList3.add(yellow);
+        colorList3.add(cyan);
+        colorList3.add(magenta);
+        colorList3.add(yellow);
+        colorList3.add(cyan);
+        colorList3.add(magenta);
+        colorList3.add(yellow);
+        colorList3.add(cyan);
+        paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
     }
 
-    /**
-     * initialize recycler
-     */
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
-        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
+        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -160,13 +149,5 @@ public class PalettesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
-    }
-
-    //reinitialize palettes and recycler onResume to update any changed color names or added palettes
-    @Override
-    public void onResume() {
-        initPalettes();
-        initRecycler();
-        super.onResume();
     }
 }
