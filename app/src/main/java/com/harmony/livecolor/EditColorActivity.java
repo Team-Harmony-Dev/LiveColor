@@ -376,7 +376,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     /**
-     * Resets the save button for the new color to the "unsaved" state
+     * Resets the "save" button for the new color to the "unsaved" state
      */
     public void resetBookmark(){
         if(isButtonClickedNew){
@@ -387,7 +387,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     /**
-     * Updates the seekbars to the passed HSV values with the appropraite max values
+     * Updates the seekbars to the passed HSV values
      * @param hue
      * @param saturation
      * @param value
@@ -402,7 +402,7 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     /**
-     * Updates the seekbars to the passed RGB values with the appropraite max values
+     * Updates the seekbars to the passed RGB values, different from updateSeekbarsHSV because the max values are different
      * @param red
      * @param green
      * @param blue
