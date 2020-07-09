@@ -424,10 +424,26 @@ public class ColorPickerFragment extends Fragment {
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
-            final double viewWidthPercentOfScreen = 0.60;
-            final float maxFontSize = 30;
-            TextView view = getActivity().findViewById(R.id.colorName);
-            ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            final boolean USE_API_FOR_NAMES = false;
+            if(USE_API_FOR_NAMES) {
+                final double viewWidthPercentOfScreen = 0.60;
+                final float maxFontSize = 30;
+                TextView view = getActivity().findViewById(R.id.colorName);
+                ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            } else {
+                //Get the file, read from it.
+                InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+                ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+                //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
+                //Get the hex, and then name that corresponds to the hex
+                String hex = "#"+colorToHex(savedColorInt);
+                String colorName = colors.getName(hex);
+                //Display the name
+                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                viewToUpdateColorName.setText(colorName);
+
+                Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+            }
         }
         updateColorValues(getView(), savedColorInt);
     }
