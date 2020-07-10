@@ -1,7 +1,10 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
+import android.util.TypedValue;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -185,6 +188,79 @@ public class ColorNameGetterCSV extends android.app.Application {
         //Log.d("V2S1 colorname", "Found name. Distance is "+shortestDistance);
 
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
+    }
+
+    //TODO proper comments
+    //TODO version that takes int pixel
+    //Trying to copy the behavior of the API ColorNameGetter without any async junk.
+    final static String loadingText = ". . .";
+    public static void getAndFitName(TextView view, String hex, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        if(view == null){
+            Log.w("V2S1 colorname", "getAndFitName Was passed a null view with hex "+hex);
+            return;
+        }
+        //Set up starting font size.
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
+        view.setText(loadingText);//TODO remove ?
+        //Get an instance, because this is how it's set up atm.
+        //(Note: requires you've already read it. Still really should update this syntax for calling)
+        InputStream inputStream = null;
+        ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+        //Get the name that corresponds to the given hex
+        String colorName = colors.getName(hex);
+        //Display the name
+        //view.setText(colorName);
+        //Now, we need to see if it's on multiple lines.
+        setAppropriatelySizedText(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+    }
+
+    //This is copy pasted
+    protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
+        //Note: I don't actually need to pass the colorName to helper anymore
+        view.setText(colorName);
+
+        //Attempt at using a text Watcher didn't work any better than this.
+        setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
+    }
+    protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
+        // The idea is to detect how much we need to reduce the font size by,
+        //   and then do that in one go
+        float fontSize = maximumFontSize;
+        if( view.getLineCount() > 1){
+            Log.d("S3US5", "Ran over a line, changing fontsize");
+            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
+
+            //First lets get the width of the text
+            // https://stackoverflow.com/a/37930140
+            view.measure(0, 0);
+            int textWidth = view.getMeasuredWidth();
+            //And now the width of the screen
+            //https://stackoverflow.com/a/31377616
+            int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth);
+
+            //There's some sort of minor padding so I need to reduce it slightly
+            maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
+            double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
+            double reduceToThisPercent = maximumTextWidth / textWidth;
+            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+
+                    " maxPercent="+maximumViewWidthPercentOfScreen+" mtw="+maximumTextWidth
+                    +" rp="+reduceToThisPercent);
+            //Update font size to be smaller
+            fontSize = (int) (fontSize*(reduceToThisPercent));
+            //There was a bug where fitting text gets bigger to fully fit for some reason.
+            //  We could easily make it a feature and just ignore the max size and always resize to fit.
+            //  Just remove this if and the line count if.
+            if(fontSize < maximumFontSize) {
+                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            } else {
+                Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
+            }
+        } else {
+            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
+        }
     }
 
     //For debug
