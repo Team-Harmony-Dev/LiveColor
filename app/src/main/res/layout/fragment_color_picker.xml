@@ -146,7 +146,6 @@
                     android:fontFamily="@font/lato_bold"
                     android:text="@string/colorValues"
                     android:textSize="30sp"
-                    android:singleLine="true"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

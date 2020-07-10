@@ -355,19 +355,19 @@ public class ColorPickerFragment extends Fragment {
                     //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
                     //Get the hex, and then name that corresponds to the hex
                     String hex = "#"+colorToHex(pixel);
-
+                    /*
                     String colorName = colors.getName(hex);
                     //Display the name
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     viewToUpdateColorName.setText(colorName);
                     Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
-                    /*
+                    */
                     //Display the name on one line
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     final double viewWidthPercentOfScreen = 0.60;
                     final float maxFontSize = 30;
                     ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
-                    */
+
 
                     //What if we fixed the text size by calling ColorNameGetter as well? Could modify it to use CSV name instead of API call?
 
