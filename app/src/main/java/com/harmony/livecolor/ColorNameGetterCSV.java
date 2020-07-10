@@ -263,7 +263,9 @@ public class ColorNameGetterCSV extends android.app.Application {
             //There was a bug where fitting text gets bigger to fully fit for some reason.
             //  We could easily make it a feature and just ignore the max size and always resize to fit.
             //  Just remove this if and the line count if.
-            if(fontSize < maximumFontSize) { //TODO fontSize needs to not be 30? What? Why? And why is it reading 30 even when it's set to 50 but the problem is still fixed ???
+            if(fontSize < maximumFontSize) {
+                //TODO fontSize needs to not be 30? What? Why? And why is it reading 30 even when it's set to 50 but the problem is still fixed ??? Change is overwritten, so it is 30.
+                // But that double change causes line number to read 0, which gives correct size, because width is smaller if it can spill onto other lines? Why did this not affect the API version?
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             } else {
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
