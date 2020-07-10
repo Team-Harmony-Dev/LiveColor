@@ -2,6 +2,7 @@ package com.harmony.livecolor;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -199,9 +200,10 @@ public class ColorNameGetterCSV extends android.app.Application {
             Log.w("V2S1 colorname", "getAndFitName Was passed a null view with hex "+hex);
             return;
         }
+        //Be removing this and getting the font size live we can fix a bug caused by this font size change not happening synchronously.
         //Set up starting font size.
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
-        view.setText(loadingText);//TODO remove ?
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50/*maximumFontSize*/);
+        //view.setText(loadingText);//TODO remove ?
         //Get an instance, because this is how it's set up atm.
         //(Note: requires you've already read it. Still really should update this syntax for calling)
         InputStream inputStream = null;
@@ -226,11 +228,15 @@ public class ColorNameGetterCSV extends android.app.Application {
     protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         // The idea is to detect how much we need to reduce the font size by,
         //   and then do that in one go
-        float fontSize = maximumFontSize;
-        if( view.getLineCount() > 1){
-            Log.d("S3US5", "Ran over a line, changing fontsize");
-            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
-
+        //float fontSize = maximumFontSize;
+        //Don't assume, get font size live.
+        //We need the metrics density because getTextSize() returns actual pixel size, not sp
+        float fontSize = view.getTextSize()/Resources.getSystem().getDisplayMetrics().density;
+        Log.d("S3US5 updated", "---Preparing to fit "+colorName+"-------------------------------------------");
+        Log.d("S3US5 updated", "Read fontsize as "+fontSize);
+        Log.d("S3US5 updated", "# lines is currently: "+view.getLineCount());
+        //if( view.getLineCount() > 1){ //Sometimes it's detecting 0. TextView should have plenty of time to update between clicks though ?
+        if( view.getLineCount() != 1){
             //First lets get the width of the text
             // https://stackoverflow.com/a/37930140
             view.measure(0, 0);
@@ -239,27 +245,30 @@ public class ColorNameGetterCSV extends android.app.Application {
             //https://stackoverflow.com/a/31377616
             int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 
-            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth);
+            Log.d("S3US5 updated", "w="+textWidth+" sw="+screenWidth);
 
             //There's some sort of minor padding so I need to reduce it slightly
             maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
             double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
             double reduceToThisPercent = maximumTextWidth / textWidth;
-            Log.d("S3US5", "w="+textWidth+" sw="+screenWidth+
-                    " maxPercent="+maximumViewWidthPercentOfScreen+" mtw="+maximumTextWidth
+            Log.d("S3US5", "sw="+screenWidth
+                    +" maxPercent="+maximumViewWidthPercentOfScreen
+                    +" mtw="+maximumTextWidth
+                    +" tw="+textWidth
                     +" rp="+reduceToThisPercent);
             //Update font size to be smaller
             fontSize = (int) (fontSize*(reduceToThisPercent));
+
+            Log.d("S3US5 updated", "fontSize that can fit: "+fontSize);
             //There was a bug where fitting text gets bigger to fully fit for some reason.
             //  We could easily make it a feature and just ignore the max size and always resize to fit.
             //  Just remove this if and the line count if.
-            if(fontSize < maximumFontSize) {
+            if(fontSize < maximumFontSize) { //TODO fontSize needs to not be 30? What? Why? And why is it reading 30 even when it's set to 50 but the problem is still fixed ???
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
             } else {
-                Log.d("S3US5 resizeFont", "Was attempting resize on already fitting text?");
+                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
+                //Log.d("S3US5 updated resizeFont", "Was attempting resize on already fitting text?");
             }
-        } else {
-            Log.d("S3US5", "# lines is currently: "+view.getLineCount());
         }
     }
 
