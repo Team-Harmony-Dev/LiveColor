@@ -248,7 +248,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         //  If we end up with actual multiple lines though, then the width (of the widest line) is <=1 line.
         //  So we can change the font size to force it to update, and that makes line count return 0, which will work. Probably.
         //  Ideally this loop would only run once. Does it ever need a loop?
-        //  Ideally I would figure out a much cleaner solution.
+        //  Ideally I would figure out a much cleaner solution. TODO
         while(true) {
             //Guarantee a size change. Arbitrary numbers.
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
@@ -279,13 +279,9 @@ public class ColorNameGetterCSV extends android.app.Application {
         fontSize = (int) (fontSize*(reduceToThisPercent));
 
         Log.d("S3US5 updated", "fontSize that can fit: "+fontSize);
-        //There was a bug where fitting text gets bigger to fully fit for some reason.
-        //  We could easily make it a feature and just ignore the max size and always resize to fit.
-        //  Just remove this if and the line count if.
+        //There was a bug where fitting text gets bigger to fully fit.
+        //  We could easily make it a feature and just ignore the max size and always use fontSize.
         if(fontSize < maximumFontSize) {
-            //TODO fontSize needs to not be 30? What? Why? And why is it reading 30 even when it's set to 50 but the problem is still fixed ??? Change is overwritten, so it is 30.
-            // But that double change causes line number to read 0, which gives correct size, because width is smaller if it can spill onto other lines? Why did this not affect the API version?
-            // Could read height as well ? Check if there are library functions that better do what I want, maybe a way to measure without setting?
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         } else {
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
