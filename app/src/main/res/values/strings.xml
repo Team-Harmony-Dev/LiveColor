@@ -28,4 +28,7 @@
     <string name="placeholder_text">In slime rancher you can actually use the jetpack to skip the
                                     gate leading into the Moss Blanket. This way you can save a slime key
                                     for later.</string>
+    <string name="inactive_members">Inactive Members</string>
+    <string name="melanie_wong">Melanie Wong</string>
+    <string name="andrew_tran">Andrew Tran</string>
 </resources>
