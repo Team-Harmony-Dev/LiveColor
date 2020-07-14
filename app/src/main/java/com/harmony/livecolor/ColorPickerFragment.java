@@ -336,12 +336,17 @@ public class ColorPickerFragment extends Fragment {
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
             saveColorB.setImageResource(R.drawable.unsaved);
             saveColorB.setColorFilter(null);
+
+
+            //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+            final boolean USE_API_FOR_NAMES = false;
+
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
-            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+            if(event.getActionMasked() == MotionEvent.ACTION_UP
+                    //We don't want to spam the API, but local color names are so fast we can just do it live.
+                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES)) {
                 Log.d("S3US5", "Release detected");
-                //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
-                final boolean USE_API_FOR_NAMES = false;
 
                 if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
