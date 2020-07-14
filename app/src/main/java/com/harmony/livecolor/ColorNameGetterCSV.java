@@ -216,7 +216,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         setAppropriatelySizedText(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
     }
 
-    //This is copy pasted
+    //Heavily based on ColorNameGetter.java
     protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
         ////view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
         //Note: I don't actually need to pass the colorName to helper anymore
