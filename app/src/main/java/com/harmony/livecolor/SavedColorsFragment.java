@@ -29,6 +29,9 @@ public class SavedColorsFragment extends Fragment {
     private View view;
     private ArrayList<MyColor> colorList;
 
+    MySavedColorsRecyclerViewAdapter adapter;
+
+
     ColorDatabase colorDatabase;
 
     /**
@@ -77,7 +80,7 @@ public class SavedColorsFragment extends Fragment {
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
+        adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -115,5 +118,9 @@ public class SavedColorsFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    public void refreshAdapter(){
+        adapter.notifyDataSetChanged();
     }
 }

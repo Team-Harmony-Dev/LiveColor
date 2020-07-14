@@ -194,8 +194,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
                 //if you are creating a new name for a palette
                 if(newColor) {
-                    Log.d("PAIGE", "setName is for new palette");
-                    Cursor colorData = colorDB.getColorDatabaseCursor();
+                    Log.d("CustomDialog", "setName is for new palette");
                     //adds the color to the database
                     long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
                     //gets newest added color and adds it to the palette
@@ -207,7 +206,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                             Toast.LENGTH_SHORT).show();
                 } //if you are renaming an existing palette
                 else {
-                    Log.d("PAIGE", "setName is for existing palette");
+                    Log.d("CustomDialog", "setName is for existing palette");
                     boolean nameChanged = colorDB.changePaletteName(id,newName);
                     dialog.dismiss();
                     if(nameChanged) {
@@ -239,11 +238,21 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
      */
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
-        colorDB.addColorInfoData(name, hex, rgb, hsv);
-        //TODO: implement palette database part
-        alertDialogSave.dismiss();
-        Toast.makeText(context,
-                "Saved color to \"" + palette.getName() + "\"",
-                Toast.LENGTH_SHORT).show();
+        //fetch new or existing color id for given color
+        long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
+        Log.d("CustomDialog", "onListFragmentInteraction: color returned as " + colorId);
+        //save color to existing palette by id
+        Log.d("CustomDialog", "onListFragmentInteraction: saving " + colorId + " to palette " + palette.getId());
+        if(colorDB.addColorToPalette(palette.getId(),Long.toString(colorId))) {
+            alertDialogSave.dismiss();
+            Toast.makeText(activity.getBaseContext(),
+                    "Color has been saved to \"" + palette.getName() + "\"",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            alertDialogSave.dismiss();
+            Toast.makeText(activity.getBaseContext(),
+                    "Sorry, there was an error saving the color to \"" + palette.getName() + "\"",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

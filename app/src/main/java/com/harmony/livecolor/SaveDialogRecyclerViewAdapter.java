@@ -20,7 +20,7 @@ public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDial
     private Context context;
 
     public SaveDialogRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes) {
-        Log.d("S4US1", "SaveDialogRecyclerViewAdapter: Constructed");
+        Log.d("Lifecycles", "SaveDialogRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myPalettes = myPalettes;
         this.listener = listener;
@@ -56,12 +56,12 @@ public class SaveDialogRecyclerViewAdapter extends RecyclerView.Adapter<SaveDial
     }
 
     // separate method for the onClickListener in order to pass the position from onBVH in
+    //sends the palette in that position to CustomDialog with the info on the color to be saved
     View.OnClickListener getSaveDialogClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onListFragmentInteraction(myPalettes.get(position));
-                //TODO: UPDATE TO WORK WITH PALETTE FORMAT
             }
         };
     }
