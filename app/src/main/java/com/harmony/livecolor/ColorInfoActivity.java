@@ -94,23 +94,32 @@ public class ColorInfoActivity extends AppCompatActivity {
 
         //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
         final boolean USE_API_FOR_NAMES = false;
+        //TODO it looks like we don't actually have 100% of the screen, there's color around the box we're in which takes what %?
+        final double viewWidthPercentOfScreen = 0.9;
+        final float maxFontSize = 30;
         if(USE_API_FOR_NAMES) {
-            final double viewWidthPercentOfScreen = 1.0;
-            final float maxFontSize = 30;
             ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
             //colorNameView.setText(colorNameT);
         } else {
-            //Get the file, read from it.
-            InputStream inputStream = getResources().openRawResource(R.raw.colornames);
-            ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-            //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
-            //Get the hex, and then name that corresponds to the hex
-            String hex = "#"+colorToHex(colorValue);
-            String colorName = colors.getName(hex);
-            //Display the name
-            colorNameView.setText(colorName);
+            final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+            if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                //Display the name on one line
+                TextView viewToUpdateColorName = colorNameView;
+                String hex = "#" + colorToHex(colorValue);
+                ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+            } else {
+                //Get the file, read from it.
+                InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+                ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+                //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
+                //Get the hex, and then name that corresponds to the hex
+                String hex = "#" + colorToHex(colorValue);
+                String colorName = colors.getName(hex);
+                //Display the name
+                colorNameView.setText(colorName);
 
-            Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+                //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+            }
         }
 
         //HEX

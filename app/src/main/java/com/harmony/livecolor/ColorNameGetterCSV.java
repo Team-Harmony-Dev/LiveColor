@@ -209,6 +209,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         //Get the name that corresponds to the given hex
+        //String colorName = "Really long color name fits how";//For debugging
         String colorName = colors.getName(hex);
         //Display the name
         //view.setText(colorName);
