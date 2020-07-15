@@ -40,7 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_keyboard_backspace_grey_48" />
+                app:srcCompat="@drawable/ic_baseline_keyboard_light_grey_backspace_48" />
 
             <ToggleButton
                 android:id="@+id/toggleButton"

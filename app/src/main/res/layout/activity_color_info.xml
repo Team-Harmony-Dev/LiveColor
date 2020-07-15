@@ -38,11 +38,10 @@
                 android:hint="Name"
 
 
-
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_keyboard_backspace_grey_48" />
+                app:srcCompat="@drawable/ic_baseline_keyboard_light_grey_backspace_48" />
 
             <ImageButton
                 android:id="@+id/editButton"
@@ -55,7 +54,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_edit_grey_32" />
+                app:srcCompat="@drawable/ic_baseline_edit_light_grey_40" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
