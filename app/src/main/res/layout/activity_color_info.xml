@@ -8,8 +8,6 @@
     android:layout_height="match_parent">
 
 
-
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarEdit"
         android:layout_width="match_parent"
@@ -58,7 +56,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,18 +95,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineInnerMarginLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".04" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineInnerMarginRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".96" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutColorIID"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
             android:background="#FFFFFF"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineInnerMarginRight"
+            app:layout_constraintStart_toStartOf="@+id/guidelineInnerMarginLeft"
             app:layout_constraintTop_toBottomOf="@+id/space"
             tools:layout_conversion_absoluteHeight="346dp"
             tools:layout_conversion_absoluteWidth="382dp">
