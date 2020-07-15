@@ -222,7 +222,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoButton"
                     style="@android:style/Widget.DeviceDefault.ImageButton"
                     android:layout_width="0dp"

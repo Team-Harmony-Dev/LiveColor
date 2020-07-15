@@ -484,3 +484,4 @@ public class ColorPickerFragment extends Fragment {
         return String.format("%06X", (0xFFFFFF & color));
     }
 }
+
