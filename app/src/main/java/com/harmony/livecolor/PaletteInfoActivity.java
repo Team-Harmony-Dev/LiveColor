@@ -42,8 +42,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         final TextView paletteName = findViewById(R.id.paletteName);
         paletteName.setText(palette.getName());
 
-        //Color arraylist is initialized here. Gets arraylist of colors from palette object
-        paletteColors = palette.getColors();
+        initColors();
 
         //set back button to leave activity, and edit button to change palette name
         ImageButton backButton = findViewById(R.id.backButton);
@@ -66,6 +65,11 @@ public class PaletteInfoActivity extends AppCompatActivity {
         initRecycler();
     }
 
+    public void initColors(){
+        //Color arraylist is initialized here. Gets arraylist of colors from palette object
+        paletteColors = palette.getColors();
+    }
+
     //initializes the recycler view with the given color information
     public void initRecycler(){
         //get the RecyclerView from the view
@@ -81,5 +85,12 @@ public class PaletteInfoActivity extends AppCompatActivity {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyContent.DummyItem item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initColors();
+        initRecycler();
     }
 }

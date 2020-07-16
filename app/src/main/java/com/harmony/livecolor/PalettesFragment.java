@@ -29,6 +29,8 @@ public class PalettesFragment extends Fragment {
     private View view;
     private ArrayList<MyPalette> paletteList;
 
+    private MyPalettesRecyclerViewAdapter adapter;
+
     ColorDatabase colorDB;
 
     /**
@@ -76,7 +78,7 @@ public class PalettesFragment extends Fragment {
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
-        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
+        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -113,5 +115,14 @@ public class PalettesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Lifecycles", "onResume: PalettesFragment resumed");
+        //TODO: There *must* be a better way to refresh the lists than this (notifyDataSetChanged() isn't working)
+        initPalettes();
+        initRecycler();
     }
 }

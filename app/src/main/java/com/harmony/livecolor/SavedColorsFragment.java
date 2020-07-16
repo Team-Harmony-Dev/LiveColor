@@ -29,7 +29,7 @@ public class SavedColorsFragment extends Fragment {
     private View view;
     private ArrayList<MyColor> colorList;
 
-    MySavedColorsRecyclerViewAdapter adapter;
+    private MySavedColorsRecyclerViewAdapter adapter;
 
 
     ColorDatabase colorDatabase;
@@ -120,7 +120,10 @@ public class SavedColorsFragment extends Fragment {
         void onListFragmentInteraction(DummyItem item);
     }
 
-    public void refreshAdapter(){
-        adapter.notifyDataSetChanged();
+    @Override
+    public void onResume() {
+        super.onResume();
+        initColors();
+        initRecycler();
     }
 }
