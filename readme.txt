@@ -1,3 +1,7 @@
+# Live Color
+
+![Live Color Logo](https://github.com/TheBrows/LiveColor/blob/master/app/src/main/res/drawable/livecolor_logo.png)
+
 Download Android Studio.
 Set up GitHub through Android Studio’s VCS options. 
 Download the project. 
