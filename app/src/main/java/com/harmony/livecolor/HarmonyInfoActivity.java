@@ -28,20 +28,40 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        //set back button to leave activity
-        ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
 
         initPalettes();
         initRecycler();
 
     }
 
+
+    /**
+     *  BACK BUTTON
+     *  simple back button
+     * @param view view of button
+     *
+     *
+     * part of the refactor
+     * set back button to leave activity
+     */
+    public void onClickBackButton(View view){
+        finish();
+    }
+
+    /**
+     *  EDIT BUTTON
+     *  placeholder edit button
+     * @param view view of button
+     *
+     *
+     * @author Daniel
+     * part of the refactor
+     *
+     */
+    public void onClickEditButton(View view){
+        Log.d("DEBUG","edit button pressed in harmony activity");
+    }
 
     public void initPalettes(){
         paletteList = new ArrayList<>();
