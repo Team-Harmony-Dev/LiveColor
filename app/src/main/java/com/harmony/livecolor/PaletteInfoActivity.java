@@ -32,37 +32,52 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
         //removes action bar
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        //actionBar.hide();
+
+
 
         //get extra containing the palette object
         Intent intent = getIntent();
         palette = (MyPalette) intent.getSerializableExtra("PALETTE");
 
         //get palette name textview and set name of palette on activity
-        final TextView paletteName = findViewById(R.id.paletteName);
+        TextView paletteName = findViewById(R.id.paletteName);
         paletteName.setText(palette.getName());
 
-        initColors();
-
-        //set back button to leave activity, and edit button to change palette name
-        ImageButton backButton = findViewById(R.id.backButton);
-        ImageButton editButton = findViewById(R.id.editButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomDialog setNameDialog = new CustomDialog(PaletteInfoActivity.this,palette.getId());
-                setNameDialog.showSetNameDialog();
-            }
-        });
+        //Color arraylist is initialized here. Gets arraylist of colors from palette object
+        paletteColors = palette.getColors();
 
         //initialize the recycler
         initRecycler();
+    }
+
+    /**
+     *  BACK BUTTON
+     *  simple back button
+     * @param view view of button
+     *
+     *
+     * part of the refactor
+     * set back button to leave activity
+     */
+    public void onClickBackButton(View view){
+        finish();
+    }
+
+    /**
+     *  EDIT BUTTON
+     *  placeholder edit button
+     * @param view view of button
+     *
+     *
+     * @author Daniel
+     * part of the refactor
+     *
+     */
+    public void onClickEditButton(View view){
+        Log.d("DEBUG","edit button pressed in palette info activity");
+        CustomDialog setNameDialog = new CustomDialog(PaletteInfoActivity.this,palette.getId());
+        setNameDialog.showSetNameDialog();
     }
 
     public void initColors(){
@@ -75,7 +90,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.paletteInfoRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener);
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener,"list");
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well

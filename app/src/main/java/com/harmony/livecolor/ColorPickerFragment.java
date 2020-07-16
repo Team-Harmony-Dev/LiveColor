@@ -9,10 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,15 +18,11 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,34 +30,17 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
-import static androidx.core.content.ContextCompat.getColorStateList;
 
 
 /**
@@ -355,7 +332,7 @@ public class ColorPickerFragment extends Fragment {
             updateColorValues(view, pixel);
             isButtonClicked = false;
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-            saveColorB.setImageResource(R.drawable.ic_action_name);
+            saveColorB.setImageResource(R.drawable.unsaved);
             saveColorB.setColorFilter(null);
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
@@ -507,3 +484,4 @@ public class ColorPickerFragment extends Fragment {
         return String.format("%06X", (0xFFFFFF & color));
     }
 }
+
