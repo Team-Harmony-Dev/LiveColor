@@ -91,12 +91,12 @@ public class ColorNameGetterCSV extends android.app.Application {
         //TODO is this the best way to do this?
         this.colorNames = this.read();
         //Debug
-        Log.d("V2S1 colorname", "Read: "+this.colorNames);
-        Log.d("V2S1 colorname", "type: "+this.colorNames.getClass().getName());
-        Log.d("V2S1 colorname", "EachLine: "+this.colorNames.get(0));
-        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0).getClass().getName());
-        Log.d("V2S1 colorname", "InnerElem: "+this.colorNames.get(0)[0]);
-        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0)[0].getClass().getName());
+//        Log.d("V2S1 colorname", "Read: "+this.colorNames);
+//        Log.d("V2S1 colorname", "type: "+this.colorNames.getClass().getName());
+//        Log.d("V2S1 colorname", "EachLine: "+this.colorNames.get(0));
+//        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0).getClass().getName());
+//        Log.d("V2S1 colorname", "InnerElem: "+this.colorNames.get(0)[0]);
+//        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0)[0].getClass().getName());
 
         //printArr();
     }
@@ -209,8 +209,8 @@ public class ColorNameGetterCSV extends android.app.Application {
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         //Get the name that corresponds to the given hex
-        //String colorName = "Really long color name fits how";//For debugging
         String colorName = colors.getName(hex);
+        //colorName = "Really long color name fits how";//For debugging
         //Display the name
         //view.setText(colorName);
         //Now, we need to see if it's on multiple lines.
@@ -244,22 +244,16 @@ public class ColorNameGetterCSV extends android.app.Application {
         // https://stackoverflow.com/a/37930140
         view.measure(0, 0);
         int textWidth = 0;
+
         //This is terrible. Might break in some situations?
         //  If line count is 0, then it's pretty straightforward: The width is obtained correctly.
         //  If we end up with actual multiple lines though, then the width (of the widest line) is <=1 line.
-        //  So we can change the font size to force it to update, and that makes line count return 0, which will work. Probably.
-        //  Ideally this loop would only run once. Does it ever need a loop?
-        //  Ideally I would figure out a much cleaner solution. TODO
-        while(true) {
-            //Guarantee a size change. Arbitrary numbers.
-            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            //If it's 0, then we can get the correct height.
-            if (view.getLineCount() == 0) {
-                textWidth = view.getMeasuredWidth();
-                break;
-            }
-        }
+        //  So we can change the font size to force it to update, and that makes line count return 0, which will work. Probably. It seems to.
+
+        //Guarantee a size change. Arbitrary numbers.
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        textWidth = view.getMeasuredWidth();
 
         //And now the width of the screen
         //https://stackoverflow.com/a/31377616
