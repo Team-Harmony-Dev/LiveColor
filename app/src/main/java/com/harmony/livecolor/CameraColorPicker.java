@@ -57,7 +57,7 @@ public class CameraColorPicker extends AppCompatActivity {
      * Functionality of  camera color picker button
      * @param view view of the button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the oncreate inner to outer method refactor
      */
     public void onClickmCaptureBtn(View view){

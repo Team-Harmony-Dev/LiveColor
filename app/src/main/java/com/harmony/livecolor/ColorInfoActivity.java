@@ -141,7 +141,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * @param param breif description of param
      * @return description as necessary of the return value
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
 
@@ -150,7 +150,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * call the return to finish activity
      * @param view view
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickBackButton(View view){
@@ -162,7 +162,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * starts edit color activity with current color
      * @param view view for the button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the oncreate inner to outer method refactor
      */
     public void onClickEditButton(View view){
@@ -180,7 +180,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * call the copy to clip with proper args for the button
      * @param view view of button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickCopyHEX(View view){
@@ -191,7 +191,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * call the copy to clip with proper args for the button
      * @param view view of button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickCopyRGB(View view){
@@ -203,7 +203,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * call the copy to clip with proper args for the button
      * @param view view of button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickCopyHSV(View view){
@@ -215,7 +215,7 @@ public class ColorInfoActivity extends AppCompatActivity {
      * start the harmony info activity using current color hsv as basis
      * @param view view of button
      *
-     * @author Daniel
+     * @author {someone}, Daniel
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickColorHarmonies(View view){
