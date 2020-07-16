@@ -103,7 +103,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     //TODO Closest vector doesn't sqrt. Probably unnecessary right? Because we're only checking if one is greater than the other.
     private double getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
-        return Math.sqrt(Math.pow(r1-r2, 2)+Math.pow(g1-g2, 2)+Math.pow(b1-b2, 2));
+        return /*Math.sqrt*/(Math.pow(r1-r2, 2)+Math.pow(g1-g2, 2)+Math.pow(b1-b2, 2));
     }
 
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
@@ -193,6 +193,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     //TODO proper comments
     //TODO version that takes int pixel
+    //TODO mess around more with library functions? https://developer.android.com/reference/android/widget/TextView#setAutoSizeTextTypeUniformWithConfiguration(int,%20int,%20int,%20int)
     //Trying to copy the behavior of the API ColorNameGetter without any async junk.
     final static String loadingText = ". . .";
     public static void getAndFitName(TextView view, String hex, double maximumViewWidthPercentOfScreen, float maximumFontSize){
