@@ -308,7 +308,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
 
     /**
-     * GET AN ARRAYLIST OF MYCOLOR OBJECTS FROM A PALETTE (DONE, UNTESTED)
+     * GET AN ARRAYLIST OF MYCOLOR OBJECTS FROM A PALETTE (DONE)
      * retrieves a usable arraylist of colors from a given palette
      * @param id of the palette to get the color list from
      * @return ArrayList of MyColor objects
