@@ -30,7 +30,6 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
     private ArrayList<MyPalette> myPalettes;
     private OnListFragmentInteractionListener listener;
     private Context context;
-    ColorDatabase colorDB;
 
     public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
         Log.d("S3US2", "PaletteColorsRecyclerViewAdapter: Constructed");
@@ -121,7 +120,6 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                colorDB = new ColorDatabase(context);
                 //create intent for PaletteInfo
                 Intent intent = new Intent(context,PaletteInfoActivity.class);
                 //use putExtra Serializable to pass in desired color with intent

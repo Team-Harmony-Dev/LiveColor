@@ -45,7 +45,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
      * @param selectedV - The selected view: "list" or "grid" - Gabby
      */
     public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener, String selectedV) {
-        Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
+        Log.d("Lifecycles", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myColors = myColors;
 
@@ -131,13 +131,10 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
             @Override
             public void onClick(View view) {
                 colorDB = new ColorDatabase(context);
-                final Cursor colorData = colorDB.getColorDatabaseCursor();
-                int size = myColors.size();
-                if(selectedView == "list"){
-                    colorData.moveToPosition(position);
-                } else {
-                    colorData.moveToPosition(size - position - 1);
-                }
+                //get clicked color from position
+                String colorID = "";
+                colorID = myColors.get(position).getId();
+                Cursor colorData = colorDB.getColorInfoById(colorID);
 
                 Intent intent=new Intent(context, ColorInfoActivity.class);
                 intent.putExtra("id", colorData.getString(0));
