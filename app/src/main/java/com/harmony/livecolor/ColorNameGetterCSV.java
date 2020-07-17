@@ -272,7 +272,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 +" tw="+textWidth
                 +" rp="+reduceToThisPercent);
         //Update font size to be smaller
-        fontSize = (int) (fontSize*(reduceToThisPercent));
+        fontSize = (int) (fontSize*(reduceToThisPercent)); //There might be some rounding issue. Just changing this to float doesn't fix. See #F57C21 "Ornery Tangerine"
 
         Log.d("S3US5 updated", "fontSize that can fit: "+fontSize);
         //There was a bug where fitting text gets bigger to fully fit.
