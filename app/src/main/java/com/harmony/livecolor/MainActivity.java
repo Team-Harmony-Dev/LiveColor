@@ -9,9 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,8 +77,8 @@ public class MainActivity extends AppCompatActivity
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         colors.readColors();
-        String testInit = colors.getName("#100000");
-        Log.d("V2S1 colorname", "init: "+testInit);
+        //String testInit = colors.searchForName("#100000");
+        //Log.d("V2S1 colorname", "init: "+testInit);
     }
 
     //checks if given fragment exists, and loads it if possible

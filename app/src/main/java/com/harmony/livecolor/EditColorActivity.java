@@ -542,13 +542,9 @@ public class EditColorActivity extends AppCompatActivity {
                 String hex = "#" + colorToHex(colorI);
                 ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen*numberOfLines, maxFontSize);
             } else {
-                //Get the file, read from it.
-                InputStream inputStream = getResources().openRawResource(R.raw.colornames);
-                ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-                //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
                 //Get the hex, and then name that corresponds to the hex
                 String hex = "#" + colorToHex(colorI);
-                String colorName = colors.getName(hex);
+                String colorName = ColorNameGetterCSV.getName(hex);
                 //Display the name
                 thisView.setText(colorName);
 

@@ -13,8 +13,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,13 +106,9 @@ public class ColorInfoActivity extends AppCompatActivity {
                 String hex = "#" + colorToHex(colorValue);
                 ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
             } else {
-                //Get the file, read from it.
-                InputStream inputStream = getResources().openRawResource(R.raw.colornames);
-                ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-                //colors.readColors();//This is now static, so long as we load from the file once when starting we don't need to do it again.
                 //Get the hex, and then name that corresponds to the hex
                 String hex = "#" + colorToHex(colorValue);
-                String colorName = colors.getName(hex);
+                String colorName = ColorNameGetterCSV.getName(hex);
                 //Display the name
                 colorNameView.setText(colorName);
 

@@ -1,8 +1,6 @@
 package com.harmony.livecolor;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -107,8 +105,7 @@ public class ColorNameGetterCSV extends android.app.Application {
     }
 
     //https://github.com/meodai/color-names/blob/master/scripts/server.js
-    //TODO static?
-    public String getName(String hex){
+    protected String searchForName(String hex){
         //This is returned if something goes wrong
         final String errorColorName = "Error";
         /*
@@ -191,6 +188,14 @@ public class ColorNameGetterCSV extends android.app.Application {
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
 
+    //Important note: Relies on colors already having been read (happens in MainActivity.java)
+    public static String getName(String hex){
+        InputStream inputStream = null;
+        ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+        return colors.searchForName(hex);
+    }
+
+
     //TODO proper comments
     //TODO version that takes int pixel
     //TODO mess around more with library functions? https://developer.android.com/reference/android/widget/TextView#setAutoSizeTextTypeUniformWithConfiguration(int,%20int,%20int,%20int)
@@ -207,10 +212,13 @@ public class ColorNameGetterCSV extends android.app.Application {
         ////view.setText(loadingText);//TODO remove ? Need to figure out a better way to split or combine these functions
         //Get an instance, because this is how it's set up atm.
         //(Note: requires you've already read it. Still really should update this syntax for calling)
+        /*
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         //Get the name that corresponds to the given hex
-        String colorName = colors.getName(hex);
+        String colorName = colors.searchForName(hex);
+         */
+        String colorName = getName(hex);
         //colorName = "Really long color name fits how";//For debugging
         //Display the name
         //view.setText(colorName);
