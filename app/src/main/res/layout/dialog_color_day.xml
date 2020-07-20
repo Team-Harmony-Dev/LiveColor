@@ -17,6 +17,19 @@
         app:layout_constraintTop_toBottomOf="@+id/dateView"
         app:layout_constraintVertical_bias="0.0" />
 
+    <ImageView
+        android:id="@+id/shine"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateView"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginLeft="-50dp"
+        android:src="@drawable/shine"/>
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -65,8 +78,7 @@
         android:id="@+id/colorOTDNameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="TextView"
+        android:text="TheBestColorEver!"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/saveCOTD"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,10 +90,11 @@
         android:id="@+id/dateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="06/66/69"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/colorOTDView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 </androidx.constraintlayout.widget.ConstraintLayout>
