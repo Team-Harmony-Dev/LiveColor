@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * CustomDialog class
@@ -127,10 +128,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 long j = colorDB.addColorInfoData(name, hex, rgb, hsv);
                 alertDialogSave.dismiss();
                 if (j > -1) {
-                    makeToast("Color has been saved to Saved Colors");
+                    makeToast("Color has been saved to Saved Colors", context);
                 }
                 if (j == -1) {
-                    makeToast("Color is a duplicate");
+                    makeToast("Color is a duplicate", context);
                 }
             }
         });
@@ -226,7 +227,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 }
                 dialog.dismiss();
                 String newName = newPaletteName.getText().toString();
-                makeToast("New palette \"" + newName + "\" created!");
+                makeToast("New palette \"" + newName + "\" created!", context);
             }
         });
 
@@ -239,24 +240,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         colorDB.addColorInfoData(name, hex, rgb, hsv);
         //TODO: implement palette database part
         alertDialogSave.dismiss();
-        makeToast("Saved color to \"" + palette.getName() + "\"");
+        makeToast("Saved color to \"" + palette.getName() + "\"", context);
     }
 
-    /**
-     * Creates custom toast and displays it with the passed message
-     * @param toasty (passed message - string)
-     * @author Gabby
-     */
-    public void makeToast(String toasty){
-        Toast toast = Toast.makeText(context,
-                toasty,
-                Toast.LENGTH_SHORT);
-        View view = toast.getView();
-
-        view.setBackgroundResource(R.color.colorDark);
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(Color.WHITE);
-
-        toast.show();
-    }
 }

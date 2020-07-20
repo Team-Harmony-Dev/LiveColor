@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
 
 /**
  * @author Gabby
@@ -376,12 +377,12 @@ public class EditColorActivity extends AppCompatActivity {
 
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                 int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
-                colorI = UsefulFunctions.getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+                colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
                 rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
                 hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
             } else {
-                colorI = UsefulFunctions.getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+                colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 int red = seekRed.getProgress();
                 int green = seekGreen.getProgress();
                 int blue = seekBlue.getProgress();
@@ -534,9 +535,9 @@ public class EditColorActivity extends AppCompatActivity {
         int colorI = 0;
         if(ToggleButtonState){
             int[] getRGBValue = convertHSVtoRGB(redOrHue, greenOrSat, blueOrVal);
-            colorI = UsefulFunctions.getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
+            colorI = getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
         }else {
-            colorI = UsefulFunctions.getIntFromColor(redOrHue, greenOrSat, blueOrVal);
+            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrVal);
         }
 
         colorNewS.setBackgroundColor(colorI);
@@ -556,9 +557,9 @@ public class EditColorActivity extends AppCompatActivity {
         int colorI = 0;
         if(ToggleButtonState){
             int[] getRGBValues = convertHSVtoRGB(redOrHue, greenOrSat, blueOrValue);
-            colorI = UsefulFunctions.getIntFromColor(getRGBValues[0], getRGBValues[1], getRGBValues[2]);
+            colorI = getIntFromColor(getRGBValues[0], getRGBValues[1], getRGBValues[2]);
         } else {
-            colorI = UsefulFunctions.getIntFromColor(redOrHue, greenOrSat, blueOrValue);
+            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
 
         final double viewWidthPercentOfScreen = 1.0;
