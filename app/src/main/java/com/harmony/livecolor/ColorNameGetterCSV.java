@@ -221,13 +221,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     //Heavily based on ColorNameGetter.java
     protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
         ////view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
-        //Note: I don't actually need to pass the colorName to helper anymore
         view.setText(colorName);
 
-        //Attempt at using a text Watcher didn't work any better than this.
-        setAppropriatelySizedTextHelper(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
-    }
-    protected static void setAppropriatelySizedTextHelper(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         // The idea is to detect how much we need to reduce the font size by,
         //   and then do that in one go
         //float fontSize = maximumFontSize;
