@@ -28,18 +28,30 @@ import java.util.ArrayList;
 public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
-    //Might be redundant
-    private static boolean haveAlreadyReadNames = false;
     private static ArrayList<String[]> colorNames;
+    //If for some reason the csv changes format, you can change these and it all should still work.
     private static final int NAME_INDEX = 0;
     private static final int HEX_INDEX = 1;
 
+    /**
+     * Example of initializing this class:
+     *    InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+     *    ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+     *    colors.readColors();
+     * @param inputStream File to read from, if you're going to read color names. Can be null if it's already been read.
+     * @author https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
+     */
     public ColorNameGetterCSV(InputStream inputStream){
         this.inputStream = inputStream;
     }
 
-     private ArrayList<String[]> read(){
-         ArrayList<String[]> resultList = new ArrayList<String[]>();
+    /**
+     * Reads data from the file that was passed when creating an instance of the class.
+     * @return ArrayList of [name, hex] string pairs.
+     * @author https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
+     */
+    private ArrayList<String[]> read(){
+        ArrayList<String[]> resultList = new ArrayList<String[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String csvLine;
@@ -80,31 +92,48 @@ public class ColorNameGetterCSV extends android.app.Application {
         return resultList;
     }
 
-    //TODO private?
+    /**
+     * Reads from res/raw/colornames.csv
+     * Call this once, before using getName() or getAndFitName()
+     * This is currently being called in MainActivity.java
+     * @author Dustin
+     */
     public void readColors(){
-        /*
-        InputStream inputStream = getResources().openRawResource(R.raw.colornames);
-        ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-        */
-        //TODO is this the best way to do this?
         this.colorNames = this.read();
-        //Debug
-//        Log.d("V2S1 colorname", "Read: "+this.colorNames);
-//        Log.d("V2S1 colorname", "type: "+this.colorNames.getClass().getName());
-//        Log.d("V2S1 colorname", "EachLine: "+this.colorNames.get(0));
-//        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0).getClass().getName());
-//        Log.d("V2S1 colorname", "InnerElem: "+this.colorNames.get(0)[0]);
-//        Log.d("V2S1 colorname", "type: "+this.colorNames.get(0)[0].getClass().getName());
 
         //printArr();
     }
 
-    //TODO Closest vector doesn't sqrt. Probably unnecessary right? Because we're only checking if one is greater than the other.
+    /**
+     * Computes the squared distance between two 3D points (RGB colors).
+     * Uses squared distance because the actual distance doesn't matter,
+     *     we just need to know which is smallest to find the closest name.
+     *
+     * @param r1
+     * @param g1
+     * @param b1
+     * @param r2
+     * @param g2
+     * @param b2
+     * @return Squared distance between the points.
+     * @author Dustin
+     */
     private double getDistanceBetween(int r1, int g1, int b1, int r2, int g2, int b2){
         return /*Math.sqrt*/(Math.pow(r1-r2, 2)+Math.pow(g1-g2, 2)+Math.pow(b1-b2, 2));
     }
 
-    //https://github.com/meodai/color-names/blob/master/scripts/server.js
+    /**
+     * Takes the hex of a color and gets the closest color name from
+     *     https://github.com/meodai/color-names/blob/master/scripts/server.js
+     *     (Read from the version of that file in res/raw/colornames.csv).
+     * Important note: Relies on colors already having been read (happens in MainActivity.java)
+     *
+     * I had some problem making it static, so just use this through getName()
+     *
+     * @param hex A color like #FFFFFF. # is expected. Transparency is not expected.
+     * @return A human readable color name.
+     * @author Dustin
+     */
     protected String searchForName(String hex){
         //This is returned if something goes wrong
         final String errorColorName = "Error";
@@ -194,7 +223,8 @@ public class ColorNameGetterCSV extends android.app.Application {
      *     (Read from the version of that file in res/raw/colornames.csv).
      * Important note: Relies on colors already having been read (happens in MainActivity.java)
      * @param hex A color like #FFFFFF. # is expected. Transparency is not expected.
-     * @return A human readable color name .
+     * @return A human readable color name.
+     * @author Dustin
      */
     public static String getName(String hex){
         InputStream inputStream = null;
@@ -202,12 +232,20 @@ public class ColorNameGetterCSV extends android.app.Application {
         return colors.searchForName(hex);
     }
 
-
-    //TODO proper comments
     //TODO version that takes int pixel
     //TODO mess around more with library functions? https://developer.android.com/reference/android/widget/TextView#setAutoSizeTextTypeUniformWithConfiguration(int,%20int,%20int,%20int)
-    //Trying to copy the behavior of the API ColorNameGetter without any async junk.
-    final static String loadingText = ". . .";
+    /**
+     * A function that places the name corresponding to a hex color into a specified TextView,
+     *     and sets the font size to either maximumFontSize or smaller to ensure that the
+     *     TextView with the unpredictable-length name stays on a single line.
+     *
+     * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
+     *
+     * @param view The TextView to put the name in
+     * @param hex A string of hex, including the #, excluding any transparency. Ex: #FFFFFF
+     * @param maximumViewWidthPercentOfScreen The horizontal percentage of the screen that the view takes up.
+     * @param maximumFontSize The font size that will be used if no reduction is needed.
+     */
     public static void getAndFitName(TextView view, String hex, double maximumViewWidthPercentOfScreen, float maximumFontSize){
         if(view == null){
             Log.w("V2S1 colorname", "getAndFitName Was passed a null view with hex "+hex);
@@ -236,7 +274,7 @@ public class ColorNameGetterCSV extends android.app.Application {
     /**
      * Heavily based on ColorNameGetter's method.
      * Displays the color name in a TextView, reducing font size to ensure that it fits in the space.
-     * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the font size was beforehand.
+     * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
      * @param view The TextView to put the name into.
      * @param colorName The name to display in the view.
      * @param maximumViewWidthPercentOfScreen The horizontal percentage of the screen that the view takes up.
@@ -304,7 +342,9 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
     }
 
-    //For debug
+    /**
+     * For debug. Prints all name and hex pairs to log.
+     */
     public void printArr(){
         //Note: Assumes each line has 2 String elements: Name, Hex
         for(int i = 0; i < this.colorNames.size(); ++i){
