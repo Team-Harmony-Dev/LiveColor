@@ -218,7 +218,16 @@ public class ColorNameGetterCSV extends android.app.Application {
         setAppropriatelySizedText(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
     }
 
-    //Heavily based on ColorNameGetter.java
+    /**
+     * Heavily based on ColorNameGetter's method.
+     * Displays the color name in a TextView, reducing font size to ensure that it fits in the space.
+     * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the font size was beforehand.
+     * @param view The TextView to put the name into.
+     * @param colorName The name to display in the view.
+     * @param maximumViewWidthPercentOfScreen The horizontal percentage of the screen that the view takes up.
+     * @param maximumFontSize The font size that will be used if no reduction is needed.
+     * @author Dustin
+     */
     protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
         ////view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
         view.setText(colorName);
