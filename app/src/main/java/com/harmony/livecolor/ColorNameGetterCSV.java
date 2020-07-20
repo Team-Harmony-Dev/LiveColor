@@ -11,16 +11,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-//Credit for color name stuff:
+//Credit for color names:
 //https://github.com/meodai/color-names
 //https://github.com/meodai/ClosestVector
 //https://github.com/dtao/nearest-color
 
 //Assumption: Names never contain commas, hopefully, because it's a CSV.
-
-//TODO test how slow this is on main activity
-//TODO proper function commenting
-//TODO static everything might work best since we should only need to read from the file once.
 
 //A lot of our bugs with color names are from using the async API call, so lets try reading from a local CSV.
 //Load from res/raw/colornames.csv
@@ -29,6 +25,8 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
     private static ArrayList<String[]> colorNames;
+    //This might be redundant? Whatever.
+    private static boolean haveAlreadyReadNames;
     //If for some reason the csv changes format, you can change these and it all should still work.
     private static final int NAME_INDEX = 0;
     private static final int HEX_INDEX = 1;
@@ -100,7 +98,7 @@ public class ColorNameGetterCSV extends android.app.Application {
      */
     public void readColors(){
         this.colorNames = this.read();
-
+        this.haveAlreadyReadNames = true;
         //printArr();
     }
 
@@ -137,19 +135,22 @@ public class ColorNameGetterCSV extends android.app.Application {
     protected String searchForName(String hex){
         //This is returned if something goes wrong
         final String errorColorName = "Error";
-        /*
+
         if(!haveAlreadyReadNames) {
-            readColors();
-            haveAlreadyReadNames = true;
+            if(this.inputStream == null){
+                Log.w("V2S1 colorname", "Attempted to get a name before reading");
+                return errorColorName;
+            } else {
+                this.readColors();
+            }
         }
-        */
-        //Use the list of names, do some rounding to find nearest
+
+        //Use the list of names, finds the nearest
         //Naive approach with no caching to begin with, see how fast that is.
 
         //Expects #RRGGBB (includes the #, and has  no alpha)
         if(hex.length() != 7) {
-            //TODO some sort of error message?
-            Log.d("V2S1 colorname", "Hex " + hex + " not valid");
+            Log.w("V2S1 colorname", "Hex " + hex + " not valid");
             return errorColorName;
         }
         int red = 0;
@@ -180,10 +181,8 @@ public class ColorNameGetterCSV extends android.app.Application {
             int ired = 0;
             int igreen = 0;
             int iblue = 0;
-            //TODO probably store directly rather than split each and every one.
+            //TODO could store rgb directly rather than doing this on each color each time.
             hex = this.colorNames.get(i)[HEX_INDEX];
-            //Log.d("V2S1 colorname", "midtest i="+i+" hi="+HEX_INDEX+" hex="+hex);
-            //TODO this crashes
             for(int x = 1; x < hex.length(); x+=2){
                 //Substring excludes the end index itself, so +2 instead of +1.
                 String hexPiece = hex.substring(x, x+2);
@@ -212,7 +211,7 @@ public class ColorNameGetterCSV extends android.app.Application {
             return errorColorName;
         }
 
-        //Log.d("V2S1 colorname", "Found name. Distance is "+shortestDistance);
+        //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
 
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
@@ -232,14 +231,17 @@ public class ColorNameGetterCSV extends android.app.Application {
         return colors.searchForName(hex);
     }
 
-    //TODO version that takes int pixel
     //TODO mess around more with library functions? https://developer.android.com/reference/android/widget/TextView#setAutoSizeTextTypeUniformWithConfiguration(int,%20int,%20int,%20int)
     /**
      * A function that places the name corresponding to a hex color into a specified TextView,
      *     and sets the font size to either maximumFontSize or smaller to ensure that the
      *     TextView with the unpredictable-length name stays on a single line.
      *
+     * Important note: Relies on colors already having been read (happens in MainActivity.java)
+     *
      * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
+     *
+     * Note: If you want multiple lines instead of one, multiply maximumViewWidthPercentOfScreen by number of lines.
      *
      * @param view The TextView to put the name in
      * @param hex A string of hex, including the #, excluding any transparency. Ex: #FFFFFF
@@ -251,23 +253,11 @@ public class ColorNameGetterCSV extends android.app.Application {
             Log.w("V2S1 colorname", "getAndFitName Was passed a null view with hex "+hex);
             return;
         }
-        //Be removing this and getting the font size live we can fix a bug caused by this font size change not happening synchronously.
-        //Set up starting font size.
-        ////view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50/*maximumFontSize*/);
-        ////view.setText(loadingText);//TODO remove ? Need to figure out a better way to split or combine these functions
-        //Get an instance, because this is how it's set up atm.
-        //(Note: requires you've already read it. Still really should update this syntax for calling)
-        /*
-        InputStream inputStream = null;
-        ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-        //Get the name that corresponds to the given hex
-        String colorName = colors.searchForName(hex);
-         */
+
         String colorName = getName(hex);
         //colorName = "Really long color name fits how";//For debugging
-        //Display the name
-        //view.setText(colorName);
-        //Now, we need to see if it's on multiple lines.
+
+        //Now, we need to stick it in the view and make sure it stays on a single line.
         setAppropriatelySizedText(view, colorName, maximumViewWidthPercentOfScreen, maximumFontSize);
     }
 
@@ -275,6 +265,7 @@ public class ColorNameGetterCSV extends android.app.Application {
      * Heavily based on ColorNameGetter's method.
      * Displays the color name in a TextView, reducing font size to ensure that it fits in the space.
      * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
+     * Note: If you want multiple lines instead of one, multiply maximumViewWidthPercentOfScreen by number of lines.
      * @param view The TextView to put the name into.
      * @param colorName The name to display in the view.
      * @param maximumViewWidthPercentOfScreen The horizontal percentage of the screen that the view takes up.
@@ -282,63 +273,58 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @author Dustin
      */
     protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
-        ////view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
         view.setText(colorName);
 
-        // The idea is to detect how much we need to reduce the font size by,
-        //   and then do that in one go
-        //float fontSize = maximumFontSize;
-        //Don't assume, get font size live.
+        // The idea is to detect how much we need to reduce the font size by, and then
+        //    do that in one go because font size updates don't work instantly and
+        //    I can't find a good way to force waiting for it (to do a binary search or whatever).
+        //    See old commits for ColorNameGetter to see various other stuff I tried.
+        //Get TextView's current font size.
         //We need the metrics density because getTextSize() returns actual pixel size, not sp
         float fontSize = view.getTextSize()/Resources.getSystem().getDisplayMetrics().density;
-        Log.d("S3US5 updated", "---Preparing to fit "+colorName+"-------------------------------------------");
-        Log.d("S3US5 updated", "Read fontsize as "+fontSize);
+        Log.d("V2S1 colorname", "---Preparing to fit "+colorName+"-------------------------------------------");
+        Log.d("V2S1 colorname", "Read fontsize as "+fontSize);
         //Looks like height is not what we want. Line number sort of is, but can be 0 if the textview isn't done updating.
-        Log.d("S3US5 updated", "# lines is currently: "+view.getLineCount()+" and height is "+view.getLineHeight());
-        //if( view.getLineCount() > 1){ //Sometimes it's detecting 0. TextView should have plenty of time to update between clicks though ?
-        //if( true /*view.getLineCount() != 1*/ ){
+        Log.d("V2S1 colorname", "# lines is currently: "+view.getLineCount()+" and height is "+view.getLineHeight());
 
         //First lets get the width of the text
         // https://stackoverflow.com/a/37930140
         view.measure(0, 0);
-        int textWidth = 0;
-
-        //This is terrible. Might break in some situations?
-        //  If line count is 0, then it's pretty straightforward: The width is obtained correctly.
+        //If line count is 0, then it's pretty straightforward: The width is obtained correctly.
         //  If we end up with actual multiple lines though, then the width (of the widest line) is <=1 line.
         //  So we can change the font size to force it to update, and that makes line count return 0, which will work. Probably. It seems to.
-
+        //  This is terrible. Might break in some situations?
         //Guarantee a size change. Arbitrary numbers.
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        textWidth = view.getMeasuredWidth();
+        int textWidth = view.getMeasuredWidth();
 
         //And now the width of the screen
         //https://stackoverflow.com/a/31377616
         int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 
-        Log.d("S3US5 updated", "w="+textWidth+" sw="+screenWidth);
+        Log.d("V2S1 colorname", "w="+textWidth+" sw="+screenWidth);
 
         //There's some sort of minor padding so I need to reduce it slightly
         maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
         double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
         double reduceToThisPercent = maximumTextWidth / textWidth;
-        Log.d("S3US5", "sw="+screenWidth
+        Log.d("V2S1 colorname", "sw="+screenWidth
                 +" maxPercent="+maximumViewWidthPercentOfScreen
                 +" mtw="+maximumTextWidth
                 +" tw="+textWidth
                 +" rp="+reduceToThisPercent);
         //Update font size to be smaller
-        fontSize = (int) (fontSize*(reduceToThisPercent)); //There might be some rounding issue. Just changing this to float doesn't fix. See #F57C21 "Ornery Tangerine"
+        fontSize = (int) (fontSize*(reduceToThisPercent)); //TODO There might be some rounding issue. Just changing this to float doesn't fix. See #F57C21 "Ornery Tangerine" on a Pixel 2.
 
-        Log.d("S3US5 updated", "fontSize that can fit: "+fontSize);
+        Log.d("V2S1 colorname", "fontSize that can fit: "+fontSize);
         //There was a bug where fitting text gets bigger to fully fit.
         //  We could easily make it a feature and just ignore the max size and always use fontSize.
         if(fontSize < maximumFontSize) {
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         } else {
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
-            //Log.d("S3US5 updated resizeFont", "Was attempting resize on already fitting text?");
+            //Log.d("V2S1 colorname resizeFont", "Was attempting resize on already fitting text?");
         }
     }
 
