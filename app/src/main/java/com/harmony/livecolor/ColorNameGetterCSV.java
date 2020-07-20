@@ -188,7 +188,14 @@ public class ColorNameGetterCSV extends android.app.Application {
         return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
     }
 
-    //Important note: Relies on colors already having been read (happens in MainActivity.java)
+    /**
+     * Takes the hex of a color and gets the closest color name from
+     *     https://github.com/meodai/color-names/blob/master/scripts/server.js
+     *     (Read from the version of that file in res/raw/colornames.csv).
+     * Important note: Relies on colors already having been read (happens in MainActivity.java)
+     * @param hex A color like #FFFFFF. # is expected. Transparency is not expected.
+     * @return A human readable color name .
+     */
     public static String getName(String hex){
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
