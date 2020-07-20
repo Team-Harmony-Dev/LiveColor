@@ -376,12 +376,12 @@ public class EditColorActivity extends AppCompatActivity {
 
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                 int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
-                colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+                colorI = UsefulFunctions.getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
                 rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
                 hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
             } else {
-                colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+                colorI = UsefulFunctions.getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 int red = seekRed.getProgress();
                 int green = seekGreen.getProgress();
                 int blue = seekBlue.getProgress();
@@ -534,9 +534,9 @@ public class EditColorActivity extends AppCompatActivity {
         int colorI = 0;
         if(ToggleButtonState){
             int[] getRGBValue = convertHSVtoRGB(redOrHue, greenOrSat, blueOrVal);
-            colorI = getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
+            colorI = UsefulFunctions.getIntFromColor(getRGBValue[0], getRGBValue[1], getRGBValue[2]);
         }else {
-            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrVal);
+            colorI = UsefulFunctions.getIntFromColor(redOrHue, greenOrSat, blueOrVal);
         }
 
         colorNewS.setBackgroundColor(colorI);
@@ -556,28 +556,13 @@ public class EditColorActivity extends AppCompatActivity {
         int colorI = 0;
         if(ToggleButtonState){
             int[] getRGBValues = convertHSVtoRGB(redOrHue, greenOrSat, blueOrValue);
-            colorI = getIntFromColor(getRGBValues[0], getRGBValues[1], getRGBValues[2]);
+            colorI = UsefulFunctions.getIntFromColor(getRGBValues[0], getRGBValues[1], getRGBValues[2]);
         } else {
-            colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
+            colorI = UsefulFunctions.getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
 
         final double viewWidthPercentOfScreen = 1.0;
         final float maxFontSize = 30;
         ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen, maxFontSize);
-    }
-
-    /**
-     *  Takes in RGB values and returns the associated color int
-     * @param Red red value (R)
-     * @param Green green value (G)
-     * @param Blue blue value (B)
-     * @return the color int of the passed RGB value
-     */
-    public int getIntFromColor(int Red, int Green, int Blue){
-        Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-        Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-        Blue = Blue & 0x000000FF; //Mask out anything not blue.
-
-        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 }
