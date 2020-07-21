@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import static android.graphics.Color.RGBToHSV;
 import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
 
 public class ColorOTDayDialog {
@@ -49,16 +53,49 @@ public class ColorOTDayDialog {
         colorView.setBackgroundColor(colorOfTheDay);
 
         //Be able to fetch color name on first load? Works after first "start"
-        TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
+        final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
         ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
+        final String colorNameStr = (String) colorName.getText();
+
+        //Set onClick for back button
+        final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogSave.cancel();
+            }
+        });
+
+        //Set onClick for save color of the day button
+        final ImageButton saveCOTD = colorOTDView.findViewById(R.id.saveCOTD);
+        saveCOTD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int RV = Color.red(colorOfTheDay);
+                int GV = Color.green(colorOfTheDay);
+                int BV = Color.blue(colorOfTheDay);
+
+                //update the RGB value displayed
+                String RGB = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
+
+                float[] hsvArray = new float[3];
+                RGBToHSV(RV,GV,BV,hsvArray);
+                int hue = Math.round(hsvArray[0]);
+                String HSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+
+                //Color name won't save properly until updated color name fetching is added
+                CustomDialog pickerDialog = new CustomDialog(activity,colorNameStr,UsefulFunctions.colorIntToHex(colorOfTheDay),RGB,HSV);
+                pickerDialog.showSaveDialog();
+
+                alertDialogSave.cancel();
+            }
+        });
 
         builder.setView(colorOTDView);
         alertDialogSave = builder.create();
         if(newDay()){
             alertDialogSave.show();
-            makeShine();
-            //ImageView shineView = colorOTDView.findViewById(R.id.shine);
-            //shineView.setImageAlpha(0);
+            //makeShine();
         }
     }
 
@@ -77,13 +114,21 @@ public class ColorOTDayDialog {
 
     public void makeShine(){
         ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
-        ImageView shineView = colorOTDView.findViewById(R.id.shine);
-        String toX = Integer.toString(colorView.getWidth()+shineView.getWidth());
+        //ImageView shineView = colorOTDView.findViewById(R.id.shine);
+
+        //Attempted rotated shine
+        /*RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(10000);
+        rotate.setInterpolator(new LinearInterpolator());
+        shineView.startAnimation(rotate);*/
+
+        //Attempted shine on color (vertical)
+        /*String toX = Integer.toString(colorView.getWidth()+shineView.getWidth());
         Log.d("toXDelta is", toX);
-        Animation animation = new TranslateAnimation(-120, 200,0, 0);
+        Animation animation = new TranslateAnimation(-120, 220,0, 0);
         animation.setDuration(1550);
         animation.setFillAfter(true);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
-        shineView.startAnimation(animation);
+        shineView.startAnimation(animation);*/
     }
 }

@@ -3,5 +3,11 @@
     <gradient
         android:centerColor="#AAffffff"
         android:endColor="#00ffffff"
-        android:startColor="#00ffffff" />
+        android:startColor="#00ffffff"
+        android:type="sweep"
+        android:centerY="0.45"
+        />
+
+    <corners
+        android:radius="0dp"/>
 </shape>

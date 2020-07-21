@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 
 //Contains functions for generating colors for palettes based on a given color.
 public class HarmonyGenerator {
@@ -34,7 +35,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //https://stackoverflow.com/a/3607942
         String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
         return hex;
@@ -45,7 +46,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         String strRgb = "("+rgb[0]+", "+rgb[1]+", "+rgb[2]+")";
         return strRgb;
     }
@@ -55,7 +56,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //Stores the result values
         float[] hsvArray = new float[3];
         RGBToHSV(rgb[0],rgb[1],rgb[2],hsvArray);
