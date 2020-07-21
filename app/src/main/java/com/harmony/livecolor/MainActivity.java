@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.navigation_palettes:
                 fragment = PalettesFragment.newInstance();
                 break;
+            case R.id.navigation_settings:
+                fragment = SettingsFragment.newInstance();
+                break;
         }
         return loadFragment(fragment);
     }
