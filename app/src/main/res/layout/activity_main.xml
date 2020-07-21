@@ -24,8 +24,8 @@
         android:layout_weight="1"
         android:background="?android:attr/windowBackground"
         app:itemHorizontalTranslationEnabled="false"
-        app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@xml/bottom_nav_button_colors"
-        app:itemTextColor="@xml/bottom_nav_button_colors"/>
+        app:itemTextColor="@xml/bottom_nav_button_colors"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
