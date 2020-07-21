@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- for custom action bar -->
+        <!-- <item name="android:itemBackground">@color/colorPrimaryDark</item> -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
