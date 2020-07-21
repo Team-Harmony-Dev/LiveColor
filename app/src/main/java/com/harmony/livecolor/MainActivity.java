@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity
 
         Log.d("Lifecycles", "onCreate: MainActivity created");
 
+        ColorDatabase db = new ColorDatabase(this);
+
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 

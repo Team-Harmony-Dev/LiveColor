@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,14 +34,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        //set back button to leave activity
-        ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
 
         //get extra containing the palette object
         Intent intent = getIntent();
@@ -55,6 +49,40 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
         //initialize the recycler
         initRecycler();
+    }
+
+    /**
+     *  BACK BUTTON
+     *  simple back button
+     * @param view view of button
+     *
+     *
+     * part of the refactor
+     * set back button to leave activity
+     */
+    public void onClickBackButton(View view){
+        finish();
+    }
+
+    /**
+     *  EDIT BUTTON
+     *  placeholder edit button
+     * @param view view of button
+     *
+     *
+     * @author Daniel
+     * part of the refactor
+     *
+     */
+    public void onClickEditButton(View view){
+        Log.d("DEBUG","edit button pressed in palette info activity");
+        CustomDialog setNameDialog = new CustomDialog(PaletteInfoActivity.this,palette.getId());
+        setNameDialog.showSetNameDialog();
+    }
+
+    public void initColors(){
+        //Color arraylist is initialized here. Gets arraylist of colors from palette object
+        paletteColors = palette.getColors();
     }
 
     //initializes the recycler view with the given color information
@@ -72,5 +100,12 @@ public class PaletteInfoActivity extends AppCompatActivity {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyContent.DummyItem item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initColors();
+        initRecycler();
     }
 }

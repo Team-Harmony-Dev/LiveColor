@@ -40,37 +40,7 @@
             android:src="@drawable/add_image" />
 
     </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutPopButtons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageButton
-            android:id="@+id/openCameraButton"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:adjustViewBounds="true"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/camera_white_filled"
-            tools:src="@drawable/camera_white_filled" />
-
-        <ImageButton
-            android:id="@+id/viewGalleryButton"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:adjustViewBounds="true"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/image_white_filled" />
-    </LinearLayout>
+    
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutBottom"
@@ -222,7 +192,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoButton"
                     style="@android:style/Widget.DeviceDefault.ImageButton"
                     android:layout_width="0dp"
