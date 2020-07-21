@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="?android:attr/windowBackground"
+        android:background="#1A969696"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@xml/bottom_nav_button_colors"
         app:itemTextColor="@xml/bottom_nav_button_colors"
