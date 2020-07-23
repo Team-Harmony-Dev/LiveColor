@@ -281,7 +281,7 @@
                                 android:layout_height="20dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
-                                android:onClick="onClickGitHubLink"
+                                android:onClick="onClickLinkedInLink"
                                 android:tag="dustin" />
 
                             <View
@@ -297,7 +297,7 @@
                                 android:layout_height="20dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
-                                android:onClick="onClickLinkedInLink"
+                                android:onClick="onClickGitHubLink"
                                 android:tag="dustin" />
 
                             <View
