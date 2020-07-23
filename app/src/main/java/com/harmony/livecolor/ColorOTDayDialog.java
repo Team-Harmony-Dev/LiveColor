@@ -71,7 +71,7 @@ public class ColorOTDayDialog {
             if(specialDates.containsKey(shortHand)){
                 colorOfTheDay = specialDates.get(shortHand);
             } else {
-                colorOfTheDay = generateRandomColor();
+                colorOfTheDay = generateRandomColor();`
             }
             ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
             colorView.setBackgroundColor(colorOfTheDay);
