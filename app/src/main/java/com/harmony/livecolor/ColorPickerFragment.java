@@ -9,10 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,15 +18,11 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,34 +30,19 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
-import static androidx.core.content.ContextCompat.getColorStateList;
 
 
 /**
@@ -355,16 +334,47 @@ public class ColorPickerFragment extends Fragment {
             updateColorValues(view, pixel);
             isButtonClicked = false;
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-            saveColorB.setImageResource(R.drawable.ic_action_name);
+            saveColorB.setImageResource(R.drawable.unsaved);
             saveColorB.setColorFilter(null);
+
+
+            //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+            final boolean USE_API_FOR_NAMES = false;
+
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
-            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+            if(event.getActionMasked() == MotionEvent.ACTION_UP
+                    //We don't want to spam the API, but local color names are so fast we can just do it live.
+                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES)) {
                 Log.d("S3US5", "Release detected");
-                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                final double viewWidthPercentOfScreen = 0.60;
-                final float maxFontSize = 30;
-                ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+
+                if(USE_API_FOR_NAMES) {
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    final double viewWidthPercentOfScreen = 0.60;
+                    final float maxFontSize = 30;
+                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                } else {
+                    //Get the hex, and then name that corresponds to the hex
+                    String hex = "#"+colorToHex(pixel);
+                    final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+                    if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                        //Display the name on one line
+                        TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                        final double viewWidthPercentOfScreen = 0.60;
+                        final float maxFontSize = 30;
+                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+                    } else {
+                        String colorName = ColorNameGetterCSV.getName(hex);
+                        //Display the name
+                        TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                        viewToUpdateColorName.setText(colorName);
+                        Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+                    }
+                }
+
+                //I believe this is the button to select an image or take a picture.
+                //  It disappears when dragging so it doesn't cover any part of the image.
+                //  So after you're done dragging it needs to reappear.
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
@@ -423,10 +433,31 @@ public class ColorPickerFragment extends Fragment {
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
-            final double viewWidthPercentOfScreen = 0.60;
-            final float maxFontSize = 30;
-            TextView view = getActivity().findViewById(R.id.colorName);
-            ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            final boolean USE_API_FOR_NAMES = false;
+            if(USE_API_FOR_NAMES) {
+                final double viewWidthPercentOfScreen = 0.60;
+                final float maxFontSize = 30;
+                TextView view = getActivity().findViewById(R.id.colorName);
+                ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
+            } else {
+                final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+                if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                    //Display the name on one line
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    final double viewWidthPercentOfScreen = 0.60;
+                    final float maxFontSize = 30;
+                    String hex = "#" + colorToHex(savedColorInt);
+                    ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+                } else {
+                    //Get the hex, and then name that corresponds to the hex
+                    String hex = "#" + colorToHex(savedColorInt);
+                    String colorName = ColorNameGetterCSV.getName(hex);
+                    //Display the name
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    viewToUpdateColorName.setText(colorName);
+                }
+                //Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+            }
         }
         updateColorValues(getView(), savedColorInt);
     }
@@ -507,3 +538,4 @@ public class ColorPickerFragment extends Fragment {
         return String.format("%06X", (0xFFFFFF & color));
     }
 }
+

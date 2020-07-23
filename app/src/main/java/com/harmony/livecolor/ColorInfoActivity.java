@@ -1,38 +1,36 @@
 package com.harmony.livecolor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.android.material.snackbar.Snackbar;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
+import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 
 public class ColorInfoActivity extends AppCompatActivity {
+
+    // ToolBar
+    Toolbar toolBar;
+
     private SavedColorsFragment.OnListFragmentInteractionListener listener;
     int colorValue, RV, GV, BV, hue;
     String hexValue;
@@ -48,17 +46,9 @@ public class ColorInfoActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
 
+       ActionBar actionBar = getSupportActionBar();
+       //actionBar.hide();
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-
-        ImageButton button2 = (ImageButton) findViewById(R.id.backButton);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         //TODO: Move SharedPrefs to outside of the method
         // pass colors through MyColor and intent (talk with Gabby)
@@ -76,20 +66,6 @@ public class ColorInfoActivity extends AppCompatActivity {
             colorValue = parseColor(hex);
         }
 
-        // Edit color listener
-        ImageButton editColorB = (ImageButton) findViewById(R.id.editButton);
-        editColorB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view){
-                Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
-                if(intent.getExtras() != null){
-                    Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
-                    startEditColorActivity.putExtra("colorValue", colorValue);
-                }
-                startActivity(startEditColorActivity);
-            }
-        });
-
         colorValue = Integer.parseInt(colorString);
 
         Log.d("DEBUG", "Color set to background = " + colorString);
@@ -104,7 +80,7 @@ public class ColorInfoActivity extends AppCompatActivity {
         ImageView colorD = findViewById(R.id.colorDisplay);
         colorD.setBackgroundColor(colorValue);
 
-        ConstraintLayout wholeLayout = findViewById(R.id.colorLayout);
+        ConstraintLayout wholeLayout = findViewById(R.id.constraintLayoutColor);
         wholeLayout.setBackgroundColor(colorValue);
 
 
@@ -114,10 +90,31 @@ public class ColorInfoActivity extends AppCompatActivity {
             colorNameT = bundle.getString("name");
         }
 
-        final double viewWidthPercentOfScreen = 1.0;
+        //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+        final boolean USE_API_FOR_NAMES = false;
+        //TODO it looks like we don't actually have 100% of the screen, there's color around the box we're in which takes what %?
+        final double viewWidthPercentOfScreen = 0.9;
         final float maxFontSize = 30;
-        ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
-        //colorNameView.setText(colorNameT);
+        if(USE_API_FOR_NAMES) {
+            ColorNameGetter.updateViewWithColorName(colorNameView, colorValue, viewWidthPercentOfScreen, maxFontSize);
+            //colorNameView.setText(colorNameT);
+        } else {
+            final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+            if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                //Display the name on one line
+                TextView viewToUpdateColorName = colorNameView;
+                String hex = "#" + colorToHex(colorValue);
+                ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+            } else {
+                //Get the hex, and then name that corresponds to the hex
+                String hex = "#" + colorToHex(colorValue);
+                String colorName = ColorNameGetterCSV.getName(hex);
+                //Display the name
+                colorNameView.setText(colorName);
+
+                //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+            }
+        }
 
         //HEX
 
@@ -149,87 +146,135 @@ public class ColorInfoActivity extends AppCompatActivity {
 
 
 
-        Button copy1 = findViewById(R.id.copyHEX);
-        copy1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "HEX value copied to clipboard!", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        Button copy2 = findViewById(R.id.copyRGB);
-        copy2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)", RV, GV, BV));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "RGB values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        Button copy3 = findViewById(R.id.copyHSV);
-        copy3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)", hue, hsvArray[1], hsvArray[2]));
-                clipboard.setPrimaryClip(clip);
-
-                Snackbar.make(view, "HSV values copied to clipboard!", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        Button harmonyButton = findViewById(R.id.harmonyButton);
-        harmonyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
-                intent.putExtra("color_hsv", hsvArray);
-                startActivity(intent);
-            }
-        });
-
         newColorDatabase = new ColorDatabase(ColorInfoActivity.this);
 
         //initColors();
 
         //initRecycler();
+
+
     }
 
-    /*public void initColors(){
-        //initialize ArrayList<MyColors> here
-        String TAG = "COLORS";
-        Cursor colorData = newColorDatabase.getColorInfoData();
-        colorList = new ArrayList<>();
 
-        if (colorData != null && colorData.getCount() > 0) {
-            if (colorData.moveToFirst()) {
-                do {
-                    Log.d(TAG,  colorData.getString(2));
-                    colorList.add(new MyColor(colorData.getString(0) + "",
-                            colorData.getString(1) + "", colorData.getString(2) + "",
-                            colorData.getString(3) + "", colorData.getString(4) + ""));
-                }         while (colorData.moveToNext());
+    /**
+     * ALL CAPS METHOD DESCRIPTION
+     * lowercase description of the means
+     * @param param breif description of param
+     * @return description as necessary of the return value
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
 
-            }
+    /**
+     * TOOLBAR BACK BUTTON FINISH ACTIVITY
+     * call the return to finish activity
+     * @param view view
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickBackButton(View view){
+        finish();
+    }
+
+    /**
+     * TOOLBAR EDIT BUTTON SWITCH TO EDIT COLOR ACTIVITY
+     * starts edit color activity with current color
+     * @param view view for the button
+     *
+     * @author {someone}, Daniel
+     * changed as part of the oncreate inner to outer method refactor
+     */
+    public void onClickEditButton(View view){
+        Intent intent = getIntent();
+        Intent startEditColorActivity = new Intent(view.getContext(), EditColorActivity.class);
+        if(intent.getExtras() != null){
+            Log.d("ColorInfoActivity", "BUNDLE sending colorValue: " + colorValue);
+            startEditColorActivity.putExtra("colorValue", colorValue);
         }
+        startActivity(startEditColorActivity);
     }
 
-    public void initRecycler(){
-        //get the RecyclerView from the view
-        RecyclerView recyclerView = findViewById(R.id.colorInfoRecycler);
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,colorList,listener);
-        //and set the adapter for the RecyclerView
-        recyclerView.setAdapter(adapter);
-        //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    /**
+     * COPY HEX VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyHEX(View view){
+        copyToClip("HEX");
     }
-    } */
+    /**
+     * COPY RGB VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyRGB(View view){
+        copyToClip("RGB");
+    }
+
+    /**
+     * COPY HSV VALUE TO CLIPBOARD
+     * call the copy to clip with proper args for the button
+     * @param view view of button
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickCopyHSV(View view){
+        copyToClip("HSV");
+    }
+
+    /**
+     * GENERATE AND VIEW COLOR HARMONIES
+     * start the harmony info activity using current color hsv as basis
+     * @param view view of button
+     *
+     * @author {someone}, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickColorHarmonies(View view){
+        Intent intent = new Intent(ColorInfoActivity.this, HarmonyInfoActivity.class);
+        intent.putExtra("color_hsv", hsvArray);
+        startActivity(intent);
+    }
+
+
+    /**
+     * copyToClip copies the selected color info to the user's clipboard and produces the custom toast
+     * @param type the type of color info being copied - RGB, HEX, or HSV
+     * @author Gabby
+     */
+    void copyToClip(String type){
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip;
+        final Context cont = getApplicationContext();
+
+        if(type == "HEX"){
+            clip = ClipData.newPlainText("copied", String.format("#%06X", (0xFFFFFF & colorValue)));
+        } else if (type == "HSV"){
+            clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$.3f, %3$.3f)", hue, hsvArray[1], hsvArray[2]));
+        } else {
+            clip = ClipData.newPlainText("copied", String.format("(%1$d, %2$d, %3$d)", RV, GV, BV));
+        }
+        clipboard.setPrimaryClip(clip);
+
+        Toast toast = Toast.makeText(cont,
+                type + " values copied to clipboard!",
+                Toast.LENGTH_SHORT);
+        View view = toast.getView();
+
+        view.setBackgroundResource(R.color.colorDark);
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(Color.WHITE);
+
+        toast.show();
+    }
 
 }
