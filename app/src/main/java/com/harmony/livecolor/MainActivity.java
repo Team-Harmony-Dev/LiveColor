@@ -130,6 +130,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         Log.d("Lifecycles", "onStart: MainActivity started");
+
+        ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
+        cotdDialog.showColorOTD();
+
         super.onStart();
     }
 

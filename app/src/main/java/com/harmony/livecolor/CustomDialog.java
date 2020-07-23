@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * CustomDialog class
@@ -130,10 +131,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 //save color to Saved Colors palette (id = 1)
                 if(colorDB.addColorToPalette("1",Long.toString(colorId))) {
                     alertDialogSave.dismiss();
-                    makeToast("Color has been saved to Saved Colors");
+                    makeToast("Color has been saved to Saved Colors", context);
                 } else {
                     alertDialogSave.dismiss();
-                    makeToast("Color is a duplicate");
+                    makeToast("Color is a duplicate", context);
                 }
             }
         });
@@ -202,7 +203,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                     colorDB.addPaletteInfoData(newName, Long.toString(colorId));
 
                     dialog.dismiss();
-                    makeToast("New palette \"" + newName + "\" created!");
+                    makeToast("New palette \"" + newName + "\" created!", context);
                 } //if you are renaming an existing palette
                 else {
                     Log.d("CustomDialog", "setName is for existing palette");
@@ -213,11 +214,11 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                         TextView tvPaletteName = activity.findViewById(R.id.paletteName);
                         tvPaletteName.setText(newName);
                         //send confirmation message
-                        makeToast("Set palette name to \"" + newName + "\"");
+                        makeToast("Set palette name to \"" + newName + "\"", context);
                     }
                     else {
                         //send error message
-                        makeToast("Changing palette name failed");
+                        makeToast("Changing palette name failed", context);
                     }
                 }
             }
@@ -240,28 +241,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         Log.d("CustomDialog", "onListFragmentInteraction: saving " + colorId + " to palette " + palette.getId());
         if(colorDB.addColorToPalette(palette.getId(),Long.toString(colorId))) {
             alertDialogSave.dismiss();
-            makeToast("Color has been saved to \"" + palette.getName() + "\"");
+            makeToast("Color has been saved to \"" + palette.getName() + "\"", context);
         } else {
             alertDialogSave.dismiss();
-            makeToast("Sorry, there was an error saving the color to \"" + palette.getName() + "\"");
+            makeToast("Sorry, there was an error saving the color to \"" + palette.getName() + "\"", context);
         }
-    }
-
-    /**
-     * Creates custom toast and displays it with the passed message
-     * @param toasty (passed message - string)
-     * @author Gabby
-     */
-    public void makeToast(String toasty){
-        Toast toast = Toast.makeText(context,
-                toasty,
-                Toast.LENGTH_SHORT);
-        View view = toast.getView();
-
-        view.setBackgroundResource(R.color.colorDark);
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(Color.WHITE);
-
-        toast.show();
     }
 }
