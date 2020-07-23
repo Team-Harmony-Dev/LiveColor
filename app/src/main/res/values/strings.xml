@@ -7,6 +7,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Settings</string>
     <string name="opencamera">Open Camera</string>
     <string name="photogallery">View Photo Gallery</string>
     <string name="colorValues">Your Color</string>
@@ -16,6 +17,24 @@
     <string name="photo">Photo</string>
     <string name="takepicture">Take Picture</string>
     <string name="color_info"> Color Information </string>
-
-
+    <string name="button_press_me"> Press Me </string>
+    <string name="live_color_team">LiveColor Team</string>
+    <string name="team_member_headshot">Team Member\'s Headshot</string>
+    <string name="settings">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="paige_riola">Paige Riola</string>
+    <string name="gabriella_lindsey">Gabriella Lindsey</string>
+    <string name="dustin_seltz">Dustin Seltz</string>
+    <string name="daniel_luft_martinez">Daniel Luft-Martinez</string>
+    <string name="shealtiel_mulder">Shealtiel Mulder</string>
+    <string name="placeholder_text">In slime rancher you can actually use the jetpack to skip the
+                                    gate leading into the Moss Blanket. This way you can save a slime key
+                                    for later.</string>
+    <string name="daniel_blurb">I love AI and automation, so naturally I chose to help with UI on a
+                                color picking app. I very much enjoy developing with friends, even
+                                if it\'s outside of my comfort zone. My favorite color in the app is
+                                called \"Jedi Night\" a deep dark green.</string>
+    <string name="inactive_members">Inactive Members</string>
+    <string name="melanie_wong">Melanie Wong</string>
+    <string name="andrew_tran">Andrew Tran</string>
 </resources>

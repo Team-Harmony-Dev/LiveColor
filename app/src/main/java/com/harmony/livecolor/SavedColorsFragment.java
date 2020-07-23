@@ -38,7 +38,10 @@ public class SavedColorsFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyColor> colorList;
-    ColorDatabase newColorDatabase;
+
+    private MySavedColorsRecyclerViewAdapter adapter;
+
+    ColorDatabase colorDatabase;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,7 +72,7 @@ public class SavedColorsFragment extends Fragment {
 
         context = view.getContext();
 
-        newColorDatabase = new ColorDatabase(getActivity());
+        colorDatabase = new ColorDatabase(getActivity());
 
         initColors();
 
@@ -105,23 +108,9 @@ public class SavedColorsFragment extends Fragment {
         return view;
     }
 
-    public void initColors(){
+    public void initColors() {
         //initialize ArrayList<MyColors> here
-        String TAG = "COLORS";
-        Cursor colorData = newColorDatabase.getColorInfoData();
-        colorList = new ArrayList<>();
-
-        if (colorData != null && colorData.getCount() > 0) {
-            if (colorData.moveToFirst()) {
-                do {
-                    Log.d(TAG,  colorData.getString(2));
-                    colorList.add(new MyColor(colorData.getString(0) + "",
-                            colorData.getString(1) + "", colorData.getString(2) + "",
-                            colorData.getString(3) + "", colorData.getString(4) + ""));
-                }         while (colorData.moveToNext());
-
-            }
-        }
+        colorList = colorDatabase.getColorList("1");
     }
 
     /**
@@ -132,7 +121,7 @@ public class SavedColorsFragment extends Fragment {
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context, colorList, listener, selectedView);
+        adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener, selectedView);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -156,7 +145,12 @@ public class SavedColorsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnListFragmentInteractionListener) {
+                listener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -178,5 +172,12 @@ public class SavedColorsFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initColors();
+        initRecycler("list");
     }
 }

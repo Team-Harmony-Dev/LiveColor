@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,11 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -32,6 +28,10 @@ public class PalettesFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyPalette> paletteList;
+
+    private MyPalettesRecyclerViewAdapter adapter;
+
+    ColorDatabase colorDB;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,6 +59,8 @@ public class PalettesFragment extends Fragment {
 
         context = view.getContext();
 
+        colorDB = new ColorDatabase(getActivity());
+
         initPalettes();
 
         initRecycler();
@@ -68,51 +70,15 @@ public class PalettesFragment extends Fragment {
 
     public void initPalettes(){
         //initialize ArrayList<MyPalette> here
-        paletteList = new ArrayList<>();
-        //will access palettes from database and put into MyPalette objects
-        //TODO: Andrew's database code/method call will go here
-        //Temporary Palettes atm:
+        paletteList = colorDB.getPaletteList();
 
-        MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
-        MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
-        MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
-        //test 3 colors
-        ArrayList<MyColor> colorList1 = new ArrayList<>();
-        colorList1.add(magenta);
-        colorList1.add(yellow);
-        colorList1.add(cyan);
-        paletteList.add(new MyPalette("2","Three Colors",colorList1));
-        //test 6 colors
-        ArrayList<MyColor> colorList2 = new ArrayList<>();
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        paletteList.add(new MyPalette("3","Six Colors",colorList2));
-        //test 10+ colors
-        ArrayList<MyColor> colorList3 = new ArrayList<>();
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
     }
 
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
-        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
+        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
@@ -149,5 +115,14 @@ public class PalettesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Lifecycles", "onResume: PalettesFragment resumed");
+        //TODO: There *must* be a better way to refresh the lists than this (notifyDataSetChanged() isn't working)
+        initPalettes();
+        initRecycler();
     }
 }

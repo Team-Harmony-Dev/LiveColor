@@ -76,8 +76,14 @@ public class PaletteInfoActivity extends AppCompatActivity {
      */
     public void onClickEditButton(View view){
         Log.d("DEBUG","edit button pressed in palette info activity");
+        CustomDialog setNameDialog = new CustomDialog(PaletteInfoActivity.this,palette.getId());
+        setNameDialog.showSetNameDialog();
     }
 
+    public void initColors(){
+        //Color arraylist is initialized here. Gets arraylist of colors from palette object
+        paletteColors = palette.getColors();
+    }
 
     //initializes the recycler view with the given color information
     public void initRecycler(){
@@ -94,5 +100,12 @@ public class PaletteInfoActivity extends AppCompatActivity {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyContent.DummyItem item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initColors();
+        initRecycler();
     }
 }

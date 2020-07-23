@@ -35,7 +35,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private OnListFragmentInteractionListener listener;
     private Context context;
     private String selectedView;
-    ColorDatabase newColorDatabase;
+    ColorDatabase colorDB;
 
     /**
      * MySavedColorsRecyclerViewAdapter
@@ -45,7 +45,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
      * @param selectedV - The selected view: "list" or "grid" - Gabby
      */
     public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener, String selectedV) {
-        Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
+        Log.d("Lifecycles", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myColors = myColors;
 
@@ -130,21 +130,17 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newColorDatabase = new ColorDatabase(context);
-                final Cursor colorData = newColorDatabase.getColorInfoData();
-                int size = myColors.size();
-                if(selectedView == "list"){
-                    colorData.moveToPosition(position);
-                } else {
-                    colorData.moveToPosition(size - position - 1);
-                }
+                colorDB = new ColorDatabase(context);
+                //get clicked color from position
+                String colorID = "";
+                MyColor selectedColor = myColors.get(position);
 
                 Intent intent=new Intent(context, ColorInfoActivity.class);
-                intent.putExtra("id", colorData.getString(0));
-                intent.putExtra("name", colorData.getString(1));
-                intent.putExtra("hex", colorData.getString(2));
-                intent.putExtra("rgb", colorData.getString(3));
-                intent.putExtra("hsv", colorData.getString(4));
+                intent.putExtra("id", selectedColor.getId());
+                intent.putExtra("name", selectedColor.getName());
+                intent.putExtra("hex", selectedColor.getHex());
+                intent.putExtra("rgb", selectedColor.getRgb());
+                intent.putExtra("hsv", selectedColor.getHsv());
                 //start new activity with this intent
                 context.startActivity(intent);
             }

@@ -26,7 +26,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.InputStream;
+
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 import static com.harmony.livecolor.UsefulFunctions.convertRGBtoHSV;
 import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
@@ -395,6 +398,8 @@ public class EditColorActivity extends AppCompatActivity {
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
             }
+            CustomDialog saveDialog = new CustomDialog(EditColorActivity.this,name,hex,rgb,hsv);
+            saveDialog.showSaveDialog();
             saveNC.setColorFilter(colorI);
         }
 
@@ -521,8 +526,32 @@ public class EditColorActivity extends AppCompatActivity {
             colorI = getIntFromColor(redOrHue, greenOrSat, blueOrValue);
         }
 
-        final double viewWidthPercentOfScreen = 1.0;
+
+        //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
+        final boolean USE_API_FOR_NAMES = false;
+
+        final double viewWidthPercentOfScreen = 0.5;
+        final int numberOfLines = 2;
         final float maxFontSize = 30;
-        ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen, maxFontSize);
+
+        if(USE_API_FOR_NAMES) {
+            ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen*numberOfLines, maxFontSize);
+        } else {
+            final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+            if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                //Display the name on one line
+                TextView viewToUpdateColorName = thisView;
+                String hex = "#" + colorToHex(colorI);
+                ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen*numberOfLines, maxFontSize);
+            } else {
+                //Get the hex, and then name that corresponds to the hex
+                String hex = "#" + colorToHex(colorI);
+                String colorName = ColorNameGetterCSV.getName(hex);
+                //Display the name
+                thisView.setText(colorName);
+
+                //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+            }
+        }
     }
 }
