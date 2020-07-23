@@ -3,6 +3,7 @@ package com.harmony.livecolor;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 import static android.graphics.Color.RGBToHSV;
@@ -30,10 +32,19 @@ public class ColorOTDayDialog {
     Activity activity;
     AlertDialog alertDialogSave;
     View colorOTDView;
+    String strDt;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+    HashMap<String, Integer> specialDates;
+
 
     public ColorOTDayDialog(Context context) {
         this.context = context;
         activity = (Activity) context;
+        sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        specialDates = new HashMap<String, Integer>();
+        specialDates.put("07/05", Color.parseColor("#006c2e"));
     }
 
     public void showColorOTD() {
@@ -44,56 +55,69 @@ public class ColorOTDayDialog {
         todayDate = Calendar.getInstance().getTime();
         TextView dateView = (TextView) colorOTDView.findViewById(R.id.dateView);
         SimpleDateFormat simpleDate =  new SimpleDateFormat("MM/dd/yyyy");
-        String strDt = simpleDate.format(todayDate);
+        SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
+        strDt = simpleDate.format(todayDate);
         dateView.setText(strDt);
 
-        //Generate random color
-        colorOfTheDay = generateRandomColor();
-        ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
-        colorView.setBackgroundColor(colorOfTheDay);
-
-        //Be able to fetch color name on first load? Works after first "start"
-        final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
-        ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
-        final String colorNameStr = (String) colorName.getText();
-
-        //Set onClick for back button
-        final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogSave.cancel();
-            }
-        });
-
-        //Set onClick for save color of the day button
-        final ImageButton saveCOTD = colorOTDView.findViewById(R.id.saveCOTD);
-        saveCOTD.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int RV = Color.red(colorOfTheDay);
-                int GV = Color.green(colorOfTheDay);
-                int BV = Color.blue(colorOfTheDay);
-
-                //update the RGB value displayed
-                String RGB = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
-
-                float[] hsvArray = new float[3];
-                RGBToHSV(RV,GV,BV,hsvArray);
-                int hue = Math.round(hsvArray[0]);
-                String HSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
-
-                //Color name won't save properly until updated color name fetching is added
-                CustomDialog pickerDialog = new CustomDialog(activity,colorNameStr,UsefulFunctions.colorIntToHex(colorOfTheDay),RGB,HSV);
-                pickerDialog.showSaveDialog();
-
-                alertDialogSave.cancel();
-            }
-        });
-
-        builder.setView(colorOTDView);
-        alertDialogSave = builder.create();
+        // If it is a new day - create and show the dialog!
         if(newDay()){
+            //Store the date in shared preferences
+            editor.putString("Date", strDt);
+            editor.commit();
+
+            String shortHand = monthDay.format(todayDate);
+
+            //Generate random color
+            if(specialDates.containsKey(shortHand)){
+                colorOfTheDay = specialDates.get(shortHand);
+            } else {
+                colorOfTheDay = generateRandomColor();
+            }
+            ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
+            colorView.setBackgroundColor(colorOfTheDay);
+
+            //Be able to fetch color name on first load? Works after first "start"
+            final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
+            ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
+            final String colorNameStr = (String) colorName.getText();
+
+            //Set onClick for back button
+            final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialogSave.cancel();
+                }
+            });
+
+            //Set onClick for save color of the day button
+            final ImageButton saveCOTD = colorOTDView.findViewById(R.id.saveCOTD);
+            saveCOTD.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int RV = Color.red(colorOfTheDay);
+                    int GV = Color.green(colorOfTheDay);
+                    int BV = Color.blue(colorOfTheDay);
+
+                    //update the RGB value displayed
+                    String RGB = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
+
+                    float[] hsvArray = new float[3];
+                    RGBToHSV(RV,GV,BV,hsvArray);
+                    int hue = Math.round(hsvArray[0]);
+                    String HSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+
+                    //Color name won't save properly until updated color name fetching is added
+                    CustomDialog pickerDialog = new CustomDialog(activity,colorNameStr,UsefulFunctions.colorIntToHex(colorOfTheDay),RGB,HSV);
+                    pickerDialog.showSaveDialog();
+
+                    alertDialogSave.cancel();
+                }
+            });
+
+            builder.setView(colorOTDView);
+            alertDialogSave = builder.create();
+
             alertDialogSave.show();
             //makeShine();
         }
@@ -109,7 +133,18 @@ public class ColorOTDayDialog {
     }
 
     public boolean newDay(){
-        return true;
+        String storedDate = sharedPref.getString("Date", "No date");
+        Log.d("storedDate", storedDate);
+        Log.d("strDt", strDt);
+        if(storedDate.equals("No date")){
+            //First launch of the app
+            return true;
+        }
+        if(storedDate.equals(strDt)){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void makeShine(){
