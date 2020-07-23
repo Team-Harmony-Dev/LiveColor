@@ -137,6 +137,7 @@ public class ColorOTDayDialog {
 
         return getIntFromColor(randRed, randGreen, randBlue);
     }
+    
 
     public boolean newDay(){
         return true;
