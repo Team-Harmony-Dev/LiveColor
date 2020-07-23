@@ -131,6 +131,7 @@ public class ColorOTDayDialog {
         //return getIntFromColor(randRed, randGreen, randBlue);
         return getIntFromColor(randRed, randGreen, randBlue);
     }
+    
 
     public boolean newDay(){
         String storedDate = sharedPref.getString("Date", "No date");
