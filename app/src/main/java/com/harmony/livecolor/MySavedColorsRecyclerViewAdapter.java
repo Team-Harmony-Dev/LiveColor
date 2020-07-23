@@ -133,15 +133,14 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
                 colorDB = new ColorDatabase(context);
                 //get clicked color from position
                 String colorID = "";
-                colorID = myColors.get(position).getId();
-                Cursor colorData = colorDB.getColorInfoById(colorID);
+                MyColor selectedColor = myColors.get(position);
 
                 Intent intent=new Intent(context, ColorInfoActivity.class);
-                intent.putExtra("id", colorData.getString(0));
-                intent.putExtra("name", colorData.getString(1));
-                intent.putExtra("hex", colorData.getString(2));
-                intent.putExtra("rgb", colorData.getString(3));
-                intent.putExtra("hsv", colorData.getString(4));
+                intent.putExtra("id", selectedColor.getId());
+                intent.putExtra("name", selectedColor.getName());
+                intent.putExtra("hex", selectedColor.getHex());
+                intent.putExtra("rgb", selectedColor.getRgb());
+                intent.putExtra("hsv", selectedColor.getHsv());
                 //start new activity with this intent
                 context.startActivity(intent);
             }
