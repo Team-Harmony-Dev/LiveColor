@@ -15,7 +15,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -99,12 +101,40 @@ public class ColorOTDayDialog {
         }
     }
 
+    /**
+     * GENERATE A RANDOM COTD
+     * generates a random RGB color, based on the date
+     * each color channel is seeded and generated individually as follows
+     * R: MMDDYY
+     * G: YYMMDD
+     * B: DDYYMM
+     * a simple rotation on the american dat format in one number
+     *
+     * @return getIntFromColor( R, G, B)
+     *
+     * @author Daniel, Gabby
+     */
     public int generateRandomColor(){
-        Random rand = new Random();
-        int randRed = rand.nextInt(256);
-        int randGreen = rand.nextInt(256);
-        int randBlue = rand.nextInt(256);
-        //return getIntFromColor(randRed, randGreen, randBlue);
+        DateFormat dfRed = new SimpleDateFormat("MMddyy");
+        DateFormat dfGreen = new SimpleDateFormat("yyMMdd");
+        DateFormat dfBlue = new SimpleDateFormat("ddyyMM");
+
+        int nowRed = Integer.parseInt(dfRed.format(new Date()));
+        int nowGreen = Integer.parseInt(dfGreen.format(new Date()));
+        int nowBlue = Integer.parseInt(dfBlue.format(new Date()));
+
+        Log.d("DEBUG", "generateRandomColor: seeds" + " R: " + nowRed + " G: " + nowGreen + " B: " + nowBlue);
+
+        Random randRedGen = new Random(nowRed);
+        Random randGreenGen = new Random(nowGreen);
+        Random randBlueGen = new Random(nowBlue);
+
+        int randRed = randRedGen.nextInt(256);
+        int randGreen = randGreenGen.nextInt(256);
+        int randBlue = randBlueGen.nextInt(256);
+
+        Log.d("DEBUG", "generateRandomColor: values" + " R: " + randRed + " G: " + randGreen + " B: " + randBlue);
+
         return getIntFromColor(randRed, randGreen, randBlue);
     }
 
