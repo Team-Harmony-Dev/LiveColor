@@ -26,9 +26,10 @@ public class CreditsActivity extends AppCompatActivity{
      * CALL FOR GETTING THE LINK TO A TEAM MEMBER'S GITHUB
      * gets a specific team member's GitHub link
      * @author Shealtiel
-     * @param "android::tag" method depends on the button having a tag attribute that contains the
+     * @dependancy "android::tag" method depends on the button having a tag attribute that contains the
      *          specific team member's name. Without this the method will return a link to the
      *          LiveColor GitHub not the team member's specific page like intended.
+     * @param view button passed in as a view
      * @return the uri of the specified team member's GitHub
      */
     public void onClickGitHubLink(View view) {
@@ -56,9 +57,10 @@ public class CreditsActivity extends AppCompatActivity{
      * CALL FOR GETTING THE LINK TO A TEAM MEMBER'S LINKEDIN
      * gets a specific team member's LinkedIn link
      * @author Shealtiel
-     * @param "android::tag" method depends on the button having a tag attribute that contains the
+     * @dependancy "android::tag" method depends on the button having a tag attribute that contains the
      *          specific team member's name. Without this the method will return a link to the
      *          LiveColor GitHub not the team member's specific LinkedIn page like intended.
+     * @param view button passed in as a view
      * @return the uri of the specified team member's LinkedIn
      */
     public void onClickLinkedInLink(View view) {
