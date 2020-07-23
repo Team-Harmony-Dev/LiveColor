@@ -29,9 +29,6 @@
             android:name=".PaletteInfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SettingsActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".EditColorActivity"
             android:screenOrientation="portrait" />
         <activity
