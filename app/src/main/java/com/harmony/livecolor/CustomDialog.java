@@ -131,10 +131,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 //save color to Saved Colors palette (id = 1)
                 if(colorDB.addColorToPalette("1",Long.toString(colorId))) {
                     alertDialogSave.dismiss();
-                    makeToast("Color has been saved to Saved Colors", contex);
+                    makeToast("Color has been saved to Saved Colors", context);
                 } else {
                     alertDialogSave.dismiss();
-                    makeToast("Color is a duplicate", contex);
+                    makeToast("Color is a duplicate", context);
                 }
             }
         });
