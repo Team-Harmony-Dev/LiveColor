@@ -55,7 +55,7 @@ import static android.graphics.Color.red;
  */
 public class ColorPickerFragment extends Fragment {
 
-    private boolean isButtonClicked = false;
+    private boolean isColorSaved = false;
     int colorT;
     String colorNamePass;
 
@@ -170,11 +170,15 @@ public class ColorPickerFragment extends Fragment {
                 String hsv = editHsv.getText().toString();
 
                 ImageButton saveButton = rootView.findViewById(R.id.saveButton);
-                if(!isButtonClicked){
+                //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
+                //  Probably if they cancel we don't want it to display the color though.
+                if(!isColorSaved){
+                    //Could just have these 4 lines happen in CustomDialog iff a save occurs? Callback?
                     view.startAnimation(scaleAnimation);
                     saveColorB.setImageResource(R.drawable.bookmark_selected );
                     saveButton.setColorFilter(colorT);
-                    isButtonClicked = !isButtonClicked;
+                    isColorSaved = !isColorSaved;
+
                     CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
                     pickerDialog.showSaveDialog();
                 }
@@ -332,7 +336,7 @@ public class ColorPickerFragment extends Fragment {
             }
 
             updateColorValues(view, pixel);
-            isButtonClicked = false;
+            isColorSaved = false;
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
             saveColorB.setImageResource(R.drawable.unsaved);
             saveColorB.setColorFilter(null);
