@@ -106,13 +106,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
-
-
         viewCB.startAnimation(scaleAnimation);
 
         final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
@@ -124,7 +121,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
         isColorSaved = true;
 
-        Log.d("V2S2 bugfix", "Got callback (save happened)");
+        Log.d("V2S2 bugfix", "Got callback (save happened). isColorSaved="+isColorSaved+" colorT="+colorT);
     }
 
     @Override
@@ -219,6 +216,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     saveButton.setColorFilter(colorT);
                     isColorSaved = !isColorSaved;
                     */
+
+                    Log.d("V2S2 bugfix", "Button pressed. isColorSaved="+isColorSaved+" colorT="+colorT);
+
                     //This isn't working quite how I expected?
                     inflaterCB = inflater;
                     viewCB = view;
