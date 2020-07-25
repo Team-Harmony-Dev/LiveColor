@@ -107,7 +107,7 @@ public class EditColorActivity extends AppCompatActivity {
         final float maxFontSize = 30;
 
         TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText(" ");
+        colorNameN.setText("");
 
         TextView colorNameV = findViewById(R.id.colorN);
         updateColorNameWithView(colorNameV);
@@ -375,7 +375,12 @@ public class EditColorActivity extends AppCompatActivity {
                 int sat = seekGreen.getProgress();
                 int val = seekBlue.getProgress();
 
+
                 name = colorNNView.getText().toString();
+                //If the color is unedited it saves "" as the name. We can get the name from the other view.
+                if(name == ""){
+                    name = ((TextView) findViewById(R.id.colorN)).getText().toString();
+                }
 
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue,sat,val);
                 int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
@@ -388,7 +393,13 @@ public class EditColorActivity extends AppCompatActivity {
                 int red = seekRed.getProgress();
                 int green = seekGreen.getProgress();
                 int blue = seekBlue.getProgress();
+
                 name = colorNNView.getText().toString();
+                //If the color is unedited it saves "" as the name. We can get the name from the other view.
+                if(name == ""){
+                    name = ((TextView) findViewById(R.id.colorN)).getText().toString();
+                }
+
                 rgb = String.format("(%1$d, %2$d, %3$d)", red, green, blue);
                 hex = String.format( "#%02X%02X%02X", red, green, blue);
                 int[] hue = convertRGBtoHSV(red,green,blue);
