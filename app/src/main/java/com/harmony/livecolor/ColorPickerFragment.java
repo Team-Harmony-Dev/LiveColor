@@ -78,6 +78,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private ImageView pickingImage;
     private Uri imageUri;
 
+    //For the save button animation/color fill
+    private LayoutInflater inflaterCB;
+    private View viewCB;
+    private ViewGroup containerCB;
+
     public ColorPickerFragment() {
         // Required empty public constructor
     }
@@ -101,23 +106,24 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        /*
+
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
 
-        view.startAnimation(scaleAnimation);
+        viewCB.startAnimation(scaleAnimation);
 
-        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+        final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
         saveColorB.setImageResource(R.drawable.bookmark_selected);
 
+        ImageButton saveButton = rootView.findViewById(R.id.saveButton);
         saveButton.setColorFilter(colorT);
 
         isColorSaved = true;
-        */
+
         Log.d("V2S2 bugfix", "Got callback (save happened)");
     }
 
@@ -201,7 +207,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
 
-                ImageButton saveButton = rootView.findViewById(R.id.saveButton);
+                //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
                 //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
                 //  Probably if they cancel we don't want it to display the color though.
                 if(!isColorSaved){
@@ -213,6 +219,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     saveButton.setColorFilter(colorT);
                     isColorSaved = !isColorSaved;
                     */
+                    //error: local variable inflater is accessed from within inner class; needs to be declared final
+                    inflaterCB = inflater;
+                    viewCB = view;
+                    containerCB = container;
+
+
                     CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
                     //We'll get a callback if they did save the color (to tell if we need to fill in the save button)
                     pickerDialog.addListener(callbackToHere);
