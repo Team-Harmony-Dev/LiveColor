@@ -44,6 +44,11 @@ import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 
+//https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
+//TODO comment.
+interface SaveListener{
+    void saveHappened();
+}
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,7 +58,7 @@ import static android.graphics.Color.red;
  * Use the {@link ColorPickerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ColorPickerFragment extends Fragment {
+public class ColorPickerFragment extends Fragment implements SaveListener {
 
     private boolean isColorSaved = false;
     int colorT;
@@ -92,6 +97,28 @@ public class ColorPickerFragment extends Fragment {
         if (getArguments() != null) {
             //if arguments are needed ever, use this to set them to static values in the class
         }
+    }
+
+    //Color the save button in if the save occurred (wasn't cancelled)
+    public void saveHappened(){
+        /*
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
+
+        view.startAnimation(scaleAnimation);
+
+        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
+        saveColorB.setImageResource(R.drawable.bookmark_selected);
+
+        saveButton.setColorFilter(colorT);
+
+        isColorSaved = true;
+        */
+        Log.d("V2S2 bugfix", "Got callback (save happened)");
     }
 
     @Override
@@ -155,12 +182,17 @@ public class ColorPickerFragment extends Fragment {
             }
         });
 
+        /*
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
-
+        */
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
+
+        Log.d("V2S2 bugfix", "This="+(this).getClass().getName());
+        final ColorPickerFragment callbackToHere = this;
+
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,12 +206,16 @@ public class ColorPickerFragment extends Fragment {
                 //  Probably if they cancel we don't want it to display the color though.
                 if(!isColorSaved){
                     //Could just have these 4 lines happen in CustomDialog iff a save occurs? Callback?
+                    //Or undo it if it was cancelled?
+                    /*
                     view.startAnimation(scaleAnimation);
                     saveColorB.setImageResource(R.drawable.bookmark_selected );
                     saveButton.setColorFilter(colorT);
                     isColorSaved = !isColorSaved;
-
+                    */
                     CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
+                    //We'll get a callback if they did save the color (to tell if we need to fill in the save button)
+                    pickerDialog.addListener(callbackToHere);
                     pickerDialog.showSaveDialog();
                 }
             }

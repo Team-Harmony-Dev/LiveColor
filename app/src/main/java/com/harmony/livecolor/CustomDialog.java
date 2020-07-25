@@ -52,6 +52,8 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
     ArrayList<MyPalette> paletteList;
 
+    SaveListener listener;
+
     /**
      * Constructor for Custom Dialog
      * For when a new color needs to be saved to the database
@@ -94,6 +96,18 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         newColor = false;
     }
 
+    //TODO comment
+    public void addListener(SaveListener newListener) {
+        listener = newListener;
+    }
+    //TODO comment
+    //TODO test uninitialized
+    private void notifySaveCompleted(){
+        if(listener != null) {
+            listener.saveHappened();
+        }
+    }
+
     /**
      * showSaveDialog
      * Creates and displays the inital dialog for saving a color.
@@ -116,6 +130,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             public void onClick(View v) {
                 alertDialogSave.dismiss();
                 showSetNameDialog();
+
+                //Tell the listener that it's saved, so it can fill in the save button.
+                notifySaveCompleted();
             }
         });
 
@@ -135,6 +152,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                     alertDialogSave.dismiss();
                     makeToast("Color is a duplicate");
                 }
+
+                //Tell the listener that it's saved, so it can fill in the save button.
+                notifySaveCompleted();
             }
         });
 
