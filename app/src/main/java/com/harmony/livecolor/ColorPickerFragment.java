@@ -128,7 +128,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("Lifecycles", "onCreateView: ColorPickerFragment created");
 
@@ -219,7 +219,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     saveButton.setColorFilter(colorT);
                     isColorSaved = !isColorSaved;
                     */
-                    //error: local variable inflater is accessed from within inner class; needs to be declared final
+                    //This isn't working quite how I expected?
                     inflaterCB = inflater;
                     viewCB = view;
                     containerCB = container;
