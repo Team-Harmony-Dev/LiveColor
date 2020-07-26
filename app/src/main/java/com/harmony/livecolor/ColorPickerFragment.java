@@ -110,13 +110,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
-        viewCB.startAnimation(scaleAnimation);
 
         final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
-        saveColorB.setImageResource(R.drawable.bookmark_selected);
-
         ImageButton saveButton = rootView.findViewById(R.id.saveButton);
+
+        viewCB.startAnimation(scaleAnimation);
+        saveColorB.setImageResource(R.drawable.bookmark_selected);
         saveButton.setColorFilter(colorT);
 
         isColorSaved = true;
