@@ -82,6 +82,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private LayoutInflater inflaterCB;
     private View viewCB;
     private ViewGroup containerCB;
+    private ImageView saveButtonCB;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -106,20 +107,25 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
+        //TODO actually this should probably happen on button press, not tied to color.
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
-        final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
-        final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
-        ImageButton saveButton = rootView.findViewById(R.id.saveButton);
+        //final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
+        //final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
+        //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
 
-        viewCB.startAnimation(scaleAnimation);
-        saveColorB.setImageResource(R.drawable.bookmark_selected);
-        saveButton.setColorFilter(colorT);
+        //viewCB.startAnimation(scaleAnimation);
+        //saveColorB.setImageResource(R.drawable.bookmark_selected);
+        //saveButton.setColorFilter(colorT);
+
+        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
+        saveButtonCB.setColorFilter(colorT);
 
         isColorSaved = true;
+        //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
 
         Log.d("V2S2 bugfix", "Got callback (save happened). isColorSaved="+isColorSaved+" colorT="+colorT);
     }
@@ -216,6 +222,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     saveButton.setColorFilter(colorT);
                     isColorSaved = !isColorSaved;
                     */
+                    saveButtonCB = saveColorB;
 
                     Log.d("V2S2 bugfix", "Button pressed. isColorSaved="+isColorSaved+" colorT="+colorT);
 
