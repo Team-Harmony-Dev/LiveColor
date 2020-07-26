@@ -79,10 +79,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private Uri imageUri;
 
     //For the save button animation/color fill
-    private LayoutInflater inflaterCB;
-    private View viewCB;
-    private ViewGroup containerCB;
     private ImageView saveButtonCB;
+    //Can delete this if we want the animation to always happen when tapping save button, rather than only on actual save.
+    private View viewCB;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -107,19 +106,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        //TODO actually this should probably happen on button press, not tied to color.
-        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
-        scaleAnimation.setDuration(500);
-        BounceInterpolator bounceInterpolator = new BounceInterpolator();
-        scaleAnimation.setInterpolator(bounceInterpolator);
-
-        //final View rootView = inflaterCB.inflate(R.layout.fragment_color_picker, containerCB, false);
-        //final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
-        //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
-
-        //viewCB.startAnimation(scaleAnimation);
-        //saveColorB.setImageResource(R.drawable.bookmark_selected);
-        //saveButton.setColorFilter(colorT);
+        //Actually this should probably happen on button press, not tied to color. Probably. Maybe. Can add back if we want it here.
+//        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+//        scaleAnimation.setDuration(500);
+//        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+//        scaleAnimation.setInterpolator(bounceInterpolator);
+//        viewCB.startAnimation(scaleAnimation);
 
         saveButtonCB.setImageResource(R.drawable.bookmark_selected);
         saveButtonCB.setColorFilter(colorT);
@@ -191,12 +183,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
         });
 
-        /*
+
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
-        */
+
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
 
         Log.d("V2S2 bugfix", "This="+(this).getClass().getName());
@@ -213,27 +205,16 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
                 //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
                 //  Probably if they cancel we don't want it to display the color though.
+
+                //Animate each time they clicked, even if it was already pressed?
+                //If we do, we should probably have a notification saying why nothing is happening.
+                //But it's totally reasonable that they'd want to save again to a different place. Should probably allow that.
+                view.startAnimation(scaleAnimation);
+
                 if(!isColorSaved){
-                    //Could just have these 4 lines happen in CustomDialog iff a save occurs? Callback?
-                    //Or undo it if it was cancelled?
-                    /*
-                    view.startAnimation(scaleAnimation);
-                    saveColorB.setImageResource(R.drawable.bookmark_selected );
-                    saveButton.setColorFilter(colorT);
-                    isColorSaved = !isColorSaved;
-                    */
                     saveButtonCB = saveColorB;
-
-                    Log.d("V2S2 bugfix", "Button pressed. isColorSaved="+isColorSaved+" colorT="+colorT);
-
-                    //This isn't working quite how I expected?
-                    inflaterCB = inflater;
-                    viewCB = view;
-                    containerCB = container;
-
-
                     CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
-                    //We'll get a callback if they did save the color (to tell if we need to fill in the save button)
+                    //We'll get a callback if they did save the color (to tell us we need to fill in the save button)
                     pickerDialog.addListener(callbackToHere);
                     pickerDialog.showSaveDialog();
                 }
