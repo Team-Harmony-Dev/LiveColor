@@ -2,9 +2,11 @@ package com.harmony.livecolor;
 
 import android.util.Log;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 
 //Contains functions for generating colors for palettes based on a given color.
 public class HarmonyGenerator {
@@ -22,8 +24,9 @@ public class HarmonyGenerator {
         String hex = hsvToStringHex(color);
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
-        //TODO how to name them? API call needs a textView. I could go "left 1, original, right 1...."
-        MyColor colorObj = new MyColor(""+id, ("Color "+id), hex, rgb, hsv);
+        String colorName = ColorNameGetterCSV.getName(hex);
+        //TODO the name works now, but opening harmonies takes a few seconds because it does it for all palettes at once.
+        MyColor colorObj = new MyColor(""+id, colorName, hex, rgb, hsv);
         return colorObj;
     }
     //For all these functions, currently I'm using hue (0..359) saturation (0..100) value (0..100)
@@ -34,7 +37,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //https://stackoverflow.com/a/3607942
         String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
         return hex;
@@ -45,7 +48,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         String strRgb = "("+rgb[0]+", "+rgb[1]+", "+rgb[2]+")";
         return strRgb;
     }
@@ -55,7 +58,7 @@ public class HarmonyGenerator {
         float hue = color[0];
         float saturation = color[1];
         float value = color[2];
-        int[] rgb = EditColorActivity.convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
+        int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //Stores the result values
         float[] hsvArray = new float[3];
         RGBToHSV(rgb[0],rgb[1],rgb[2],hsvArray);

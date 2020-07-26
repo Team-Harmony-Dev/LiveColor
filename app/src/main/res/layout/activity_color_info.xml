@@ -8,6 +8,8 @@
     android:layout_height="match_parent">
 
 
+
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarEdit"
         android:layout_width="match_parent"
@@ -36,6 +38,7 @@
                 android:hint="Name"
 
 
+                android:onClick="onClickBackButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +51,7 @@
                 android:layout_gravity="right"
                 android:background="#00FFFFFF"
                 android:hint="Name"
+                android:onClick="onClickEditButton"
                 android:paddingHorizontal="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -131,6 +135,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_regular"
+                android:onClick="onClickCopyRGB"
                 android:text="@android:string/copy"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,6 +150,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_regular"
+                android:onClick="onClickCopyHSV"
                 android:text="@android:string/copy"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -160,6 +166,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/lato_regular"
+                android:onClick="onClickCopyHEX"
                 android:text="@android:string/copy"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -174,6 +181,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_regular"
+                android:onClick="onClickColorHarmonies"
                 android:text="View Color Harmonies"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
