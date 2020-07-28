@@ -13,6 +13,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +42,9 @@ public class ColorInfoActivity extends AppCompatActivity {
     private ArrayList<MyColor> colorList;
     ColorDatabase newColorDatabase;
 
+    ScaleAnimation scaleAnimation;
+    private boolean isButtonClicked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +56,18 @@ public class ColorInfoActivity extends AppCompatActivity {
        ActionBar actionBar = getSupportActionBar();
        //actionBar.hide();
 
+
+        // save color check
+        isButtonClicked = false;
+        ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
+        saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
+        saveColorB.setColorFilter(null);
+
+        // save button setup animation
+        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,Animation.RELATIVE_TO_SELF, 0.7f,Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
 
         //TODO: Move SharedPrefs to outside of the method
         // pass colors through MyColor and intent (talk with Gabby)
@@ -215,6 +234,31 @@ public class ColorInfoActivity extends AppCompatActivity {
         }
         startActivity(startEditColorActivity);
     }
+
+
+    public void onClickSaveButton(View view){
+
+            String hex = "#" + colorToHex(colorValue);
+            String name = ColorNameGetterCSV.getName(hex);
+            String rgb = String.format("(%1$d, %2$d, %3$d)", RV, GV, BV);
+            String hsv = hsvArray.toString();
+
+            ImageButton saveButton = (ImageButton) view;
+            if(!isButtonClicked){
+                view.startAnimation(scaleAnimation);
+                saveButton.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
+                saveButton.setColorFilter(colorValue);
+                isButtonClicked = !isButtonClicked;
+                CustomDialog pickerDialog = new CustomDialog(this,name,hex,rgb,hsv);
+                pickerDialog.showSaveDialog();
+            }
+
+
+
+    }
+
+
+
 
     /**
      * COPY HEX VALUE TO CLIPBOARD

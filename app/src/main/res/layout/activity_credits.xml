@@ -13,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/lato_bold"
         android:text="@string/live_color_team"
-        android:textAlignment="viewEnd"
+        android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
