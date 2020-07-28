@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -114,8 +115,7 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         }
     }
 
-    //TODO: uncomment method when PaletteInfoActivity is complete
-    // separate method for the onClickListener in order to pass the position from onBVH in
+    //TODO: UPDATE TO WORK WITH PALETTE FORMAT
     View.OnClickListener getPaletteClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
