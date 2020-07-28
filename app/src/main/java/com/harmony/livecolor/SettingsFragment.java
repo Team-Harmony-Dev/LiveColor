@@ -42,6 +42,9 @@ public class SettingsFragment  extends  Fragment{
 
     private SettingsFragment.OnFragmentInteractionListener mListener;
 
+    TextView textViewGetToKnow;
+    TextView textViewMeetTeam;
+
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -76,6 +79,24 @@ public class SettingsFragment  extends  Fragment{
 
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        textViewGetToKnow = rootView.findViewById(R.id.textView11);
+        textViewMeetTeam =  rootView.findViewById(R.id.textView13);
+
+        textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickCredits(view);
+            }
+        });
+
+        textViewMeetTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickCredits(view);
+            }
+        });
+
 
         return rootView;
     }
@@ -134,7 +155,10 @@ public class SettingsFragment  extends  Fragment{
         Log.d("Lifecycles", "onViewCreated: View Created for Settings Fragment");
     }
 
-
+    public void onClickCredits(View view) {
+        Intent intent = new Intent(view.getContext(), CreditsActivity.class);
+        startActivity(intent);
+    }
 
 }
 

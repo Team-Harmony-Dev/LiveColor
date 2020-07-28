@@ -30,6 +30,9 @@ import java.io.InputStream;
 
 import static android.graphics.Color.RGBToHSV;
 import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
+import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
+import static com.harmony.livecolor.UsefulFunctions.convertRGBtoHSV;
+import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
 
 /**
  * @author Gabby
@@ -493,49 +496,6 @@ public class EditColorActivity extends AppCompatActivity {
     }
 
     /**
-     * Converts given RGB ints to HSV values and returns them in an array
-     * @param red
-     * @param green
-     * @param blue
-     *
-     * @return an array of length 3 containing the RGB values, respectively
-     *
-     * @author Gabby
-     */
-    public int[] convertRGBtoHSV(int red, int green, int blue){
-        float[] hsvArray = new float[3];
-        RGBToHSV(red,green,blue,hsvArray);
-        int[] convertedHSVForSeekbars = new int[3];
-        convertedHSVForSeekbars[0] = Math.round(hsvArray[0]);
-        convertedHSVForSeekbars[1] = Math.round((hsvArray[1])*100);
-        convertedHSVForSeekbars[2] = Math.round((hsvArray[2])*100);
-        return convertedHSVForSeekbars;
-    }
-
-    /**
-     * Converts given HSV ints to RGB values and returns them in an array
-     * @param hue
-     * @param saturation
-     * @param value
-     *
-     * @return an array of length 3 containing the HSV values, respectively
-     *
-     * @author Gabby
-     */
-    public static int[] convertHSVtoRGB(int hue, int saturation, int value){
-        float[] hsv = new float[3];
-        hsv[0] = hue;
-        hsv[1] = ((float) saturation) / 100;
-        hsv[2] = ((float) value) / 100;
-        int outputColor = Color.HSVToColor(hsv);
-        int[] newRGBValues = new int[3];
-        newRGBValues[0] = Color.red(outputColor);
-        newRGBValues[1] = Color.green(outputColor);
-        newRGBValues[2] = Color.blue(outputColor);
-        return newRGBValues;
-    }
-
-    /**
      * Update the "new color" image with passed int values (either RGB or HSV)
      * @param redOrHue
      * @param greenOrSat
@@ -604,20 +564,5 @@ public class EditColorActivity extends AppCompatActivity {
                 //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
             }
         }
-    }
-
-    /**
-     *  Takes in RGB values and returns the associated color int
-     * @param Red red value (R)
-     * @param Green green value (G)
-     * @param Blue blue value (B)
-     * @return the color int of the passed RGB value
-     */
-    public int getIntFromColor(int Red, int Green, int Blue){
-        Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-        Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-        Blue = Blue & 0x000000FF; //Mask out anything not blue.
-
-        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 }
