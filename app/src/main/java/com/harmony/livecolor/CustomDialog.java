@@ -133,7 +133,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 showSetNameDialog();
 
                 //Tell the listener that it's saved, so it can fill in the save button.
-                notifySaveCompleted();
+                //notifySaveCompleted();
             }
         });
 
@@ -224,6 +224,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
                     dialog.dismiss();
                     makeToast("New palette \"" + newName + "\" created!", context);
+
+                    //Tell the listener that it's saved, so it can fill in the save button.
+                    notifySaveCompleted();
                 } //if you are renaming an existing palette
                 else {
                     Log.d("CustomDialog", "setName is for existing palette");
@@ -246,8 +249,6 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
         alertDialogName = builder.create();
         alertDialogName.show();
-
-        //TODO notifysavecompleted here instead?
     }
 
     /**
