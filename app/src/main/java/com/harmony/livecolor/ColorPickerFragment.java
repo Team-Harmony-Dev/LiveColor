@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,11 +20,15 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,25 +36,35 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import static androidx.core.content.ContextCompat.getColorStateList;
 
-//https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
-//TODO comment.
-interface SaveListener{
-    void saveHappened();
-}
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,9 +74,9 @@ interface SaveListener{
  * Use the {@link ColorPickerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ColorPickerFragment extends Fragment implements SaveListener {
+public class ColorPickerFragment extends Fragment {
 
-    private boolean isColorSaved = false;
+    private boolean isButtonClicked = false;
     int colorT;
     String colorNamePass;
 
@@ -77,11 +93,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private String imagePath = null;
     private ImageView pickingImage;
     private Uri imageUri;
-
-    //For the save button animation/color fill
-    private ImageView saveButtonCB;
-    //Can delete this if we want the animation to always happen when tapping save button, rather than only on actual save.
-    private View viewCB;
 
     public ColorPickerFragment() {
         // Required empty public constructor
@@ -104,26 +115,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         }
     }
 
-    //Color the save button in if the save occurred (wasn't cancelled)
-    public void saveHappened(){
-        //Actually this should probably happen on button press, not tied to color. Probably. Maybe. Can add back if we want it here.
-//        scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
-//        scaleAnimation.setDuration(500);
-//        BounceInterpolator bounceInterpolator = new BounceInterpolator();
-//        scaleAnimation.setInterpolator(bounceInterpolator);
-//        viewCB.startAnimation(scaleAnimation);
-
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
-        saveButtonCB.setColorFilter(colorT);
-
-        isColorSaved = true;
-        //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
-
-        Log.d("V2S2 bugfix", "Got callback (save happened). isColorSaved="+isColorSaved+" colorT="+colorT);
-    }
-
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("Lifecycles", "onCreateView: ColorPickerFragment created");
 
@@ -183,17 +176,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
         });
 
-
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
         final ImageButton saveColorB = rootView.findViewById(R.id.saveButton);
-
-        Log.d("V2S2 bugfix", "This="+(this).getClass().getName());
-        final ColorPickerFragment callbackToHere = this;
-
         saveColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,20 +190,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
 
-                //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
-                //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
-                //  Probably if they cancel we don't want it to display the color though.
-
-                //Animate each time they clicked, even if it was already pressed?
-                //If we do, we should probably have a notification saying why nothing is happening.
-                //But it's totally reasonable that they'd want to save again to a different place. Should probably allow that.
-                view.startAnimation(scaleAnimation);
-
-                if(!isColorSaved){
-                    saveButtonCB = saveColorB;
+                ImageButton saveButton = rootView.findViewById(R.id.saveButton);
+                if(!isButtonClicked){
+                    view.startAnimation(scaleAnimation);
+                    saveColorB.setImageResource(R.drawable.bookmark_selected );
+                    saveButton.setColorFilter(colorT);
+                    isButtonClicked = !isButtonClicked;
                     CustomDialog pickerDialog = new CustomDialog(getActivity(),name,hex,rgb,hsv);
-                    //We'll get a callback if they did save the color (to tell us we need to fill in the save button)
-                    pickerDialog.addListener(callbackToHere);
                     pickerDialog.showSaveDialog();
                 }
             }
@@ -372,49 +353,18 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
 
             updateColorValues(view, pixel);
-            isColorSaved = false;
+            isButtonClicked = false;
             ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-            saveColorB.setImageResource(R.drawable.unsaved);
+            saveColorB.setImageResource(R.drawable.ic_action_name);
             saveColorB.setColorFilter(null);
-
-
-            //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
-            final boolean USE_API_FOR_NAMES = false;
-
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
-            if(event.getActionMasked() == MotionEvent.ACTION_UP
-                    //We don't want to spam the API, but local color names are so fast we can just do it live.
-                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES)) {
+            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 Log.d("S3US5", "Release detected");
-
-                if(USE_API_FOR_NAMES) {
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
-                } else {
-                    //Get the hex, and then name that corresponds to the hex
-                    String hex = "#"+colorToHex(pixel);
-                    final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
-                    if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
-                        //Display the name on one line
-                        TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                        final double viewWidthPercentOfScreen = 0.60;
-                        final float maxFontSize = 30;
-                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
-                    } else {
-                        String colorName = ColorNameGetterCSV.getName(hex);
-                        //Display the name
-                        TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                        viewToUpdateColorName.setText(colorName);
-                        Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
-                    }
-                }
-
-                //I believe this is the button to select an image or take a picture.
-                //  It disappears when dragging so it doesn't cover any part of the image.
-                //  So after you're done dragging it needs to reappear.
+                TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                final double viewWidthPercentOfScreen = 0.60;
+                final float maxFontSize = 30;
+                ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
@@ -473,31 +423,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
-            final boolean USE_API_FOR_NAMES = false;
-            if(USE_API_FOR_NAMES) {
-                final double viewWidthPercentOfScreen = 0.60;
-                final float maxFontSize = 30;
-                TextView view = getActivity().findViewById(R.id.colorName);
-                ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
-            } else {
-                final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
-                if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
-                    //Display the name on one line
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    String hex = "#" + colorToHex(savedColorInt);
-                    ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
-                } else {
-                    //Get the hex, and then name that corresponds to the hex
-                    String hex = "#" + colorToHex(savedColorInt);
-                    String colorName = ColorNameGetterCSV.getName(hex);
-                    //Display the name
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    viewToUpdateColorName.setText(colorName);
-                }
-                //Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
-            }
+            final double viewWidthPercentOfScreen = 0.60;
+            final float maxFontSize = 30;
+            TextView view = getActivity().findViewById(R.id.colorName);
+            ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
         }
         updateColorValues(getView(), savedColorInt);
     }
@@ -578,4 +507,3 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         return String.format("%06X", (0xFFFFFF & color));
     }
 }
-

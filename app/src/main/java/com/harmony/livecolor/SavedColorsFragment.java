@@ -1,7 +1,6 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -15,9 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
@@ -38,10 +34,7 @@ public class SavedColorsFragment extends Fragment {
     private Context context;
     private View view;
     private ArrayList<MyColor> colorList;
-
-    private MySavedColorsRecyclerViewAdapter adapter;
-
-    ColorDatabase colorDatabase;
+    ColorDatabase newColorDatabase;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,92 +58,56 @@ public class SavedColorsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
 
         Log.d("Lifecycles", "onCreateView: SavedColorsFragment created");
 
         context = view.getContext();
 
-        colorDatabase = new ColorDatabase(getActivity());
+        newColorDatabase = new ColorDatabase(getActivity());
 
         initColors();
 
-        String defaultView = "list";
-        initRecycler(defaultView);
-
-        /**
-         * Button on click listeners for the grid/list buttons.
-         * On click, the recycler is re-initialized.
-         */
-        final ImageButton listButton = view.findViewById(R.id.listViewButton);
-        final ImageButton gridButton = view.findViewById(R.id.gridViewButton);
-
-        listButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view){
-                initRecycler("list");
-                //Sets the image buttons to reflect current state
-                listButton.setImageResource(R.drawable.list_view_selected);
-                gridButton.setImageResource(R.drawable.grid_view);
-            }
-        });
-
-        gridButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view){
-                initRecycler("grid");
-                listButton.setImageResource(R.drawable.list_view);
-                gridButton.setImageResource(R.drawable.grid_view_selected);
-            }
-        });
+        initRecycler();
 
         return view;
     }
 
-    public void initColors() {
+    public void initColors(){
         //initialize ArrayList<MyColors> here
-        colorList = colorDatabase.getColorList("1");
+        String TAG = "COLORS";
+        Cursor colorData = newColorDatabase.getColorInfoData();
+        colorList = new ArrayList<>();
+
+        if (colorData != null && colorData.getCount() > 0) {
+            if (colorData.moveToFirst()) {
+                do {
+                    Log.d(TAG,  colorData.getString(2));
+                    colorList.add(new MyColor(colorData.getString(0) + "",
+                            colorData.getString(1) + "", colorData.getString(2) + "",
+                            colorData.getString(3) + "", colorData.getString(4) + ""));
+                }         while (colorData.moveToNext());
+
+            }
+        }
     }
 
-    /**
-     * Initialize the recycler.
-     * @param selectedView - "list" or "grid" - Gabby
-     */
-    public void initRecycler(String selectedView){
+    public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
         //then initialize the adapter, passing in the bookList
-        adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener, selectedView);
+        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
-        //Set the layout to be reverse and stacked from the end so that the newest colors appear at the top of the list
-
-        /**
-         * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
-         */
-        if(selectedView == "list"){
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
-            recyclerView.setLayoutManager(layoutManager);
-            layoutManager.setStackFromEnd(true);
-        } else {
-            int numberOfColumns = 3;
-            GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
-            recyclerView.setLayoutManager(layoutManager);
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-                listener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                + " must implement OnListFragmentInteractionListener");
-        }
+        listener = (OnListFragmentInteractionListener) context;
     }
 
     @Override
@@ -172,12 +129,5 @@ public class SavedColorsFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initColors();
-        initRecycler("list");
     }
 }

@@ -12,57 +12,40 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarEdit2"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/ic_launcher_background"
-            android:gravity="center_vertical"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="0dp"
+            android:layout_weight=".05"
+            android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayoutToolbarInner"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="32dp">
+                android:layout_marginLeft="10dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:padding="1dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/back_arrow" />
 
-                <ImageButton
-                    android:id="@+id/backButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:background="#00FFFFFF"
-                    android:hint="Name"
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
+            <ImageButton
+                android:id="@+id/editButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:padding="0.5dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/edit_filled" />
 
-                    android:onClick="onClickBackButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_keyboard_light_grey_backspace_48" />
-
-                <ImageButton
-                    android:id="@+id/editButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="right"
-                    android:background="#00FFFFFF"
-                    android:hint="Name"
-                    android:onClick="onClickEditButton"
-                    android:paddingHorizontal="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_edit_light_grey_40" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/paletteName"

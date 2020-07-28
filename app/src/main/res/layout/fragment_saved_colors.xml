@@ -7,24 +7,20 @@
     android:layout_marginBottom="0dp"
     app:cardElevation="0dp">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/colorItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/color"
-            android:layout_width="0dp"
-            android:layout_height="125dp"
-            android:layout_weight="0.333" />
+            android:layout_width="125dp"
+            android:layout_height="125dp" />
 
         <LinearLayout
-            android:id="@+id/listText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.666"
             android:orientation="vertical">
 
             <TextView

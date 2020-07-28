@@ -20,8 +20,6 @@ import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,54 +32,20 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
     private ArrayList<MyColor> myColors;
     private OnListFragmentInteractionListener listener;
     private Context context;
-    private String selectedView;
-    ColorDatabase colorDB;
+    ColorDatabase newColorDatabase;
 
-    /**
-     * MySavedColorsRecyclerViewAdapter
-     * @param context
-     * @param myColors
-     * @param listener
-     * @param selectedV - The selected view: "list" or "grid" - Gabby
-     */
-    public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener, String selectedV) {
-        Log.d("Lifecycles", "SavedColorsRecyclerViewAdapter: Constructed");
+
+    public MySavedColorsRecyclerViewAdapter(Context context, ArrayList<MyColor> myColors, OnListFragmentInteractionListener listener) {
+        Log.d("S3US1", "SavedColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myColors = myColors;
-
-        /* Makes a shallow copy of the saved color array, reverses it, and sets it as the arrayList used by the recycler adapter
-           This is so the grid layout will have the newest colors at the top - Gabby
-         */
-        if(selectedV != "list"){
-            ArrayList<MyColor> copyColors = new ArrayList<>(myColors);
-            Collections.reverse(copyColors);
-            this.myColors = copyColors;
-        }
-
         this.listener = listener;
-        this.selectedView = selectedV;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_saved_colors,parent,false);
         ViewHolder holder = new ViewHolder(view);
-
-        /*
-         * This changes the weights on the saved color cardView so that the text is "invisible" (weight 0) if the selected view is not list - Gabby
-         */
-        if(this.selectedView != "list") {
-            LinearLayout cardText = view.findViewById(R.id.listText);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    cardText.getLayoutParams();
-            params.weight = 0f;
-
-            ImageView colorImage = view.findViewById(R.id.color);
-            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) colorImage.getLayoutParams();
-            params2.setMargins(3, 3, 3, 3);
-            params2.weight = 1.0f;
-        }
-
         return holder;
     }
 
@@ -130,17 +94,15 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                colorDB = new ColorDatabase(context);
-                //get clicked color from position
-                String colorID = "";
-                MyColor selectedColor = myColors.get(position);
-
+                newColorDatabase = new ColorDatabase(context);
+                final Cursor colorData = newColorDatabase.getColorInfoData();
+                colorData.moveToPosition(position);
                 Intent intent=new Intent(context, ColorInfoActivity.class);
-                intent.putExtra("id", selectedColor.getId());
-                intent.putExtra("name", selectedColor.getName());
-                intent.putExtra("hex", selectedColor.getHex());
-                intent.putExtra("rgb", selectedColor.getRgb());
-                intent.putExtra("hsv", selectedColor.getHsv());
+                intent.putExtra("id", colorData.getString(0));
+                intent.putExtra("name", colorData.getString(1));
+                intent.putExtra("hex", colorData.getString(2));
+                intent.putExtra("rgb", colorData.getString(3));
+                intent.putExtra("hsv", colorData.getString(4));
                 //start new activity with this intent
                 context.startActivity(intent);
             }

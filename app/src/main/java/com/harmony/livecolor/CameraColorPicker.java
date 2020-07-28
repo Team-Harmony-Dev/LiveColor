@@ -37,10 +37,28 @@ public class CameraColorPicker extends AppCompatActivity {
         mImageView = findViewById(R.id.image_view);
         mCaptureBtn = findViewById(R.id.capture_image_btn);
 
+        //button click
+        mCaptureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                            PackageManager.PERMISSION_DENIED ||
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                    PackageManager.PERMISSION_DENIED){
+                        String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        requestPermissions(permission, PERMISSION_CODE);
+                    }
+                    else {
+                        openCamera();
+                    }
+                }
+                else {
+                    openCamera();
+                }
+            }
+        });
     }
-
-
-
 
     private void openCamera() {
         ContentValues values = new ContentValues();
@@ -52,33 +70,7 @@ public class CameraColorPicker extends AppCompatActivity {
         startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
     }
 
-    /**
-     * OPEN CAMERA IMAGE
-     * Functionality of  camera color picker button
-     * @param view view of the button
-     *
-     * @author {someone}, Daniel
-     * changed as part of the oncreate inner to outer method refactor
-     */
-    public void onClickmCaptureBtn(View view){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (checkSelfPermission(Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_DENIED ||
-                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                            PackageManager.PERMISSION_DENIED){
-                String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                requestPermissions(permission, PERMISSION_CODE);
-            }
-            else {
-                openCamera();
-            }
-        }
-        else {
-            openCamera();
-        }
-    }
-
-    // handling permission result
+    //handling permission result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //this method is called, when user presses Allow or Deny from Permission Request Popup
@@ -98,8 +90,7 @@ public class CameraColorPicker extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK){
             mImageView.setImageURI(image_uri);
         }
     }
