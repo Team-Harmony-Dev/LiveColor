@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
+
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * A fragment representing a list of Items.
@@ -22,7 +26,7 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class PalettesFragment extends Fragment {
+public class PalettesFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private OnListFragmentInteractionListener listener;
     private Context context;
@@ -61,16 +65,20 @@ public class PalettesFragment extends Fragment {
 
         colorDB = new ColorDatabase(getActivity());
 
-        initPalettes();
+        SearchView searchView = view.findViewById(R.id.searchBarPalette);
+
+        searchView.setOnQueryTextListener(this);
+
+        initPalettes(colorDB.getPaletteDatabaseCursor());
 
         initRecycler();
 
         return view;
     }
 
-    public void initPalettes(){
+    public void initPalettes(Cursor cursor){
         //initialize ArrayList<MyPalette> here
-        paletteList = colorDB.getPaletteList();
+        paletteList = colorDB.getPaletteList(cursor);
 
     }
 
@@ -102,6 +110,42 @@ public class PalettesFragment extends Fragment {
         listener = null;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    /**
+     * Method called when user changes the text within the search bar
+     * @param query the new text in the search bar
+     * @return does not apply here for now, relates to suggestions. Simply return as false.
+     */
+    @Override
+    public boolean onQueryTextChange(String query) {
+        //trim any whitespace
+        query = query.trim();
+        //default cursor to make list from, for incorrect HEX input
+        Cursor cursor = colorDB.getPaletteDatabaseCursor();
+        //check whether starting with a # or not to determine whether to conduct a HEX or palette name query
+        if(query.startsWith("#")) {
+            //check that HEX size is correct, if not, notify the user
+            if(query.length() > 7) {
+                makeToast("Invalid HEX entered. Should have no more than 6 digits.", context);
+            } else {
+                //perform and retrieve a cursor for our query
+                cursor = colorDB.searchPalettesByHex(query);
+            }
+        } else {
+            //perform and retrieve a cursor for our palette name query
+            cursor = colorDB.searchPalettesByName(query);
+        }
+
+        //use the returned cursor from the above to reload the recycler with the results of the query
+        initPalettes(cursor);
+        initRecycler();
+        return false;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -122,7 +166,7 @@ public class PalettesFragment extends Fragment {
         super.onResume();
         Log.d("Lifecycles", "onResume: PalettesFragment resumed");
         //TODO: There *must* be a better way to refresh the lists than this (notifyDataSetChanged() isn't working)
-        initPalettes();
+        initPalettes(colorDB.getPaletteDatabaseCursor());
         initRecycler();
     }
 }

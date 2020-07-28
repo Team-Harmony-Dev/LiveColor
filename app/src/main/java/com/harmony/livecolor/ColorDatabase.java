@@ -271,17 +271,40 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (DONE)
      * retrieve a palette by its user-given name or hex
-     * @param input name or hex of the palette that the user is searching for
+     * @param input query for name of the palette that the user is searching for
      * @return cursor pointing at any matching results
      */
-    public Cursor getPaletteInfo(String input) {
+    public Cursor searchPalettesByName(String input) {
         db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
-                + " WHERE NAME LIKE \'" + input + "\'";
-        //TODO: add hex search functionality
+                + " WHERE NAME LIKE \'%" + input + "%\'";
         Cursor paletteData = db.rawQuery(selectQuery, null);
         paletteData.moveToFirst();
         return paletteData;
+    }
+
+    /**
+     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (WIP)
+     * @param input hex query for name of the palette that the user is searching for
+     * @return cursor pointing at any matching results
+     */
+    public Cursor searchPalettesByHex(String input) {
+        db = this.getWritableDatabase();
+        //Search color database to see if HEX exists anywhere
+        String selectQuery = "SELECT * FROM " + COLOR_TABLE_NAME
+                + " WHERE HEX LIKE \'%" + input + "%\'";
+        Cursor colorData = db.rawQuery(selectQuery, null);
+        //Get id if any, otherwise return empty cursor
+        if(colorData.moveToFirst()) {
+            String colorId = colorData.getString(0);
+            selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                    + " WHERE REF LIKE \'% " + colorId + " %\'";
+            Cursor paletteData = db.rawQuery(selectQuery, null);
+            paletteData.moveToFirst();
+            return paletteData;
+        } else {
+            return colorData;
+        }
     }
 
     /**
@@ -337,20 +360,32 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * GET ARRAYLIST OF ALL PALETTES AS MYPALETTE OBJECTS (DONE, UNTESTED)
+     * GET ARRAYLIST OF PALETTES AS MYPALETTE OBJECTS (WIP)
      * get all user made palettes (aka all palettes excluding Saved Colors (id = 1)
+     * @param cursor pointing to the set of palettes to be put into the arraylist
      * @return arraylist of palette objects for recycler display
      */
-    public ArrayList<MyPalette> getPaletteList() {
+    public ArrayList<MyPalette> getPaletteList(Cursor cursor) {
         ArrayList<MyPalette> paletteList = new ArrayList<>();
-        //get palette data
-        Cursor cursor = getPaletteDatabaseCursor();
-        //skip Saved Colors (id = 1)
-        while(cursor.moveToNext()){
-            String paletteId = cursor.getString(0);
-            String paletteName = cursor.getString(1);
-            ArrayList<MyColor> colorList = getColorList(paletteId);
-            paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+        String paletteId;
+        String paletteName;
+        ArrayList<MyColor> colorList;
+
+        if(cursor.moveToFirst()){ //check that cursor isn't empty
+            paletteId = cursor.getString(0);
+            if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
+                paletteName = cursor.getString(1);
+                colorList = getColorList(paletteId);
+                paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+            }
+            while(cursor.moveToNext()) {
+                paletteId = cursor.getString(0);
+                if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
+                    paletteName = cursor.getString(1);
+                    colorList = getColorList(paletteId);
+                    paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+                }
+            }
         }
         return paletteList;
     }
