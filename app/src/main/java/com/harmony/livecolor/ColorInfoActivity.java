@@ -159,7 +159,27 @@ public class ColorInfoActivity extends AppCompatActivity {
         hsvArray = new float[3];
         RGBToHSV(RV, GV, BV, hsvArray);
         hue = Math.round(hsvArray[0]);
-        String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)", hue, hsvArray[1], hsvArray[2]);
+        //String fullHSV = String.format("HSV: (%1$d, %2$.3f, %3$.3f)", hue, saturation, value);
+        float saturation = hsvArray[1];
+        String saturationStr;
+        float value = hsvArray[2];
+        String valueStr;
+        //We don't want it to display 0.000 if it's just 0.
+        if(saturation == 0){
+            saturationStr = "0";
+        } else {
+            saturationStr = String.format("%1$.3f", saturation);
+        }
+        if(value == 0){
+            valueStr = "0";
+        } else {
+            valueStr = String.format("%1$.3f", value);
+        }
+
+        final String PREFIX = "HSV: (";
+        final String SEP = ", ";
+        final String POSTFIX = ")";
+        String fullHSV = PREFIX + hue + SEP + saturationStr + SEP + valueStr + POSTFIX;
         TextView hsvDisplay = (TextView) findViewById(R.id.HSVText);
         hsvDisplay.setText(fullHSV);
 
