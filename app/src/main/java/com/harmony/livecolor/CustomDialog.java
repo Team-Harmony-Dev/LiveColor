@@ -246,6 +246,8 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
         alertDialogName = builder.create();
         alertDialogName.show();
+
+        //TODO notifysavecompleted here instead?
     }
 
     /**
@@ -266,5 +268,8 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             alertDialogSave.dismiss();
             makeToast("Sorry, there was an error saving the color to \"" + palette.getName() + "\"", context);
         }
+
+        //Tell the listener that it's saved, so it can fill in the save button.
+        notifySaveCompleted();
     }
 }
