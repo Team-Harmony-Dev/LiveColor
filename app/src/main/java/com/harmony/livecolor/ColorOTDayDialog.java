@@ -79,7 +79,10 @@ public class ColorOTDayDialog {
 
             //Be able to fetch color name on first load? Works after first "start"
             final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
-            ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
+            //Using the API happens async so you'll end up saving "..."
+            //ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
+            //TODO this is shrinking the font size more than it should, and for some reason the API version isn't. 
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.25, 30);
             final String colorNameStr = (String) colorName.getText();
 
             //Set onClick for back button
