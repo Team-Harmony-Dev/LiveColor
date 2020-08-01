@@ -9,6 +9,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,27 @@ public class ColorInfoActivity extends AppCompatActivity {
 
        ActionBar actionBar = getSupportActionBar();
        //actionBar.hide();
+
+        // dark mode check
+
+        int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayoutColorIID);
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're using the light theme
+
+
+                constraintLayout.setBackground(getDrawable(R.color.colorPrimaryLight));
+
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're using dark theme
+
+                constraintLayout.setBackground(getDrawable(R.color.colorPrimaryDark));
+
+                break;
+        }
 
 
         // save color check

@@ -26,10 +26,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".EditColorActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ColorInfoActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:configChanges="uiMode" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
