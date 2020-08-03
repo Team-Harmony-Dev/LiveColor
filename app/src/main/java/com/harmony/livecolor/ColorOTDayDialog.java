@@ -61,7 +61,7 @@ public class ColorOTDayDialog {
         dateView.setText(strDt);
 
         // If it is a new day - create and show the dialog!
-        if(newDay()){
+        if(true || newDay()){
             //Store the date in shared preferences
             editor.putString("Date", strDt);
             editor.commit();
@@ -79,14 +79,17 @@ public class ColorOTDayDialog {
 
             //Be able to fetch color name on first load? Works after first "start"
             final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
-            //Using the API happens async so you'll end up saving "..."
-            ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
+            Log.d("V2S2 bugfix cotd", "------------------------------------------------------size before="+colorName.getTextSize());
+            //Using the API happens async and works perfectly. Probably the delay causes it to overwrite some other font size set somewhere?
+            //No, looks like a side effect of some bugfix added a bug in CSV. Probably.
+            //ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
             //TODO this is shrinking the font size more than it should, and for some reason the API version isn't.
             //  It looks like it's detecting the size correctly but not setting it ? Or overwritten?
             //  Found easy fix. 
             //  But there might be a bug in the CSV's fitter, or this does something with TextView I don't see.
-            //ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.25, 30);
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.25, 30);
             //final String colorNameStr = (String) colorName.getText();
+            Log.d("V2S2 bugfix cotd", "size after set="+colorName.getTextSize());
 
             //Set onClick for back button
             final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
@@ -102,6 +105,7 @@ public class ColorOTDayDialog {
             saveCOTD.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("V2S2 bugfix cotd", "size on click="+colorName.getTextSize());
                     final String colorNameStr = (String) colorName.getText();
 
                     int RV = Color.red(colorOfTheDay);
@@ -129,6 +133,7 @@ public class ColorOTDayDialog {
 
             alertDialogSave.show();
             //makeShine();
+            Log.d("V2S2 bugfix cotd", "size after show="+colorName.getTextSize());
         }
     }
 
