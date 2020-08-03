@@ -306,7 +306,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         Log.d("V2S1 colorname", "w="+textWidth+" sw="+screenWidth);
 
         //There's some sort of minor padding so I need to reduce it slightly
-        maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen * 0.95;
+        maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
         double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
         double reduceToThisPercent = maximumTextWidth / textWidth;
         Log.d("V2S1 colorname", "sw="+screenWidth
