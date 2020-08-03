@@ -37,9 +37,12 @@ import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
 /**
  * @author Gabby
  */
-public class EditColorActivity extends AppCompatActivity {
+public class EditColorActivity extends AppCompatActivity implements SaveListener {
 
     int colorValue;
+    //For the save button animation/color fill
+    private ImageView saveButtonCB;
+
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
     String name, hex, rgb, hsv;
@@ -356,6 +359,12 @@ public class EditColorActivity extends AppCompatActivity {
             resetBookmark();
         }
 
+    //Color the save button in if the save occurred (wasn't cancelled)
+    public void saveHappened(){
+        saveButtonCB.setImageResource(R.drawable.bookmark_selected );
+        isButtonClickedNew = true;
+        Log.d("V2S2 bugfix", "Got callback (save happened).");
+    }
 
     /**
      * SAVE COLOR
@@ -369,8 +378,9 @@ public class EditColorActivity extends AppCompatActivity {
 
         if(!isButtonClickedNew){
             view.startAnimation(scaleAnimation);
-            isButtonClickedNew = !isButtonClickedNew;
-            saveNC.setImageResource(R.drawable.bookmark_selected);
+            
+            saveButtonCB = saveNC;
+
             ToggleButtonState = simpleToggleButton.isChecked();
             int colorI = 0;
             if(ToggleButtonState) {
@@ -410,8 +420,10 @@ public class EditColorActivity extends AppCompatActivity {
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
             }
             CustomDialog saveDialog = new CustomDialog(EditColorActivity.this,name,hex,rgb,hsv);
+            final EditColorActivity callbackToHere = this;
+            saveDialog.addListener(callbackToHere);
+            saveButtonCB.setColorFilter(colorI);
             saveDialog.showSaveDialog();
-            saveNC.setColorFilter(colorI);
         }
 
     }
