@@ -42,6 +42,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
     int colorValue;
     //For the save button animation/color fill
     private ImageView saveButtonCB;
+    private int colorICB;
 
     SeekBar seekRed, seekGreen, seekBlue;
     static TextView colorNNView;
@@ -362,6 +363,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
         saveButtonCB.setImageResource(R.drawable.bookmark_selected );
+        saveButtonCB.setColorFilter(colorICB);
         isButtonClickedNew = true;
         Log.d("V2S2 bugfix", "Got callback (save happened).");
     }
@@ -419,10 +421,10 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
                 colorDB.addColorInfoData(name, hex, rgb, hsv);
             }
+            colorICB = colorI;
             CustomDialog saveDialog = new CustomDialog(EditColorActivity.this,name,hex,rgb,hsv);
             final EditColorActivity callbackToHere = this;
             saveDialog.addListener(callbackToHere);
-            saveButtonCB.setColorFilter(colorI);
             saveDialog.showSaveDialog();
         }
 
