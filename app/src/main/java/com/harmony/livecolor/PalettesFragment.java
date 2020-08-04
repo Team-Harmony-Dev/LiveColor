@@ -76,12 +76,20 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         return view;
     }
 
+    /**
+     * Initializes an Arraylist of MyPalette with the appropriate MyColor arraylist for each
+     * Arraylist is made using the provided cursor from the palette table from colorDB
+     * @param cursor pointing to palettes that the arraylist should be created from
+     */
     public void initPalettes(Cursor cursor){
         //initialize ArrayList<MyPalette> here
         paletteList = colorDB.getPaletteList(cursor);
 
     }
 
+    /**
+     * Initializes the MyPaletteRecyclerView with the appropriate adapter, listener, and layout.
+     */
     public void initRecycler(){
         //get the RecyclerView from the view
         RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
@@ -110,10 +118,13 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         listener = null;
     }
 
+    /**
+     * Required Override, unused. See onQueryTextChange for search bar listener.
+     * @param query the submitted text in the search bar
+     * @return does not apply here for now, relates to suggestions. Simply return as false.
+     */
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
+    public boolean onQueryTextSubmit(String query) { return false; }
 
     /**
      * Method called when user changes the text within the search bar
