@@ -19,8 +19,6 @@ import java.util.ArrayList;
  *   - OTHER PALETTE UTILITY METHODS
  */
 
-//TODO: duplicate color checking is causing crashes
-
 public class ColorDatabase extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
@@ -36,6 +34,9 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public static final String PAL2 = "NAME"; //PALETTE NAME
     public static final String PAL3 = "REF"; //String containing all IDs of colors in palette, separated by spaces
 
+    final String TAG_COLOR = "ColorDatabase";
+    final String TAG_PALETTE = "PaletteDatabase";
+
     public ColorDatabase(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -43,7 +44,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
-        Log.d("S4US1", "onCreate: creating database");
+        Log.d(TAG_COLOR, "onCreate: creating database");
         String createColorInfoTable = "CREATE TABLE " + COLOR_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " NAME TEXT, HEX TEXT, RGB TEXT, HSV TEXT)";
         String createPaletteInfoTable = "CREATE TABLE " + PALETTE_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -92,7 +93,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         Cursor cursor = getColorInfoByHex(hex);
         if(cursor != null && cursor.getCount()>0){
             long id = cursor.getLong(0);
-            Log.d("S4U1", "addColorInfoData: id of existing color = " + id);
+            Log.d(TAG_COLOR, "addColorInfoData: id of existing color = " + id);
             return id;
         }
 
@@ -105,7 +106,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         colorInfoContentValues.put(COL5, hsv);
 
         long insertResult = db.insert(COLOR_TABLE_NAME, null, colorInfoContentValues);
-        Log.d("S4U1", "addColorInfoData: id of inserted color = " + insertResult);
+        Log.d(TAG_COLOR, "addColorInfoData: id of inserted color = " + insertResult);
 
         return insertResult;
     }
@@ -123,14 +124,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
         paletteInfoContentValues.put(PAL2, name);
         paletteInfoContentValues.put(PAL3, " ");
 
-        Log.d("PaletteDatabase", "addPaletteInfoData: adding new palette " + name);
+        Log.d(TAG_PALETTE, "addPaletteInfoData: adding new palette " + name);
         long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteInfoContentValues);
-        Log.d("PaletteDatabase", "addPaletteInfoData: id of new palette = " + insertResult);
+        Log.d(TAG_PALETTE, "addPaletteInfoData: id of new palette = " + insertResult);
 
         if (insertResult == -1) {
             return false;
         } else {
-            Log.d("PaletteDatabase", "addPaletteInfoData: insertResult = " + insertResult);
+            Log.d(TAG_PALETTE, "addPaletteInfoData: insertResult = " + insertResult);
             return addColorToPalette(Long.toString(insertResult),id);
         }
     }
@@ -146,12 +147,12 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
     public boolean addColorToPalette(String paletteId, String colorId) {
         db = this.getWritableDatabase();
-        Log.d("PaletteDatabase", "addPaletteInfoData: id of color added to new palette = " + colorId);
+        Log.d(TAG_PALETTE, "addPaletteInfoData: id of color added to new palette = " + colorId);
         //check if the color is already in the palette, if not
         if(!doesPaletteHaveColor(paletteId,colorId)) {
             //update the palette ref string to include the new color id
             String paletteColors = getPaletteColors(paletteId);
-            Log.d("PaletteDatabase", "addColorToPalette: paletteColors before = " + paletteColors);
+            Log.d(TAG_PALETTE, "addColorToPalette: paletteColors before = " + paletteColors);
             //each color should ALWAYS have a space before it for searching
             String newPaletteColors = paletteColors.concat(colorId + " ");
             String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
@@ -159,7 +160,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
                     + " WHERE ID = \'" + paletteId + "\'";
             try {
                 db.execSQL(updateQuery);
-                Log.d("PaletteDatabase", "addColorToPalette: paletteColors after = " + paletteColors);
+                Log.d(TAG_PALETTE, "addColorToPalette: paletteColors after = " + paletteColors);
                 return true;
             }
             catch (SQLException e) {
@@ -167,7 +168,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
                 return false;
             }
         }
-        Log.d("PaletteDatabase", "addPaletteInfoData: color already existed");
+        Log.d(TAG_PALETTE, "addPaletteInfoData: color already existed");
         return false;
     }
 
@@ -252,39 +253,6 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * FOR CHECKING IF A COLOR EXISTS IN A PALETTE (WIP)
-     * searches a palette for all colors with the given HEX within a palette
-     * @param id the ID of the palette to search
-     * @param hex the Hex to be searched for in the palette
-     * @return the cursor for the query results
-     */
-    public Cursor getColorInfoByHex(String id, String hex) {
-        //TODO: Should just call the same method for the entire color database to get the id, then search the palette
-        db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + COLOR_TABLE_NAME
-                + " WHERE HEX = \'" + hex + "\'";
-        Cursor colorData = db.rawQuery(selectQuery, null);
-        colorData.moveToFirst();
-        return colorData;
-    }
-
-    /**
-     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (DONE)
-     * retrieve a palette by its user-given name or hex
-     * @param input name or hex of the palette that the user is searching for
-     * @return cursor pointing at any matching results
-     */
-    public Cursor getPaletteInfo(String input) {
-        db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
-                + " WHERE NAME LIKE \'" + input + "\'";
-        //TODO: add hex search functionality
-        Cursor paletteData = db.rawQuery(selectQuery, null);
-        paletteData.moveToFirst();
-        return paletteData;
-    }
-
-    /**
      * CHECK IF A PALETTE CONTAINS A COLOR IN ITS REF STRING (DONE)
      * checks if the given color exists in the given palette
      * @param paletteId for accessing the palette
@@ -293,14 +261,58 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
     public boolean doesPaletteHaveColor(String paletteId, String colorId) {
         db = this.getWritableDatabase();
-        //TODO: if this method of searching with the where query doesn't work, just parse the string
-        Log.d("PaletteDatabase","doesPaletteHaveColor: Searching palette " + paletteId + " for " + colorId);
+        Log.d(TAG_PALETTE,"doesPaletteHaveColor: Searching palette " + paletteId + " for " + colorId);
         String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
                 + " WHERE ID = \'" + paletteId + "\'"
                 + " AND REF LIKE \'% " + colorId + " %\'";
         Cursor paletteData = db.rawQuery(selectQuery, null);
-        Log.d("PaletteDatabase","doesPaletteHaveColor: Results = " + paletteData + " " + (paletteData.moveToFirst()));
+        Log.d(TAG_PALETTE,"doesPaletteHaveColor: Results = " + paletteData + " " + (paletteData.moveToFirst()));
         return (paletteData.moveToFirst());
+    }
+
+    /**
+     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (DONE)
+     * retrieve a palette by its user-given name or hex
+     * @param input query for name of the palette that the user is searching for
+     * @return cursor pointing at any matching results
+     */
+    public Cursor searchPalettesByName(String input) {
+        db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE NAME LIKE \'%" + input + "%\'";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        paletteData.moveToFirst();
+        return paletteData;
+    }
+
+    /**
+     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (WIP)
+     * @param input hex query for name of the palette that the user is searching for
+     * @return cursor pointing at any matching results
+     */
+    public Cursor searchPalettesByHex(String input) {
+        db = this.getWritableDatabase();
+        //Search color database to see if HEX exists anywhere
+        String selectQuery = "SELECT * FROM " + COLOR_TABLE_NAME
+                + " WHERE HEX LIKE \'" + input + "%\'";
+        Cursor colorData = db.rawQuery(selectQuery, null);
+        Log.d(TAG_PALETTE, "searchPalettesByHex: colorData count = " + colorData.getCount());
+        //Get id if any, otherwise return empty cursor
+        if(colorData.moveToFirst()) {
+            String colorId = colorData.getString(0);
+            selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                    + " WHERE REF LIKE \'% " + colorId + " %\' ";
+            while(colorData.moveToNext()) {
+                colorId = colorData.getString(0);
+                selectQuery = selectQuery.concat("OR REF LIKE \'% " + colorId + " %\'");
+            }
+            Log.d(TAG_PALETTE, "searchPalettesByHex: final query = " + selectQuery);
+            Cursor paletteData = db.rawQuery(selectQuery, null);
+            paletteData.moveToFirst();
+            return paletteData;
+        } else {
+            return colorData;
+        }
     }
 
     /**
@@ -323,7 +335,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
         String[] splitIds = colorIds.split("\\s+");
         //get each color by id, add as MyColor object to arraylist
-        Log.d("ColorDatabase", "getColorList: colorIds = " + colorIds + ", # of colors = " + splitIds.length);
+        Log.d(TAG_COLOR, "getColorList: colorIds = " + colorIds + ", # of colors = " + splitIds.length);
         for(int i = 0; i < splitIds.length; i++) {
             String colorId = splitIds[i];
             Cursor cursor = getColorInfoById(colorId);
@@ -337,20 +349,32 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * GET ARRAYLIST OF ALL PALETTES AS MYPALETTE OBJECTS (DONE, UNTESTED)
+     * GET ARRAYLIST OF PALETTES AS MYPALETTE OBJECTS (WIP)
      * get all user made palettes (aka all palettes excluding Saved Colors (id = 1)
+     * @param cursor pointing to the set of palettes to be put into the arraylist
      * @return arraylist of palette objects for recycler display
      */
-    public ArrayList<MyPalette> getPaletteList() {
+    public ArrayList<MyPalette> getPaletteList(Cursor cursor) {
         ArrayList<MyPalette> paletteList = new ArrayList<>();
-        //get palette data
-        Cursor cursor = getPaletteDatabaseCursor();
-        //skip Saved Colors (id = 1)
-        while(cursor.moveToNext()){
-            String paletteId = cursor.getString(0);
-            String paletteName = cursor.getString(1);
-            ArrayList<MyColor> colorList = getColorList(paletteId);
-            paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+        String paletteId;
+        String paletteName;
+        ArrayList<MyColor> colorList;
+
+        if(cursor.moveToFirst()){ //check that cursor isn't empty
+            paletteId = cursor.getString(0);
+            if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
+                paletteName = cursor.getString(1);
+                colorList = getColorList(paletteId);
+                paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+            }
+            while(cursor.moveToNext()) {
+                paletteId = cursor.getString(0);
+                if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
+                    paletteName = cursor.getString(1);
+                    colorList = getColorList(paletteId);
+                    paletteList.add(new MyPalette(paletteId, paletteName, colorList));
+                }
+            }
         }
         return paletteList;
     }
