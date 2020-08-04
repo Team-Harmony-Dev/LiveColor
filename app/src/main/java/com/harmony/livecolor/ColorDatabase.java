@@ -292,13 +292,19 @@ public class ColorDatabase extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         //Search color database to see if HEX exists anywhere
         String selectQuery = "SELECT * FROM " + COLOR_TABLE_NAME
-                + " WHERE HEX LIKE \'%" + input + "%\'";
+                + " WHERE HEX LIKE \'" + input + "%\'";
         Cursor colorData = db.rawQuery(selectQuery, null);
+        Log.d("PaletteDatabase", "searchPalettesByHex: colorData count = " + colorData.getCount());
         //Get id if any, otherwise return empty cursor
         if(colorData.moveToFirst()) {
             String colorId = colorData.getString(0);
             selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
-                    + " WHERE REF LIKE \'% " + colorId + " %\'";
+                    + " WHERE REF LIKE \'% " + colorId + " %\' ";
+            while(colorData.moveToNext()) {
+                colorId = colorData.getString(0);
+                selectQuery = selectQuery.concat("OR REF LIKE \'% " + colorId + " %\'");
+            }
+            Log.d("PaletteDatabase", "searchPalettesByHex: final query = " + selectQuery);
             Cursor paletteData = db.rawQuery(selectQuery, null);
             paletteData.moveToFirst();
             return paletteData;

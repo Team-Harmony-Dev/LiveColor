@@ -131,7 +131,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
             //check that HEX size is correct, if not, notify the user
             if(query.length() > 7) {
                 makeToast("Invalid HEX entered. Should have no more than 6 digits.", context);
-            } else {
+            } else if(query.length() > 1) {
                 //perform and retrieve a cursor for our query
                 cursor = colorDB.searchPalettesByHex(query);
             }
