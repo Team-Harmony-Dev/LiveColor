@@ -3,6 +3,7 @@ package com.harmony.livecolor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -21,8 +22,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
-
-import static com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -53,6 +52,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (NightModeUtils.isNightModeEnabled(MainActivity.this)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            Log.d("DEBUG", "dark mode should be on");
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            Log.d("DEBUG", "dark mode should be off");
+        }
+
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -64,13 +72,15 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 
-        loadFragment(new ColorPickerFragment());
+
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
         SharedPreferences myPrefs;
         myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
+        onLoadFragment();
 
         colorNameView = findViewById(R.id.colorName);
 
@@ -93,6 +103,38 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * handles fragments when changing themes (dark mode)
+     *
+     * @author Daniel
+     */
+    private void onLoadFragment(){
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        Log.d("DEBUG", "Frag pref string: " +preferences.getString("frag", "none"));
+        if (preferences.getString("frag", "none") != "none"){
+            Fragment fragment = null;
+            String fragString = preferences.getString("frag", "none");
+            switch(fragString) {
+                case "ColorPickerFragment":
+                    fragment = ColorPickerFragment.newInstance();
+                    break;
+                case "SavedColorsFragment":
+                    fragment = SavedColorsFragment.newInstance();
+                    break;
+                case "PalettesFragment":
+                    fragment = PalettesFragment.newInstance();
+                    break;
+                case "SettingsFragment":
+                    fragment = SettingsFragment.newInstance();
+                    break;
+            }
+            loadFragment(fragment);
+        }else{
+            loadFragment(new ColorPickerFragment());
+        }
     }
 
     //switches between fragments for Main Activity
@@ -132,7 +174,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         Log.d("Lifecycles", "onStart: MainActivity started");
-
         ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
         cotdDialog.showColorOTD();
 
@@ -142,13 +183,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d("Lifecycles", "onPause: MainActivity paused");
+        // clears shared prefs. on app exit only, not updating image :(
         super.onPause();
+        String currFrag = String.valueOf(getSupportFragmentManager().findFragmentById(R.id.frameLayout)).substring(0,String.valueOf(getSupportFragmentManager().findFragmentById(R.id.frameLayout)).indexOf("{"));
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().putString("frag", currFrag).commit();
+        Log.d("DEBUG", "Frag pref string: " +preferences.getString("frag", "none"));
     }
 
     @Override
     protected void onResume() {
         Log.d("Lifecycles", "onResume: MainActivity resumed");
         super.onResume();
+
+
+
     }
 
     @Override
@@ -200,4 +249,5 @@ public class MainActivity extends AppCompatActivity
             Log.d("perms", "All necessary permissions granted");
         }
     }
+
 }

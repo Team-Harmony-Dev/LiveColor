@@ -65,16 +65,11 @@ public class ColorInfoActivity extends AppCompatActivity {
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
                 // Night mode is not active, we're using the light theme
-
-
                 constraintLayout.setBackground(getDrawable(R.color.colorPrimaryLight));
-
                 break;
             case Configuration.UI_MODE_NIGHT_YES:
                 // Night mode is active, we're using dark theme
-
                 constraintLayout.setBackground(getDrawable(R.color.colorPrimaryDark));
-
                 break;
         }
 
