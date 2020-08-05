@@ -43,6 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_keyboard_light_grey_backspace_48" />
 
+
             <ImageButton
                 android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
@@ -54,8 +55,8 @@
                 android:paddingHorizontal="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/editButton"
-                app:layout_constraintStart_toEndOf="@+id/backButton"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/ic_baseline_bookmark_border_light_grey_48" />
 
             <ImageButton
@@ -178,7 +179,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:onClick="onClickCopyHEX"
                 android:text="@android:string/copy"
@@ -208,7 +209,7 @@
             <TextView
                 android:id="@+id/RGBText"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="RGB: "
@@ -224,7 +225,7 @@
                 android:id="@+id/colorNameCIA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/lato_bold"
                 android:text="Color Name"
                 android:textAlignment="center"
