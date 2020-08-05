@@ -61,6 +61,7 @@ public class SettingsFragment  extends  Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             //if arguments are needed ever, use this to set them to static values in the class
         }

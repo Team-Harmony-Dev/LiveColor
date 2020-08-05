@@ -7,6 +7,11 @@
         android:summary="Click to switch dark mode on or off"
         android:defaultValue="false"/>
 
+    <TogglePreference
+        android:key ="toggle"
+        android:title="Color Of The Day"
+        android:summary="Click to toggle CotD on or off"
+        android:defaultValue="true"/>
 
     <EditTextPreference
         android:dialogTitle="Paste in Accent Color Hex"

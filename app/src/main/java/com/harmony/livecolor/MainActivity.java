@@ -22,6 +22,8 @@ import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
 
+import static com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED;
+
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
 // -- Display camera and gallery view (requires permissions for both)
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
+        navigation.setLabelVisibilityMode(LABEL_VISIBILITY_UNLABELED);
 
         loadFragment(new ColorPickerFragment());
 
