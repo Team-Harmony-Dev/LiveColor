@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity
 
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
-        navigation.setLabelVisibilityMode(LABEL_VISIBILITY_UNLABELED);
 
         loadFragment(new ColorPickerFragment());
 
