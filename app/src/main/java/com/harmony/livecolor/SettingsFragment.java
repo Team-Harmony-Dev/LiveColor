@@ -6,12 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -101,7 +96,7 @@ public class SettingsFragment  extends  Fragment{
         textViewMeetTeam =  rootView.findViewById(R.id.textView13);
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
 
-        switchDarkMode.setChecked(NightModeUtils.isToogleEnabled(getContext()));
+        switchDarkMode.setChecked(NightModeUtils.isDarkMode(getActivity()));
 
         textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,7 +193,10 @@ public class SettingsFragment  extends  Fragment{
      */
     public void onCheckedChangedDarkMode(CompoundButton buttonView, boolean isChecked) {
 
-        Log.d("DEBUG","night mode switch changed, current value: " + isChecked);
+        Log.d("DARK","night mode switch changed, current value: " + isChecked);
+
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().putString("fragStatic", "true").commit();
 
         NightModeUtils.setIsToogleEnabled(getContext(),isChecked);
         NightModeUtils.setIsNightModeEnabled(getContext(),isChecked);

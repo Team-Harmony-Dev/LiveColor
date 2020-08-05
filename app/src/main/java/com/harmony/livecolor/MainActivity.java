@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity
 
         if (NightModeUtils.isNightModeEnabled(MainActivity.this)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            Log.d("DEBUG", "dark mode should be on");
+            Log.d("DARK", "dark mode should be on");
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            Log.d("DEBUG", "dark mode should be off");
+            Log.d("DARK", "dark mode should be off");
         }
 
         setTheme(R.style.AppTheme);
@@ -107,14 +107,17 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
-     * handles fragments when changing themes (dark mode)
+     * handles fragments when onCreate is called in a onrecreate context
+     * stay on same frag when preforming actions that will recreate the app
+     * like changes to the theme
      *
      * @author Daniel
+     * efficacey of using prefs?
      */
     private void onLoadFragment(){
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        Log.d("DEBUG", "Frag pref string: " +preferences.getString("frag", "none"));
-        if (preferences.getString("frag", "none") != "none"){
+        Log.d("DARK", "Frag pref string: " +preferences.getString("frag", "none"));
+        if (preferences.getString("fragStatic", "none") == "true"){
             Fragment fragment = null;
             String fragString = preferences.getString("frag", "none");
             switch(fragString) {
@@ -131,6 +134,9 @@ public class MainActivity extends AppCompatActivity
                     fragment = SettingsFragment.newInstance();
                     break;
             }
+
+            preferences.edit().putString("fragStatic", "false").commit();
+
             loadFragment(fragment);
         }else{
             loadFragment(new ColorPickerFragment());
@@ -219,6 +225,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         Log.d("Lifecycles", "onDestroy: MainActivity destroyed");
+        SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
         super.onDestroy();
     }
 
