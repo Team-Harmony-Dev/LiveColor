@@ -23,6 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="#1A969696"
+        app:labelVisibilityMode="unlabeled"
+        app:itemIconSize="38dp"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@xml/bottom_nav_button_colors"
         app:itemTextColor="@xml/bottom_nav_button_colors"

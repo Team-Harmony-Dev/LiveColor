@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="switch"
+        android:title="Dark Mode"
+        android:summary="Click to switch dark mode on or off"
+        android:defaultValue="false"/>
+
+    <TogglePreference
+        android:key ="toggle"
+        android:title="Color Of The Day"
+        android:summary="Click to toggle CotD on or off"
+        android:defaultValue="true"/>
+
+    <EditTextPreference
+        android:dialogTitle="Paste in Accent Color Hex"
+        android:key="text"
+        android:summary="Click to show a text entry dialog"
+        android:title="Accent Color Preference"
+        android:inputType="text"/>
+</PreferenceScreen>
