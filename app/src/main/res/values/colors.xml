@@ -9,7 +9,8 @@
     <color name="colorDark">#353535</color>
     <color name="colorLight">#FFFFFF</color>
     <color name="colorLightDark">#555555</color>
-    <color name="colorTextPrimary"></color>
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorIconPrimary">#777777</color>
 
 
 </resources>

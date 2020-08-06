@@ -9,6 +9,7 @@
     <color name="colorDark">#353535</color>
     <color name="colorLight">#FFFFFF</color>
     <color name="colorLightDark">#555555</color>
-
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorIconPrimary">#ECECEC</color>
 
 </resources>
