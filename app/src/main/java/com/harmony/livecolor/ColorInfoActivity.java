@@ -69,7 +69,7 @@ public class ColorInfoActivity extends AppCompatActivity {
                 break;
             case Configuration.UI_MODE_NIGHT_YES:
                 // Night mode is active, we're using dark theme
-                constraintLayout.setBackground(getDrawable(R.color.colorPrimaryDark));
+                constraintLayout.setBackground(getDrawable(R.color.colorPrimary));
                 break;
         }
 
