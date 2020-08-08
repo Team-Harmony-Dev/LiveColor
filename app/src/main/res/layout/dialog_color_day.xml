@@ -22,13 +22,12 @@
         android:id="@+id/colorOTDView"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_marginTop="10dp"
         android:background="#8FD6CE"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/dateView" />
 
 
     <!--<ImageView
@@ -45,17 +44,17 @@
         android:src="@drawable/shine"/>-->
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/dateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Today's color of the day is ..."
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/roboto"
+        android:text="of the Day!"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/colorOTDNameView"
+        app:layout_constraintBottom_toTopOf="@+id/colorOTDView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/colorOTDView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <ImageButton
         android:id="@+id/backCOTD"
@@ -92,25 +91,35 @@
         android:id="@+id/colorOTDNameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="TheBestColorEver!"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/backCOTD"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/colorOTDView" />
 
     <TextView
-        android:id="@+id/dateView"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="06/66/69"
+        android:text="The color of the day is..."
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/colorOTDView"
+        app:layout_constraintBottom_toTopOf="@+id/backCOTD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorOTDNameView" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="178dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/dateView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:srcCompat="@drawable/color_logo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

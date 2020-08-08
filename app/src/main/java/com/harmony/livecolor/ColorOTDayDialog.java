@@ -7,11 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,14 +49,14 @@ public class ColorOTDayDialog {
 
         //Get/Set the current date
         todayDate = Calendar.getInstance().getTime();
-        TextView dateView = (TextView) colorOTDView.findViewById(R.id.dateView);
-        SimpleDateFormat simpleDate =  new SimpleDateFormat("MM/dd/yyyy");
+        TextView dateView = (TextView) colorOTDView.findViewById(R.id.textView);
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("MMMM dd yyyy");
         SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
         strDt = simpleDate.format(todayDate);
         dateView.setText(strDt);
 
         // If it is a new day - create and show the dialog!
-        if(newDay()){
+        if(newDay() || true){ //REMOVE the "|| true" it only exists to test new COTD design -Shealtiel
             //Store the date in shared preferences
             editor.putString("Date", strDt);
             editor.commit();
