@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -341,6 +342,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             double x = event.getX();
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
+
+            //Account for zoom
+            //Rect contains top left, top right, bottom left, bottom right? Of area we have, as % of original?
+            RectF rect = ((com.ortiz.touchview.TouchImageView) getActivity().findViewById(R.id.pickingImage)).getZoomedRect();
+            Log.d("DEBUG S2US2 pinchzoom", "rect="+rect);
 
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
