@@ -31,7 +31,7 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.parseColor;
 import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 
-public class ColorInfoActivity extends AppCompatActivity {
+public class ColorInfoActivity extends AppCompatActivity implements SaveListener {
 
     // ToolBar
     Toolbar toolBar;
@@ -45,6 +45,9 @@ public class ColorInfoActivity extends AppCompatActivity {
 
     ScaleAnimation scaleAnimation;
     private boolean isButtonClicked = false;
+
+    //For the save button animation/color fill
+    private ImageView saveButtonCB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +256,16 @@ public class ColorInfoActivity extends AppCompatActivity {
         startActivity(startEditColorActivity);
     }
 
+    //Color the save button in if the save occurred (wasn't cancelled)
+    public void saveHappened(){
+        saveButtonCB.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
+        saveButtonCB.setColorFilter(colorValue);
+
+        isButtonClicked = true;
+        //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
+
+        Log.d("V2S2 bugfix", "Got callback (save happened). isButtonClicked="+isButtonClicked+" colorValue="+colorValue);
+    }
 
     public void onClickSaveButton(View view){
 
@@ -261,13 +274,13 @@ public class ColorInfoActivity extends AppCompatActivity {
             String rgb = String.format("(%1$d, %2$d, %3$d)", RV, GV, BV);
             String hsv = hsvArray.toString();
 
-            ImageButton saveButton = (ImageButton) view;
             if(!isButtonClicked){
                 view.startAnimation(scaleAnimation);
-                saveButton.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
-                saveButton.setColorFilter(colorValue);
-                isButtonClicked = !isButtonClicked;
+                saveButtonCB = (ImageButton) view;
+
                 CustomDialog pickerDialog = new CustomDialog(this,name,hex,rgb,hsv);
+                final ColorInfoActivity callbackToHere = this;
+                pickerDialog.addListener(callbackToHere);
                 pickerDialog.showSaveDialog();
             }
 

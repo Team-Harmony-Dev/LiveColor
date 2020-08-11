@@ -44,8 +44,12 @@ import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 
-//https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
-//TODO comment.
+/**
+ * Interface for callback for filling in save button iff
+ *   a save actually happened after opening CustomDialog.
+ *
+ * https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
+ */
 interface SaveListener{
     void saveHappened();
 }
