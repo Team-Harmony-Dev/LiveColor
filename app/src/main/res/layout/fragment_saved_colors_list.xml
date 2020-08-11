@@ -19,6 +19,7 @@
         app:layout_constraintWidth_percent="0.5"
         app:srcCompat="@drawable/list_view_selected" />
 
+
     <ImageButton
         android:id="@+id/gridViewButton"
         android:layout_width="0dp"
@@ -28,7 +29,6 @@
         app:layout_constraintStart_toEndOf="@+id/listViewButton"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/grid_view" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savedColorsRecycler"

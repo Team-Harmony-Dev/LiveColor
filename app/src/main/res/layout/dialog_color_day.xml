@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/colorLight">
 
     <!--<ImageView
         android:id="@+id/shine"
@@ -17,45 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />-->
-
-    <ImageView
-        android:id="@+id/colorOTDView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="#8FD6CE"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateView"
-        app:layout_constraintVertical_bias="0.0" />
-
-
-    <!--<ImageView
-        android:id="@+id/shine"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateView"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginLeft="-50dp"
-        android:src="@drawable/shine"/>-->
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Today's color of the day is ..."
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/colorOTDNameView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/colorOTDView" />
 
     <ImageButton
         android:id="@+id/backCOTD"
@@ -73,6 +34,20 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+
+    <!--<ImageView
+        android:id="@+id/shine"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateView"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginLeft="-50dp"
+        android:src="@drawable/shine"/>-->
+
     <ImageButton
         android:id="@+id/saveCOTD"
         android:layout_width="0dp"
@@ -87,6 +62,31 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/backCOTD" />
+
+    <ImageView
+        android:id="@+id/colorOTDView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="#8FD6CE"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Today's color of the day is ..."
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/colorOTDNameView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorOTDView" />
 
     <TextView
         android:id="@+id/colorOTDNameView"
@@ -104,8 +104,8 @@
         android:id="@+id/dateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:text="06/66/69"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/colorOTDView"

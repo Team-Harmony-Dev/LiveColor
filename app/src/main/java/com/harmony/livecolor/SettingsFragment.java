@@ -6,12 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,16 +19,23 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.ref.WeakReference;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
@@ -44,6 +46,9 @@ public class SettingsFragment  extends  Fragment{
 
     TextView textViewGetToKnow;
     TextView textViewMeetTeam;
+    Switch switchDarkMode;
+
+    private WeakReference<Activity> mActivity;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -60,7 +65,14 @@ public class SettingsFragment  extends  Fragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        if (NightModeUtils.isNightModeEnabled(getContext())) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             //if arguments are needed ever, use this to set them to static values in the class
         }
@@ -82,6 +94,9 @@ public class SettingsFragment  extends  Fragment{
 
         textViewGetToKnow = rootView.findViewById(R.id.textView11);
         textViewMeetTeam =  rootView.findViewById(R.id.textView13);
+        switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
+
+        switchDarkMode.setChecked(NightModeUtils.isDarkMode(getActivity()));
 
         textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +109,13 @@ public class SettingsFragment  extends  Fragment{
             @Override
             public void onClick(View view) {
                 onClickCredits(view);
+            }
+        });
+
+        switchDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                onCheckedChangedDarkMode(buttonView, isChecked);
             }
         });
 
@@ -159,6 +181,31 @@ public class SettingsFragment  extends  Fragment{
         Intent intent = new Intent(view.getContext(), CreditsActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * DARK MODE SWITCH
+     * switch toggle for dark mode
+     *
+     * @param buttonView view of switch
+     * @param isChecked value
+     *
+     * @author Daniel
+     */
+    public void onCheckedChangedDarkMode(CompoundButton buttonView, boolean isChecked) {
+
+        Log.d("DARK","night mode switch changed, current value: " + isChecked);
+
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().putString("fragStatic", "true").commit();
+
+        NightModeUtils.setIsToogleEnabled(getContext(),isChecked);
+        NightModeUtils.setIsNightModeEnabled(getContext(),isChecked);
+        buttonView.setChecked(isChecked);
+        mActivity = new WeakReference<Activity>(this.getActivity());
+        mActivity.get().recreate();
+    }
+
+
 
 }
 

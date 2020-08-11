@@ -2,12 +2,14 @@ package com.harmony.livecolor;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -73,6 +75,11 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
+
+        // dark theme check
+
+
+
 
         saveNC = findViewById(R.id.saveNewColor);
 

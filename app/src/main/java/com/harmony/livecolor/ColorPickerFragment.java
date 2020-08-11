@@ -139,6 +139,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                         " - " + getResources().getText(R.string.title_color_picker)
         );
 
+
+
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
