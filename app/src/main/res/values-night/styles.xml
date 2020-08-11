@@ -31,10 +31,9 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <!-- This will set the fade in animation on your change theme activity by default -->
+    <!-- This will set the fade in animation on your change activity by default -->
     <style name="WindowAnimationTransition">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>
-
 </resources>
