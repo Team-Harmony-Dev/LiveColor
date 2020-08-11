@@ -12,6 +12,7 @@
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorIconPrimary">#ECECEC</color>
     <color name="colorModeUltimate">#000000</color>
+    <color name="colorCard">#353535</color>
 
 
 </resources>

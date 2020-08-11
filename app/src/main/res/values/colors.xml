@@ -12,6 +12,8 @@
     <color name="colorTextPrimary">#000000</color>
     <color name="colorIconPrimary">#777777</color>
     <color name="colorModeUltimate">#FFFFFF</color>
+    <color name="colorCard">#FFFFFF</color>
+
 
 
 </resources>
