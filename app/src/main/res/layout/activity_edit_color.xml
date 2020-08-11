@@ -11,6 +11,7 @@
     android:weightSum="10"
     tools:context=".EditColorActivity">
 
+
     <Space
         android:id="@+id/spacerBottom"
         android:layout_width="0dp"
@@ -21,9 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineBottomSpace" />
 
-
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarSettings"
+        android:id="@+id/toolbarEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutToolbarInnerSettings"
+            android:id="@+id/constraintLayoutToolbarInnerColorEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="16dp"
