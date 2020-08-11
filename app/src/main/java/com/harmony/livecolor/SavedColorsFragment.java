@@ -1,13 +1,10 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,16 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.harmony.livecolor.dummy.DummyContent;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -45,7 +37,7 @@ public class SavedColorsFragment extends Fragment {
     private RecyclerView recyclerView;
     private MySavedColorsRecyclerViewAdapter adapter;
 
-    ColorDatabase colorDatabase;
+    ColorDatabase db;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -76,7 +68,7 @@ public class SavedColorsFragment extends Fragment {
 
         context = view.getContext();
 
-        colorDatabase = new ColorDatabase(getActivity());
+        db = new ColorDatabase(getActivity());
 
         initColors();
 
@@ -114,7 +106,7 @@ public class SavedColorsFragment extends Fragment {
 
     public void initColors() {
         //initialize ArrayList<MyColors> here
-        colorList = colorDatabase.getColorList("1");
+        colorList = db.getColorList("1");
     }
 
     /**
@@ -199,12 +191,14 @@ public class SavedColorsFragment extends Fragment {
             final int position = viewHolder.getAdapterPosition();
             deletedColor = colorList.get(position);
             colorList.remove(position);
+            db.updateRefString("1", colorList);
             adapter.notifyItemRemoved(position);
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             colorList.add(position, deletedColor);
+                            db.updateRefString("1", colorList);
                             adapter.notifyItemInserted(position);
                         }
                     }).show();

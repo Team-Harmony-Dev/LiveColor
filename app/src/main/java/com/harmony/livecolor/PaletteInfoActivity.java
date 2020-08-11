@@ -27,6 +27,8 @@ public class PaletteInfoActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MySavedColorsRecyclerViewAdapter adapter;
 
+    ColorDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-
+        db = new ColorDatabase(this);
 
         //get extra containing the palette object
         Intent intent = getIntent();
@@ -125,12 +127,14 @@ public class PaletteInfoActivity extends AppCompatActivity {
             final int position = viewHolder.getAdapterPosition();
             deletedColor = colorList.get(position);
             colorList.remove(position);
+            db.updateRefString(palette.getId(), colorList);
             adapter.notifyItemRemoved(position);
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             colorList.add(position, deletedColor);
+                            db.updateRefString(palette.getId(), colorList);
                             adapter.notifyItemInserted(position);
                         }
                     }).show();

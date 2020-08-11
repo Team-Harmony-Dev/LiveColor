@@ -380,6 +380,34 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS OBJECT (WIP)
+     * updates the database ref string of the given MyColors list of a palette
+     * @param id the id of the palette to be updated
+     * @param colors the MyColors arraylist of the palette that needs to be updated in the database
+     * @return boolean of whether the database update was successful
+     */
+    public boolean updateRefString(String id, ArrayList<MyColor> colors){
+        db = this.getWritableDatabase();
+        //create new ref string
+        String newRef = " ";
+        for (MyColor color : colors) {
+            newRef = newRef.concat(color.getId() + " ");
+        }
+        //update database with new ref string
+        String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
+                + " SET REF = \'" + newRef + "\'"
+                + " WHERE ID = \'" + id + "\'";
+        try {
+            db.execSQL(updateQuery);
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * OTHER PALETTE UTILITY METHODS:
      */
 
