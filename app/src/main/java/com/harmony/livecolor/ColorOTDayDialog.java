@@ -61,7 +61,7 @@ public class ColorOTDayDialog {
         dateView.setText(strDt);
 
         // If it is a new day - create and show the dialog!
-        if(true || newDay()){
+        if(newDay()){
             //Store the date in shared preferences
             editor.putString("Date", strDt);
             editor.commit();
@@ -80,10 +80,8 @@ public class ColorOTDayDialog {
             //Be able to fetch color name on first load? Works after first "start"
             final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
             Log.d("V2S2 bugfix cotd", "------------------------------------------------------size before="+colorName.getTextSize());
-            //This is shrinking the font size by more than seems necessary, probably because 25% is a small portion of the screen.
-            //TODO ask in meeting what this % actually should be. Probably they didn't notice while plugging 25% into API version because API version was bugged and just using maxFontSize.
-            //  TODO remove conditional's true || before merging.
-            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.25, 30);
+            //70% is arbitraryish.
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.70, 30);
             Log.d("V2S2 bugfix cotd", "size after set="+colorName.getTextSize());
 
             //Set onClick for back button
