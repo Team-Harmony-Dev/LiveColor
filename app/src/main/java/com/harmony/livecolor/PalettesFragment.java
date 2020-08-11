@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
     private View view;
     private ArrayList<MyPalette> paletteList;
 
+    private RecyclerView recyclerView;
     private MyPalettesRecyclerViewAdapter adapter;
 
     ColorDatabase colorDB;
@@ -92,13 +96,15 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
      */
     public void initRecycler(){
         //get the RecyclerView from the view
-        RecyclerView recyclerView = view.findViewById(R.id.palettesRecycler);
+        recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
         adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        //set ItemTouchHelper for item deletion
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -171,6 +177,36 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
     }
+
+    MyPalette deletedPalette = null;
+    String deleteMsg = "Deleted ";
+
+    /**
+     * Handles swipe listening for individual list items. Used for list item deletion. Can be used for list rearranging as well in the future.
+     */
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            //we can use a switch to handle different cases for different swipe directions if desired
+            final int position = viewHolder.getAdapterPosition();
+            deletedPalette = paletteList.get(position);
+            paletteList.remove(position);
+            adapter.notifyItemRemoved(position);
+            Snackbar.make(recyclerView, deleteMsg + deletedPalette.getName(), Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            paletteList.add(position, deletedPalette);
+                            adapter.notifyItemInserted(position);
+                        }
+                    }).show();
+        }
+    };
 
     @Override
     public void onResume() {
