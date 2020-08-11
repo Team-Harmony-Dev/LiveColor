@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -343,10 +344,26 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
 
+
+            com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
             //Account for zoom
-            //Rect contains top left, top right, bottom left, bottom right? Of area we have, as % of original?
-            RectF rect = ((com.ortiz.touchview.TouchImageView) getActivity().findViewById(R.id.pickingImage)).getZoomedRect();
-            Log.d("DEBUG S2US2 pinchzoom", "rect="+rect);
+            RectF rect = touchView.getZoomedRect();
+            Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
+            //Handle zoom. Reduce click coordinate by %?
+            x *= rect.right;
+            y *= rect.bottom;
+
+            //Screen dimensions
+            //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+            //int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+            //Actually we want ImageView's dimensions.
+
+            //Then add based on where the screen was on the image
+            double offsetX = touchView.getX();//TODO not like that
+            double offsetY = touchView.getY();
+            x += offsetX;
+            y += offsetY;
+            Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
 
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
