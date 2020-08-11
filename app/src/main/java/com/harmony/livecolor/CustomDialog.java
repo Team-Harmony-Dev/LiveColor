@@ -97,12 +97,19 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         newColor = false;
     }
 
-    //TODO comment
+    /**
+     * Adds a listener that will be notified when a save finishes (and not when the dialog is cancelled).
+     * You need to use this before getting any callbacks.
+     *
+     * @param newListener Generally you just pass this "this". Where to callback to or whatever. TODO
+     */
     public void addListener(SaveListener newListener) {
         listener = newListener;
     }
-    //TODO comment
-    //TODO test uninitialized
+
+    /**
+     * Calls the callback function, if it was given any. They can fill in the save button.
+     */
     private void notifySaveCompleted(){
         if(listener != null) {
             listener.saveHappened();
@@ -111,7 +118,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
     /**
      * showSaveDialog
-     * Creates and displays the inital dialog for saving a color.
+     * Creates and displays the initial dialog for saving a color.
      */
     public void showSaveDialog(){
         builder = new AlertDialog.Builder(context);
@@ -133,7 +140,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 showSetNameDialog();
 
                 //Tell the listener that it's saved, so it can fill in the save button.
-                notifySaveCompleted();
+                //notifySaveCompleted();
             }
         });
 
@@ -224,6 +231,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
 
                     dialog.dismiss();
                     makeToast("New palette \"" + newName + "\" created!", context);
+
+                    //Tell the listener that it's saved, so it can fill in the save button.
+                    notifySaveCompleted();
                 } //if you are renaming an existing palette
                 else {
                     Log.d("CustomDialog", "setName is for existing palette");
@@ -266,5 +276,8 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             alertDialogSave.dismiss();
             makeToast("Sorry, there was an error saving the color to \"" + palette.getName() + "\"", context);
         }
+
+        //Tell the listener that it's saved, so it can fill in the save button.
+        notifySaveCompleted();
     }
 }

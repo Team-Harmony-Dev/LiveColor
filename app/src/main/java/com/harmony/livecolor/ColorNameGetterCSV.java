@@ -306,6 +306,8 @@ public class ColorNameGetterCSV extends android.app.Application {
         Log.d("V2S1 colorname", "w="+textWidth+" sw="+screenWidth);
 
         //There's some sort of minor padding so I need to reduce it slightly
+        //TODO this really shouldn't be hardcoded, especially as a raw value instead of %, but I'm not exactly sure where it's coming from.
+        //  Note: *0.95 instead of raw value does not quite work in all cases on Pixel 2 (see Ornery Tangerine).
         maximumViewWidthPercentOfScreen = maximumViewWidthPercentOfScreen - 0.05;
         double maximumTextWidth = maximumViewWidthPercentOfScreen * screenWidth;
         double reduceToThisPercent = maximumTextWidth / textWidth;

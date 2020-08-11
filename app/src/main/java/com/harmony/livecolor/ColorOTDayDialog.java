@@ -79,8 +79,10 @@ public class ColorOTDayDialog {
 
             //Be able to fetch color name on first load? Works after first "start"
             final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
-            ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
-            final String colorNameStr = (String) colorName.getText();
+            Log.d("V2S2 bugfix cotd", "------------------------------------------------------size before="+colorName.getTextSize());
+            //70% is arbitraryish.
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.70, 30);
+            Log.d("V2S2 bugfix cotd", "size after set="+colorName.getTextSize());
 
             //Set onClick for back button
             final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
@@ -96,6 +98,9 @@ public class ColorOTDayDialog {
             saveCOTD.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("V2S2 bugfix cotd", "size on click="+colorName.getTextSize());
+                    final String colorNameStr = (String) colorName.getText();
+
                     int RV = Color.red(colorOfTheDay);
                     int GV = Color.green(colorOfTheDay);
                     int BV = Color.blue(colorOfTheDay);
@@ -121,6 +126,7 @@ public class ColorOTDayDialog {
 
             alertDialogSave.show();
             //makeShine();
+            Log.d("V2S2 bugfix cotd", "size after show="+colorName.getTextSize());
         }
     }
 
