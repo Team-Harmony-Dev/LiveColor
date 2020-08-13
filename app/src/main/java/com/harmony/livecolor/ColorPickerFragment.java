@@ -407,11 +407,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
             //Get color int from said pixel coordinates using the source image
             int pixel;
-            if(wasValidClick){
-                //If we can just get the bitmap of whatever our imageview is displaying, we might not need any annoying math.
-                //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
-                //TODO check out any return statements for being out of bounds and whatever, that could still mess this up.
-                final boolean USE_FILE_BITMAP = true;
+            //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
+            //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
+            final boolean USE_FILE_BITMAP = true;
+            if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     //Can we just get the bitmap from the imageview and not do any annoying math?
                     //Bitmap view_bitmap = touchView.getDrawingCache();
