@@ -410,11 +410,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
+            //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
-                    //Can we just get the bitmap from the imageview and not do any annoying math?
-                    //Bitmap view_bitmap = touchView.getDrawingCache();
-                    //^This is deprecated though.
                     //This works, except the background is counting as color.
                     //TODO Could swap background briefly? Or it might not be a bad thing.
                     Bitmap view_bitmap = getBitmapFromView(touchView);
