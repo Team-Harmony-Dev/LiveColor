@@ -10,6 +10,17 @@
     android:weightSum="10"
     tools:context=".EditColorActivity">
 
+
+    <Space
+        android:id="@+id/spacerBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineBottomSpace" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarEdit"
         android:layout_width="match_parent"
@@ -23,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutToolbarInner"
+            android:id="@+id/constraintLayoutToolbarInnerColorEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="16dp"
@@ -33,10 +44,9 @@
                 android:id="@+id/backBut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:background="@android:color/transparent"
                 android:onClick="onClickBack"
-                android:paddingHorizontal="8dp"
+                android:paddingHorizontal="16dp"
                 android:scaleType="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +71,77 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutBottomButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottomSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutContent">
+
+        <ImageButton
+            android:id="@+id/resetColor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:onClick="onClickReset"
+            android:padding="1dp"
+            android:paddingBottom="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewResetColor"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/textViewResetColor"
+            app:layout_constraintTop_toBottomOf="@+id/textViewResetColor"
+            app:srcCompat="@drawable/reset" />
+
+        <ImageButton
+            android:id="@+id/saveNewColor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:onClick="onClickSaveNew"
+            android:padding="1dp"
+            android:paddingBottom="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSaveNew"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintStart_toStartOf="@+id/textViewSaveNew"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSaveNew"
+            app:srcCompat="@drawable/unsaved" />
+
+        <TextView
+            android:id="@+id/textViewSaveNew"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato_regular"
+            android:text="Save New Color"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textViewResetColor"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewResetColor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato_regular"
+            android:text="Reset Color"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/textViewSaveNew"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutContent"
@@ -172,6 +253,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:clickable="true"
+                android:cursorVisible="false"
+                android:editable="true"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center_vertical"
                 android:text="Red: "
@@ -185,6 +268,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:cursorVisible="false"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center_vertical"
                 android:text="Green: "
@@ -198,6 +282,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:cursorVisible="false"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center_vertical"
                 android:text="Blue: "
@@ -263,86 +348,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutBottomButtons"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineBottomSpace"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutContent">
-
-        <ImageButton
-            android:id="@+id/resetColor"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:onClick="onClickReset"
-            android:padding="1dp"
-            android:paddingBottom="16dp"
-            android:scaleType="fitCenter"
-            android:tint="#00585757"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textViewResetColor"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/textViewResetColor"
-            app:layout_constraintTop_toBottomOf="@+id/textViewResetColor"
-            app:srcCompat="@drawable/reset" />
-
-        <ImageButton
-            android:id="@+id/saveNewColor"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:onClick="onClickSaveNew"
-            android:padding="1dp"
-            android:paddingBottom="16dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textViewSaveNew"
-            app:layout_constraintHorizontal_bias=".5"
-            app:layout_constraintStart_toStartOf="@+id/textViewSaveNew"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSaveNew"
-            app:srcCompat="@drawable/unsaved" />
-
-        <TextView
-            android:id="@+id/textViewSaveNew"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lato_regular"
-            android:text="Save New Color"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textViewResetColor"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewResetColor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lato_regular"
-            android:text="Reset Color"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/textViewSaveNew"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineBottomBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".87" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottomSpace"
         android:layout_width="wrap_content"
@@ -350,14 +355,11 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".97" />
 
-    <Space
-        android:id="@+id/spacerBottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingVertical="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineBottomSpace" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottomBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".87" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
