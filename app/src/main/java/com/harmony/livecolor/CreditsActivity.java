@@ -42,6 +42,10 @@ public class CreditsActivity extends AppCompatActivity{
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tielm1997"));
         } else if (name.equals("dustin")) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/DustinSeltz"));
+        } else if (name.equals("melanie")) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/mwong775"));
+        } else if (name.equals("andrew")) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/andrewtgg"));
         } else {
             // this else clause should never run. Without this there is an error in the startActivity
             // below. If there is an issue with tags this will run and link to the LiveColor GitHub
@@ -73,6 +77,10 @@ public class CreditsActivity extends AppCompatActivity{
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/shealtiel-mulder-6329641b0/"));
         } else if (name.equals("dustin")) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/dustin-s-7938a394/"));
+        } else if (name.equals("melanie")) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/mwong775/"));
+        } else if (name.equals("andrew")) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/andrewtgg/"));
         } else {
             // this else clause should never run. Without this there is an error in the startActivity
             // below. If there is an issue with tags this will run and link to the LiveColor GitHub

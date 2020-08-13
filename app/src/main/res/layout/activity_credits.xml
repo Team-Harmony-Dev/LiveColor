@@ -598,30 +598,32 @@
 
                             <Button
                                 android:id="@+id/button15"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
+                                android:onClick="onClickLinkedInLink"
                                 android:tag="melanie" />
 
                             <View
                                 android:id="@+id/divider24"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button16"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
+                                android:onClick="onClickGitHubLink"
                                 android:tag="melanie" />
 
                             <View
                                 android:id="@+id/divider25"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -688,30 +690,32 @@
 
                             <Button
                                 android:id="@+id/button18"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
+                                android:onClick="onClickLinkedInLink"
                                 android:tag="andrew" />
 
                             <View
                                 android:id="@+id/divider27"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button17"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
+                                android:onClick="onClickGitHubLink"
                                 android:tag="andrew" />
 
                             <View
                                 android:id="@+id/divider28"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
