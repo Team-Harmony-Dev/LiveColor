@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -294,6 +295,15 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         return imagePath;
     }
 
+
+    //https://stackoverflow.com/questions/52642055/view-getdrawingcache-is-deprecated-in-android-api-28
+    public Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
@@ -391,11 +401,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //Get color int from said pixel coordinates using the source image
             int pixel;
             if(wasValidClick){
-                //If we can just get the bitmap of whatever our imageview is displaying, we might not need any annoying math. 
+                //If we can just get the bitmap of whatever our imageview is displaying, we might not need any annoying math.
                 final boolean USE_FILE_BITMAP = true;
                 if(USE_FILE_BITMAP){
                     //Can we just get the bitmap from the imageview and not do any annoying math?
-                    Bitmap view_bitmap = touchView.getDrawingCache();
+                    //Bitmap view_bitmap = touchView.getDrawingCache();
+                    //^This is deprecated though.
+                    Bitmap view_bitmap = getBitmapFromView(touchView);
                     if(view_bitmap == null){
                         //Just use the old way I guess. Remove this after testing, shouldn't happen TODO
                         pixel = bitmap.getPixel((int) x, (int) y);
