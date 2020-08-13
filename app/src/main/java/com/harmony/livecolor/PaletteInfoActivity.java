@@ -98,7 +98,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(this));
         //set ItemTouchHelper for item deletion
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 

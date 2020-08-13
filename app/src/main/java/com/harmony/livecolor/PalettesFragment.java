@@ -102,7 +102,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(context));
         //set ItemTouchHelper for item deletion
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }

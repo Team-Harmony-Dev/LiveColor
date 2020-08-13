@@ -127,7 +127,7 @@ public class SavedColorsFragment extends Fragment {
          * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
          */
         if(selectedView == "list"){
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
+            LinearLayoutManager layoutManager = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL,true);
             recyclerView.setLayoutManager(layoutManager);
             layoutManager.setStackFromEnd(true);
         } else {
