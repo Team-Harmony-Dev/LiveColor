@@ -410,7 +410,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             if(wasValidClick){
                 //If we can just get the bitmap of whatever our imageview is displaying, we might not need any annoying math.
                 //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
-                //TODO check out any return statements for being out of bounds and whatever, that could still mess this up. 
+                //TODO check out any return statements for being out of bounds and whatever, that could still mess this up.
                 final boolean USE_FILE_BITMAP = true;
                 if(USE_FILE_BITMAP){
                     //Can we just get the bitmap from the imageview and not do any annoying math?
