@@ -295,8 +295,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         return imagePath;
     }
 
-
-    //https://stackoverflow.com/questions/52642055/view-getdrawingcache-is-deprecated-in-android-api-28
+    /**
+     * Used for getting color using coordinates (without annoying math stuff) from the ImageView on ColorPickerFragment
+     *
+     * @param view The view to get the bitmap from
+     * @return A bitmap of what was displayed in the view
+     * @author https://stackoverflow.com/a/52905682
+     */
     public Bitmap getBitmapFromView(View view) {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -358,6 +363,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
+            //Was attempting to account for Touchview zoom/pan stuff, but this should no longer be needed.
+            /*
             //Account for zoom
             RectF rect = touchView.getZoomedRect();
             Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
@@ -376,7 +383,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             x += offsetX;
             y += offsetY;
             Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
-
+            */
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
             x = x - (newImageMaxWidth/2 - newImageWidth/2);
