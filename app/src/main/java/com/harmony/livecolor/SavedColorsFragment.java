@@ -105,8 +105,8 @@ public class SavedColorsFragment extends Fragment {
     }
 
     public void initColors() {
-        //initialize ArrayList<MyColors> here
-        colorList = db.getColorList("1");
+        //initialize ArrayList<MyColors> here, gets the colors in reverse order to show most recently picked colors at the top
+        colorList = db.getColorListReverse("1");
     }
 
     /**
@@ -127,9 +127,8 @@ public class SavedColorsFragment extends Fragment {
          * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
          */
         if(selectedView == "list"){
-            LinearLayoutManager layoutManager = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL,true);
+            LinearLayoutManager layoutManager = new LinearLayoutManagerWrapper(context);
             recyclerView.setLayoutManager(layoutManager);
-            layoutManager.setStackFromEnd(true);
         } else {
             int numberOfColumns = 3;
             GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
@@ -189,7 +188,9 @@ public class SavedColorsFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             //we can use a switch to handle different cases for different swipe directions if desired
             final int position = viewHolder.getAdapterPosition();
+            Log.d("SavedColorsFragment", "onSwiped: deleting " + position);
             deletedColor = colorList.get(position);
+            Log.d("SavedColorsFragment", "onSwiped: Color is " + deletedColor.getName());
             colorList.remove(position);
             db.updateRefString("1", colorList);
             adapter.notifyItemRemoved(position);
@@ -197,6 +198,7 @@ public class SavedColorsFragment extends Fragment {
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Log.d("SavedColorsFragment", "onClick: Adding deleted color " + deletedColor.getName() + " to position " + position);
                             colorList.add(position, deletedColor);
                             db.updateRefString("1", colorList);
                             adapter.notifyItemInserted(position);

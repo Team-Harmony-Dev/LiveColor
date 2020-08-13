@@ -349,6 +349,35 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * GET AN ARRAYLIST OF MYCOLOR OBJECTS FROM A PALETTE IN REVERSE (DONE)
+     * retrieves a usable arraylist of colors from a given palette in reverse order
+     * @param id of the palette to get the color list from
+     * @return ArrayList of MyColor objects
+     */
+    public ArrayList<MyColor> getColorListReverse(String id) {
+        ArrayList<MyColor> colorList = new ArrayList<>();
+        //get string ref of color ids in given palette
+        String colorIds = getPaletteColors(id).trim();
+        //return empty list if palette is empty
+        if(colorIds.isEmpty()) {
+            return colorList;
+        }
+        String[] splitIds = colorIds.split("\\s+");
+        //get each color by id, add as MyColor object to arraylist
+        Log.d(TAG_COLOR, "getColorList: colorIds = " + colorIds + ", # of colors = " + splitIds.length);
+        for(int i = splitIds.length - 1; i >= 0; i--) {
+            String colorId = splitIds[i];
+            Cursor cursor = getColorInfoById(colorId);
+            String name = cursor.getString(1);
+            String hex = cursor.getString(2);
+            String rgb = cursor.getString(3);
+            String hsv = cursor.getString(4);
+            colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+        }
+        return colorList;
+    }
+
+    /**
      * GET ARRAYLIST OF PALETTES AS MYPALETTE OBJECTS (WIP)
      * get all user made palettes (aka all palettes excluding Saved Colors (id = 1)
      * @param cursor pointing to the set of palettes to be put into the arraylist
