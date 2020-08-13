@@ -414,11 +414,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //Can we just get the bitmap from the imageview and not do any annoying math?
                     //Bitmap view_bitmap = touchView.getDrawingCache();
                     //^This is deprecated though.
+                    //This works, except the background is counting as color.
+                    //TODO Could swap background briefly? Or it might not be a bad thing.
                     Bitmap view_bitmap = getBitmapFromView(touchView);
                     if(view_bitmap == null){
                         //Just use the old way I guess. Remove this after testing, shouldn't happen TODO
                         pixel = bitmap.getPixel((int) x, (int) y);
-                        Log.d("DEBUG S2US2 pinchzoom", "Bitmap was null");
+                        Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
                     } else {
                         pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
                         Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel="+pixel);
