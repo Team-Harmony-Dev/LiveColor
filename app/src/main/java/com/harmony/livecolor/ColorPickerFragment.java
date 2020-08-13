@@ -346,8 +346,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
 
-
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
+
             //Account for zoom
             RectF rect = touchView.getZoomedRect();
             Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
@@ -391,7 +391,22 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //Get color int from said pixel coordinates using the source image
             int pixel;
             if(wasValidClick){
-                pixel = bitmap.getPixel((int) x, (int) y);
+                //If we can just get the bitmap of whatever our imageview is displaying, we might not need any annoying math. 
+                final boolean USE_FILE_BITMAP = true;
+                if(USE_FILE_BITMAP){
+                    //Can we just get the bitmap from the imageview and not do any annoying math?
+                    Bitmap view_bitmap = touchView.getDrawingCache();
+                    if(view_bitmap == null){
+                        //Just use the old way I guess. Remove this after testing, shouldn't happen TODO
+                        pixel = bitmap.getPixel((int) x, (int) y);
+                        Log.d("DEBUG S2US2 pinchzoom", "Bitmap was null");
+                    } else {
+                        pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
+                        Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel="+pixel);
+                    }
+                } else {
+                    pixel = bitmap.getPixel((int) x, (int) y);
+                }
             } else {
                 //This is a bug fix for dragging outside of the valid area not getting the color
                 // name (previously we returned above, but then that ended up with no color name)
