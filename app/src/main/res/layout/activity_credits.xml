@@ -756,7 +756,7 @@
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
                             android:textAlignment="viewStart"
-                            android:textSize="12sp" />
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
