@@ -56,7 +56,7 @@ public class ColorOTDayDialog {
         dateView.setText(strDt);
 
         // If it is a new day - create and show the dialog!
-        if(newDay() || true){ //REMOVE the "|| true" it only exists to test new COTD design -Shealtiel
+        if(newDay()){
             //Store the date in shared preferences
             editor.putString("Date", strDt);
             editor.commit();
