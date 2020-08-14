@@ -406,7 +406,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 wasValidClick = false;
             }
             //Get color int from said pixel coordinates using the source image
-            int pixel;
+            //Default color is 0, black.
+            int pixel = 0;
             //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
@@ -414,15 +415,20 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     //This works, except the background is counting as color.
-                    //TODO Could swap background briefly? Or it might not be a bad thing.
+                    //TODO say "black" or something for background. When partially zoomed might be difficult if I take a math approach. Swap background?
+                    //TODO the round button isn't disappearing properly all the time?
+                    //TODO make more efficient. When not zoomed we can use old math. When zoomed we don't need name while panning.
                     Bitmap view_bitmap = getBitmapFromView(touchView);
                     if(view_bitmap == null){
-                        //Just use the old way I guess. Remove this after testing, shouldn't happen TODO
-                        pixel = bitmap.getPixel((int) x, (int) y);
                         Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
                     } else {
-                        pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
-                        Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel="+pixel);
+                        try {
+                            pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel=" + pixel);
+                        } catch (Exception e){
+                            //They dragged off the image. I could just check if X and Y are in range, but whatever. This should work fine.
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
+                        }
                     }
                 } else {
                     pixel = bitmap.getPixel((int) x, (int) y);
