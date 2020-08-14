@@ -419,9 +419,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 wasValidClick = false;
             }
-            //Get color int from said pixel coordinates using the source image
-            //Default color is 0, black.
-            int pixel = 0;
+            final int BACKGROUND_COLOR = 0;
+            //Get color int from said pixel coordinates using the source image. Default to background color.
+            int pixel = BACKGROUND_COLOR;
+            boolean wasBackgroundPixel = false;
             //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
@@ -433,12 +434,26 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //TODO Maybe say something other than black when it's a background pixel.
                     //  I could check if it's a background pixel by looking at the pixel with two different backgrounds. If it's exactly the background color both times then it's a background pixel.
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
-                    Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, 0, background);
+                    Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
                     if(view_bitmap == null){
                         Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
                     } else {
                         try {
                             pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
+                            //3 Possible cases for pixels:
+                            //1. Pixel is opaque. Always the same no matter the background
+                            //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
+                            //3. Pixel is fully transparent. Exactly equal to background.
+                            //  But the background might be the same color as some pixel actually in the image.
+                            //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
+                            //Lets do white. Any not completely transparent color should be fine.
+                            final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(255, 255, 255);
+                            Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
+                            int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
+                            if(pixel == BACKGROUND_COLOR && pixel2 == ARBITRARY_NON_BACKGROUND_COLOR){
+                                wasBackgroundPixel = true;
+                            }
+
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel=" + pixel);
                         } catch (Exception e){
                             //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
@@ -470,7 +485,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //It takes a second to load and I don't want to spam the API so we only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP
                     //We don't want to spam the API, but local color names are so fast we can just do it live.
-                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES)) {
+                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES )) {
                 Log.d("S3US5", "Release detected");
 
                 if(USE_API_FOR_NAMES) {
