@@ -328,10 +328,25 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
+        //TODO Dustin should clean this up. Lots of math and name stuff has changed, some comments outdated.
+        //TODO the round button isn't disappearing properly all the time?
+        //  Fixed?
+        //TODO make more efficient:
+        //  TODO: When not zoomed we can use old math.
+        //  Done: When zoomed we don't need name while panning.
+        //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
+        //TODO Maybe say something other than black when it's a background pixel.
+        //This is where the color picking happens.
+        //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
         @Override
         public boolean onTouch(View view, MotionEvent event) {
+            //Hide the image selection button while dragging.
+            //TODO is this meant to have an animation while hiding? It has one when returning.
+            if(event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                add.hide();
+            }
+
             //Retrieve image from view
-            add.hide();
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
@@ -430,13 +445,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
-                    //TODO the round button isn't disappearing properly all the time?
-                    //  Fixed?
-                    //TODO make more efficient:
-                    //  TODO: When not zoomed we can use old math.
-                    //  Done: When zoomed we don't need name while panning.
-                    //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
-                    //TODO Maybe say something other than black when it's a background pixel.
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
                     if(view_bitmap == null){
@@ -458,7 +466,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                                 wasBackgroundPixel = true;
                             }
 
-                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel=" + pixel);
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg="+wasBackgroundPixel+" pixel=" + pixel);
                         } catch (Exception e){
                             //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
