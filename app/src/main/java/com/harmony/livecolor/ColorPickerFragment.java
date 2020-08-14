@@ -428,10 +428,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
-                    //This works, except the background is counting as color.
-                    //TODO say "black" or something for background. When partially zoomed might be difficult if I take a math approach. Swap background?
                     //TODO the round button isn't disappearing properly all the time?
                     //TODO make more efficient. When not zoomed we can use old math. When zoomed we don't need name while panning.
+                    //TODO Maybe say something other than black when it's a background pixel.
+                    //  I could check if it's a background pixel by looking at the pixel with two different backgrounds. If it's exactly the background color both times then it's a background pixel.
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, 0, background);
                     if(view_bitmap == null){
