@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -332,10 +333,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         //TODO the round button isn't disappearing properly all the time?
         //  Fixed?
         //TODO make more efficient:
-        //  TODO: When not zoomed we can use old math.
+        //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
         //  Done: When zoomed we don't need name while panning.
         //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
-        //TODO Maybe say something other than black when it's a background pixel.
+        
         //This is where the color picking happens.
         //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
         @Override
@@ -452,21 +453,24 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     } else {
                         try {
                             pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
-                            //3 Possible cases for pixels:
-                            //1. Pixel is opaque. Always the same no matter the background
-                            //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
-                            //3. Pixel is fully transparent. Exactly equal to background.
-                            //  But the background might be the same color as some pixel actually in the image.
-                            //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
-                            //Any not completely transparent color should be fine.
-                            final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
-                            Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
-                            int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
-                            if(pixel == BACKGROUND_COLOR && pixel2 == ARBITRARY_NON_BACKGROUND_COLOR){
-                                wasBackgroundPixel = true;
+                            //Check if the pixel is a part of the background
+                            if(pixel == BACKGROUND_COLOR) {
+                                //3 Possible cases for pixels:
+                                //1. Pixel is opaque. Always the same no matter the background
+                                //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
+                                //3. Pixel is fully transparent. Exactly equal to background.
+                                //  But the background might be the same color as some pixel actually in the image.
+                                //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
+                                //Any not completely transparent color should be fine.
+                                final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
+                                Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
+                                int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
+                                if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
+                                    wasBackgroundPixel = true;
+                                }
                             }
 
-                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " p2=" + pixel2 + " pixel=" + pixel);
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " pixel=" + pixel);
                         } catch (Exception e){
                             //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
@@ -509,7 +513,14 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 saveColorB.setImageResource(R.drawable.unsaved);
                 saveColorB.setColorFilter(null);
 
-                if(USE_API_FOR_NAMES) {
+                if(wasBackgroundPixel) {
+                    //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    //TODO load this from somewhere else? We do need to reset it here in case the last name loaded had been using a reduced font size
+                    final int FONT_SIZE = 30;
+                    viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+                    viewToUpdateColorName.setText("Background");
+                } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     final double viewWidthPercentOfScreen = 0.60;
                     final float maxFontSize = 30;
