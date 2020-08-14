@@ -153,6 +153,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         editRgb = rootView.findViewById(R.id.plainRgb);
         editHsv = rootView.findViewById(R.id.plainHsv);
 
+        //"Add" is the button you press for uploading or taking a picture. Refactor?
         add = rootView.findViewById(R.id.addButton);
         add.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -429,7 +430,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
-                    //TODO the round button isn't disappearing properly all the time? And when it does disappear it doesn't always reappear? Maybe linked to the action up/down changes I did?
+                    //TODO the round button isn't disappearing properly all the time?
+                    //  Fixed?
                     //TODO make more efficient:
                     //  TODO: When not zoomed we can use old math.
                     //  Done: When zoomed we don't need name while panning.
@@ -522,15 +524,19 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                         Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
                     }
                 }
-
-                //I believe this is the button to select an image or take a picture.
-                //  It disappears when dragging so it doesn't cover any part of the image.
-                //  So after you're done dragging it needs to reappear.
-                add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
                 //((TextView) getActivity().findViewById(R.id.colorName)).setText("");
             }
+
+            //Anything other than dragging should have this reappear afterwards.
+            if(event.getActionMasked() != MotionEvent.ACTION_MOVE){
+                //I believe this is the button to select an image or take a picture.
+                //  It disappears when dragging so it doesn't cover any part of the image.
+                //  So after you're done dragging it needs to reappear.
+                add.show();
+            }
+
             return true;
         }
     };
