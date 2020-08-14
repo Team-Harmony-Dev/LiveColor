@@ -318,7 +318,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
      * @return
      */
     public Bitmap getBitmapFromViewWithBackground(View view, int backgroundColor, Drawable background) {
-        view.setBackgroundColor(0);
+        view.setBackgroundColor(backgroundColor);
         Bitmap bitmap = getBitmapFromView(view);
         view.setBackground(background);
         return bitmap;
@@ -458,15 +458,15 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                             //3. Pixel is fully transparent. Exactly equal to background.
                             //  But the background might be the same color as some pixel actually in the image.
                             //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
-                            //Lets do white. Any not completely transparent color should be fine.
-                            final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(255, 255, 255);
+                            //Any not completely transparent color should be fine.
+                            final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
                             Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
                             int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
                             if(pixel == BACKGROUND_COLOR && pixel2 == ARBITRARY_NON_BACKGROUND_COLOR){
                                 wasBackgroundPixel = true;
                             }
 
-                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg="+wasBackgroundPixel+" pixel=" + pixel);
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " p2=" + pixel2 + " pixel=" + pixel);
                         } catch (Exception e){
                             //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
