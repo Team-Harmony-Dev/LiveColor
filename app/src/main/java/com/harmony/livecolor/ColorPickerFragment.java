@@ -429,9 +429,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
-                    //TODO the round button isn't disappearing properly all the time?
-                    //TODO make more efficient. When not zoomed we can use old math. //Done: When zoomed we don't need name while panning.
-                    //TODO The default zoom level is pretty arbitrary. We could change that.
+                    //TODO the round button isn't disappearing properly all the time? And when it does disappear it doesn't always reappear? Maybe linked to the action up/down changes I did?
+                    //TODO make more efficient:
+                    //  TODO: When not zoomed we can use old math.
+                    //  Done: When zoomed we don't need name while panning.
+                    //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
                     //TODO Maybe say something other than black when it's a background pixel.
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
