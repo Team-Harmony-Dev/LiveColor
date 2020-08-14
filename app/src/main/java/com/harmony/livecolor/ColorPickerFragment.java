@@ -325,6 +325,16 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         return bitmap;
     }
 
+    /**
+     * Change visibility of all three buttons.
+     * @param visibility View.INVISIBLE, View.GONE, or View.VISIBLE
+     */
+    public void changeVisibilityInfoEditSaveButtons(int visibility){
+        getActivity().findViewById(R.id.infoButton).setVisibility(visibility);
+        getActivity().findViewById(R.id.editButton).setVisibility(visibility);
+        getActivity().findViewById(R.id.saveButton).setVisibility(visibility);
+    }
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
@@ -342,7 +352,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             //Hide the image selection button while dragging.
-            //TODO is this meant to have an animation while hiding? It has one when returning.
             if(event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 add.hide();
             }
@@ -512,6 +521,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
                 saveColorB.setImageResource(R.drawable.unsaved);
                 saveColorB.setColorFilter(null);
+                changeVisibilityInfoEditSaveButtons(View.VISIBLE);
 
                 if(wasBackgroundPixel) {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
@@ -520,6 +530,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     final int FONT_SIZE = 30;
                     viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
                     viewToUpdateColorName.setText("Background");
+                    changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
                 } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     final double viewWidthPercentOfScreen = 0.60;
