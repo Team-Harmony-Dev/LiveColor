@@ -485,8 +485,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //It takes a second to load and I don't want to spam the API so we only call it when we release
             if(event.getActionMasked() == MotionEvent.ACTION_UP
                     //We don't want to spam the API, but local color names are so fast we can just do it live.
-                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES )) {
+                    //If we're zoomed we are panning on drag, so ignore name in that case as well.
+                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES && !touchView.isZoomed())) {
                 Log.d("S3US5", "Release detected");
+                Log.d("DEBUG S2US2 pinchzoom", "action up or drag detected");
 
                 if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
