@@ -430,9 +430,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             if(wasValidClick || USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     //TODO the round button isn't disappearing properly all the time?
-                    //TODO make more efficient. When not zoomed we can use old math. When zoomed we don't need name while panning.
+                    //TODO make more efficient. When not zoomed we can use old math. //Done: When zoomed we don't need name while panning.
+                    //TODO The default zoom level is pretty arbitrary. We could change that.
                     //TODO Maybe say something other than black when it's a background pixel.
-                    //  I could check if it's a background pixel by looking at the pixel with two different backgrounds. If it's exactly the background color both times then it's a background pixel.
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
                     if(view_bitmap == null){
@@ -471,11 +471,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 pixel = imgWithOurColor.getSolidColor();
             }
 
-            updateColorValues(view, pixel);
-            isColorSaved = false;
-            ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-            saveColorB.setImageResource(R.drawable.unsaved);
-            saveColorB.setColorFilter(null);
 
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
@@ -489,6 +484,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES && !touchView.isZoomed())) {
                 Log.d("S3US5", "Release detected");
                 Log.d("DEBUG S2US2 pinchzoom", "action up or drag detected");
+
+                //Update the color info being displayed (the patch of color the user sees, and hex, and save button)
+                updateColorValues(view, pixel);
+                isColorSaved = false;
+                ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+                saveColorB.setImageResource(R.drawable.unsaved);
+                saveColorB.setColorFilter(null);
 
                 if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
@@ -520,7 +522,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 add.show();
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 //Wipe the color name until we get a new one during drags.
-                ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
+                //((TextView) getActivity().findViewById(R.id.colorName)).setText("");
             }
             return true;
         }
