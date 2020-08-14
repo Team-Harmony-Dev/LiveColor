@@ -21,6 +21,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -308,6 +309,19 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         view.draw(canvas);
         return bitmap;
     }
+    /**
+     * The background checkered pattern appeared in the bitmap of above. So lets change the background while we grab it.
+     * @param view The imageview. TODO yeah this shouldn't accept normal view, probably.
+     * @param backgroundColor The background color you want the bitmap to have
+     * @param background The background you want it to end up with (checkered, probably)
+     * @return
+     */
+    public Bitmap getBitmapFromViewWithBackground(View view, int backgroundColor, Drawable background) {
+        view.setBackgroundColor(0);
+        Bitmap bitmap = getBitmapFromView(view);
+        view.setBackground(background);
+        return bitmap;
+    }
 
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
@@ -418,7 +432,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //TODO say "black" or something for background. When partially zoomed might be difficult if I take a math approach. Swap background?
                     //TODO the round button isn't disappearing properly all the time?
                     //TODO make more efficient. When not zoomed we can use old math. When zoomed we don't need name while panning.
-                    Bitmap view_bitmap = getBitmapFromView(touchView);
+                    final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
+                    Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, 0, background);
                     if(view_bitmap == null){
                         Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
                     } else {
@@ -426,7 +441,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                             pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found pixel=" + pixel);
                         } catch (Exception e){
-                            //They dragged off the image. I could just check if X and Y are in range, but whatever. This should work fine.
+                            //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                         }
                     }
