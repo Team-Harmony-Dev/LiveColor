@@ -478,7 +478,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
-            if(event.getActionMasked() == MotionEvent.ACTION_UP
+            if(
+                    //It used to be that we wanted to be able to drag around and then update the name once, when we let go, after finding the color we wanted.
+                    //event.getActionMasked() == MotionEvent.ACTION_UP
+                    //With how it works now, I think we want the updated color when we press down instead of up.
+                    //Since we get the updated color on every drag as well, getting it when we let go is a bit redundant.
+                    event.getActionMasked() == MotionEvent.ACTION_DOWN
                     //We don't want to spam the API, but local color names are so fast we can just do it live.
                     //If we're zoomed we are panning on drag, so ignore name in that case as well.
                     || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES && !touchView.isZoomed())) {
