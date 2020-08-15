@@ -37,4 +37,5 @@
     <string name="inactive_members">Inactive Members</string>
     <string name="melanie_wong">Melanie Wong</string>
     <string name="andrew_tran">Andrew Tran</string>
+    <string name="accent_choice_prompt">Dark Mode Accent</string>
 </resources>
