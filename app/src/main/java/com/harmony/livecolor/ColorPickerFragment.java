@@ -500,7 +500,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
 
             //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
-            final float MAX_ZOOM_MULT = 100.0;
+            final float MAX_ZOOM_MULT = 100;
             touchView.setMaxZoom(MAX_ZOOM_MULT);
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
