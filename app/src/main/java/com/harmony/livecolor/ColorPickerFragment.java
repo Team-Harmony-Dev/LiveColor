@@ -344,9 +344,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         //  Fixed?
         //TODO make more efficient:
         //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
+        //    Due to way we get background info I think we should remove it. Imagine a round or donut shaped picture, that math won't find background.
         //  Done: When zoomed we don't need name while panning.
         //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
-        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded. 
+        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded.
         
         //This is where the color picking happens.
         //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
@@ -498,6 +499,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
 
 
+            //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
+            final float MAX_ZOOM_MULT = 100.0;
+            touchView.setMaxZoom(MAX_ZOOM_MULT);
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
             final boolean USE_API_FOR_NAMES = false;
