@@ -41,4 +41,5 @@
     <string name="meet_the_livecolor_team"><u>Meet the LiveColor Team</u></string>
     <string name="about_livecolor"><u>About LiveColor</u></string>
     <string name="github"><u>GitHub</u></string>
+    <string name="accent_choice_prompt">Light Mode Accent</string>
 </resources>
