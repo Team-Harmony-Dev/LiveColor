@@ -346,6 +346,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
         //  Done: When zoomed we don't need name while panning.
         //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
+        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded. 
         
         //This is where the color picking happens.
         //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
@@ -527,6 +528,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     //TODO load this from somewhere else? We do need to reset it here in case the last name loaded had been using a reduced font size
+                    //TODO I suppose there's the potential issue of this string not fitting and needing a size reduction. I should change how the fitter works probably to allow for calling it here.
                     final int FONT_SIZE = 30;
                     viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
                     viewToUpdateColorName.setText("Background");
