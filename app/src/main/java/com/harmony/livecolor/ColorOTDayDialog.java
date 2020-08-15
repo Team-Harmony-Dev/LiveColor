@@ -152,20 +152,26 @@ public class ColorOTDayDialog {
 
         Log.d("DEBUG", "generateRandomColor: seeds" + " R: " + nowRed + " G: " + nowGreen + " B: " + nowBlue);
 
+
+
+        Random randRedGen;
+        Random randGreenGen;
+        Random randBlueGen;
+
         // rotation to keep things fresh each day
         if (nowGreen % 3 == 0){
-            Random randRedGen = new Random(nowRed);
-            Random randGreenGen = new Random(nowGreen);
-            Random randBlueGen = new Random(nowBlue);
+            randRedGen = new Random(nowRed);
+            randGreenGen = new Random(nowGreen);
+            randBlueGen = new Random(nowBlue);
         } else if (nowGreen % 3 == 1){
-            Random randRedGen = new Random(nowBlue);
-            Random randGreenGen = new Random(nowRed);
-            Random randBlueGen = new Random(nowGreen);
+            randRedGen = new Random(nowBlue);
+            randGreenGen = new Random(nowRed);
+            randBlueGen = new Random(nowGreen);
 
         } else {
-            Random randRedGen = new Random(nowGreen);
-            Random randGreenGen = new Random(nowBlue);
-            Random randBlueGen = new Random(nowRed);
+            randRedGen = new Random(nowGreen);
+            randGreenGen = new Random(nowBlue);
+            randBlueGen = new Random(nowRed);
         }
 
         int randRed = randRedGen.nextInt(256);
