@@ -189,7 +189,13 @@ public class HarmonyGenerator {
             //monoValue = checkValueForOverflow(monoValue);
 
             float[] color = new float[] {hue, saturation, monoValue};
-            monochromaticColors[i] = color;
+            int index = i;
+            //If we skipped the real left side ("right" side according mislabeled junk) then we need to adjust the index
+            if(i >= middleIndex && !shouldNotSkipRight){
+                int numberOfColorsFromMiddle = i - middleIndex;
+                index = numberOfColorsFromMiddle;
+            }
+            monochromaticColors[index] = color;
         }
         return monochromaticColors;
     }
