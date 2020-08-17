@@ -129,7 +129,7 @@ public class HarmonyGenerator {
     //numberOfColors should always be odd, the middle value is the color you passed in.
     //TODO how should we handle percent? Currently it does a percent of available space in each direction,
     //  meaning left and right colors are equally spaced with respect to their sides but not the opposite side.
-    public static float[][] monochromaticScheme(float hue, float saturation, float value, float percent, int numberOfColors){
+    public static float[][] monochromaticScheme(float hue, float saturation, float value, float percent, int numberOfColors, boolean skipRedundantColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
         float[][] monochromaticColors = new float[numberOfColors][numberOfComponents];
@@ -139,7 +139,17 @@ public class HarmonyGenerator {
         final int numberOfColorsRight = numberOfColorsLeft;
         //How much spacing between each color.
         float differenceLeft = distanceFromLeft * percent / numberOfColorsLeft;
+        boolean leftRedundant = false;
+        if(differenceLeft <= 0.01){
+            leftRedundant = true;
+        }
+        boolean shouldNotSkipLeft = !skipRedundantColors || !leftRedundant;
         float differenceRight = distanceFromRight * percent / numberOfColorsRight;
+        boolean rightRedundant = false;
+        if(differenceRight <= 0.01){
+            rightRedundant = true;
+        }
+        boolean shouldNotSkipRight = !skipRedundantColors || !rightRedundant;
         Log.d("S4US4", "v="+value+" dfl="+distanceFromLeft+" dl="+differenceLeft + " dfr="+distanceFromRight+" dr="+differenceRight);
         int middleIndex = numberOfColors / 2;
         for(int i = 0; i < numberOfColors; ++i){
@@ -147,16 +157,18 @@ public class HarmonyGenerator {
             //I actually messed up left and right, meant left to mean lighter, right to mean darker.
             //So this just does the reverse of what the names imply.
             //TODO cleanup
-            if(i > middleIndex){
+            if(i > middleIndex && shouldNotSkipLeft){
                 int numberOfColorsLeftFromMiddle = middleIndex - i;
                 monoValue = value + (differenceLeft * numberOfColorsLeftFromMiddle);
                 Log.d("S4US4", "Calculated mono color  left "+numberOfColorsLeftFromMiddle
                         +" : "+monoValue);
-            } else {
+            } else if (shouldNotSkipRight) {
                 int numberOfColorsRightFromMiddle = i - middleIndex;
                 monoValue = value - (differenceRight * numberOfColorsRightFromMiddle);
                 Log.d("S4US4", "Calculated mono color right "+numberOfColorsRightFromMiddle
                         +" : "+monoValue);
+            } else {
+                continue;
             }
 
             //An overflow would just be an error, right?
