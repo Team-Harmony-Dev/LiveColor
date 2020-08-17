@@ -77,10 +77,15 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         // also the edit button when you select a palette does nothing.
 
         //TODO probably remove this, it's useful for testing though.
-        float[][] testBasicColor = new float[][] {new float[] {hue, saturation, value}};
-        ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 1);
-        MyPalette testBasicColorPalette = new MyPalette("1", "Original color", testBasicColorMyColors);
-        paletteList.add(testBasicColorPalette);
+//        float[][] testBasicColor = new float[][] {new float[] {hue, saturation, value}};
+//        ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 1);
+//        MyPalette testBasicColorPalette = new MyPalette("1", "Original color", testBasicColorMyColors);
+//        paletteList.add(testBasicColorPalette);
+        //Lets show the chosen color and its complement
+        float[][] testBasicColor = HarmonyGenerator.complementScheme(hue, saturation, value, 2);
+        ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 2);
+        MyPalette testBasicPalette = new MyPalette("1", "Analogous", testBasicColorMyColors);
+        paletteList.add(testBasicPalette);
 
         //Testing getting the analogous colors each a # of degrees to each side of the given color.
         float[][] testAnalogous = HarmonyGenerator.analogousScheme(hue, saturation, value, 20, 5);

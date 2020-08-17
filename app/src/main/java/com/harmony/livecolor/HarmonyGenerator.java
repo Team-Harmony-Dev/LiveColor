@@ -24,7 +24,8 @@ public class HarmonyGenerator {
         String hex = hsvToStringHex(color);
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
-        String colorName = ColorNameGetterCSV.getName(hex);
+        //String colorName = ColorNameGetterCSV.getName(hex);
+        String colorName = "";
         //TODO the name works now, but opening harmonies takes a few seconds because it does it for all palettes at once.
         MyColor colorObj = new MyColor(""+id, colorName, hex, rgb, hsv);
         return colorObj;
@@ -78,6 +79,16 @@ public class HarmonyGenerator {
         float complementHue = hue + 180;
         complementHue = checkHueForOverflow(complementHue);
         return complementHue;
+    }
+
+    //
+    public static float[][] complementScheme(float hue, float saturation, float value, int numberOfColors){
+        //Hue, saturation, value. Three numbers to store in each array.
+        final int numberOfComponents = 3;
+        float[][] colors = new float[numberOfColors][numberOfComponents];
+        colors[0] = new float[] {hue, saturation, value};
+        colors[1] = complement(hue, saturation, value);
+        return colors;
     }
 
     //numberOfColors should always be odd, the middle value is the color you passed in.
@@ -187,6 +198,7 @@ public class HarmonyGenerator {
         return resultColors;
     }
 
+    //TODO check this
     //Valid hue values are 0 thru 360, inclusive.
     private static float checkHueForOverflow(float hue){
         if(hue > 360){
