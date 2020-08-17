@@ -104,7 +104,8 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //TODO to fix this might be harder. Generate more of the other lightness?
         //Testing getting the monochromatic colors to each side of the given color based on percent.
         float[][] testMonochromatic = HarmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5, true);
-        ArrayList<MyColor> testMonochromaticMyColors = HarmonyGenerator.colorsToMyColors(testMonochromatic, 5);
+        int actualNumberOfColors = testMonochromatic.length;
+        ArrayList<MyColor> testMonochromaticMyColors = HarmonyGenerator.colorsToMyColors(testMonochromatic, actualNumberOfColors);
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
 

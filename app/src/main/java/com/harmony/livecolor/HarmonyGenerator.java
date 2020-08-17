@@ -132,7 +132,6 @@ public class HarmonyGenerator {
     public static float[][] monochromaticScheme(float hue, float saturation, float value, float percent, int numberOfColors, boolean skipRedundantColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
-        float[][] monochromaticColors = new float[numberOfColors][numberOfComponents];
         float distanceFromRight = 1-value;
         float distanceFromLeft = value;
         final int numberOfColorsLeft = (int) (numberOfColors / 2);
@@ -143,14 +142,29 @@ public class HarmonyGenerator {
         if(differenceLeft <= 0.01){
             leftRedundant = true;
         }
-        boolean shouldNotSkipLeft = !skipRedundantColors || !leftRedundant;
+        boolean shouldNotSkipLeft = !(skipRedundantColors && leftRedundant);
         float differenceRight = distanceFromRight * percent / numberOfColorsRight;
         boolean rightRedundant = false;
         if(differenceRight <= 0.01){
             rightRedundant = true;
         }
-        boolean shouldNotSkipRight = !skipRedundantColors || !rightRedundant;
-        Log.d("S4US4", "v="+value+" dfl="+distanceFromLeft+" dl="+differenceLeft + " dfr="+distanceFromRight+" dr="+differenceRight);
+        boolean shouldNotSkipRight = !(skipRedundantColors && rightRedundant);
+
+        int resultNumberOfColors = 1;
+        if(!skipRedundantColors){
+            resultNumberOfColors = numberOfColors;
+        }
+        if(skipRedundantColors && shouldNotSkipRight){
+            resultNumberOfColors += (int) numberOfColors/2;
+        }
+        if(skipRedundantColors && shouldNotSkipLeft){
+            resultNumberOfColors += (int) numberOfColors/2;
+        }
+        float[][] monochromaticColors = new float[resultNumberOfColors][numberOfComponents];
+        Log.d("S4US4", "v="+value+" dfl="+distanceFromLeft+" dl="+differenceLeft
+                + " dfr="+distanceFromRight+" dr="+differenceRight +" lR="+leftRedundant +" rR="+rightRedundant
+                + " snsl=" + shouldNotSkipLeft + " snsr=" + shouldNotSkipRight + " rnc=" + resultNumberOfColors
+        );
         int middleIndex = numberOfColors / 2;
         for(int i = 0; i < numberOfColors; ++i){
             float monoValue;
@@ -162,7 +176,7 @@ public class HarmonyGenerator {
                 monoValue = value + (differenceLeft * numberOfColorsLeftFromMiddle);
                 Log.d("S4US4", "Calculated mono color  left "+numberOfColorsLeftFromMiddle
                         +" : "+monoValue);
-            } else if (shouldNotSkipRight) {
+            } else if (i == middleIndex || (i < middleIndex && shouldNotSkipRight)) {
                 int numberOfColorsRightFromMiddle = i - middleIndex;
                 monoValue = value - (differenceRight * numberOfColorsRightFromMiddle);
                 Log.d("S4US4", "Calculated mono color right "+numberOfColorsRightFromMiddle
