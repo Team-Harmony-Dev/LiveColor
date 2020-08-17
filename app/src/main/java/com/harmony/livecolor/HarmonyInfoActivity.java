@@ -84,7 +84,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //Lets show the chosen color and its complement
         float[][] testBasicColor = HarmonyGenerator.complementScheme(hue, saturation, value, 2);
         ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 2);
-        MyPalette testBasicPalette = new MyPalette("1", "Analogous", testBasicColorMyColors);
+        MyPalette testBasicPalette = new MyPalette("1", "Color & Complement", testBasicColorMyColors);
         paletteList.add(testBasicPalette);
 
         //Testing getting the analogous colors each a # of degrees to each side of the given color.

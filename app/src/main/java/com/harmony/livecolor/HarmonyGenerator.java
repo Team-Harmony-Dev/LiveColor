@@ -168,6 +168,7 @@ public class HarmonyGenerator {
         return monochromaticColors;
     }
 
+    //TODO refactor, this is actually split-complementary.
     public static float[][] triadicScheme(float hue, float saturation, float value, int degrees, int numberOfColors){
         //Hue, saturation, value. Three numbers to store in each array.
         final int numberOfComponents = 3;
