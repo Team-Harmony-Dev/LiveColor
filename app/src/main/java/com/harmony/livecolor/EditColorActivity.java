@@ -349,27 +349,36 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickReset(View view) {
+        int oldRed = seekRed.getProgress();
+        int oldGreen = seekGreen.getProgress();
+        int oldBlue = seekBlue.getProgress();
 
-            ImageButton reset = (ImageButton) view;
-            ToggleButtonState = simpleToggleButton.isChecked();
-            reset.startAnimation(rotate);
-            if(!ToggleButtonState){
-                updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            } else {
-                int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
-                updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            }
-
-            updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            TextView colorNameN = findViewById(R.id.colorNN);
-            colorNameN.setText(colorNameT);
-            //If they hit reset while on the original color, keep the bookmark colored.
-            if(true){
-                resetBookmark();
-            }
+        ImageButton reset = (ImageButton) view;
+        ToggleButtonState = simpleToggleButton.isChecked();
+        reset.startAnimation(rotate);
+        if(!ToggleButtonState){
+            updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        } else {
+            int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
         }
+
+        updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        TextView colorNameN = findViewById(R.id.colorNN);
+        colorNameN.setText(colorNameT);
+        //For if they hit reset while on the original color, keep the bookmark colored.
+        //If the button has already been clicked and we change its state because we only save once, then we reset the bookmark
+        //If we are not only saving once per color, then we cannot rely on isButtonClickedNew. Instead, we can check if the new and old values are the same.
+        if((isButtonClickedNew && ONLY_SAVE_ONCE_PER_COLOR) ||
+                (!ONLY_SAVE_ONCE_PER_COLOR &&
+                        (seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue)
+                )
+        ){
+            resetBookmark();
+        }
+    }
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
