@@ -368,14 +368,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
         TextView colorNameN = findViewById(R.id.colorNN);
         colorNameN.setText(colorNameT);
-        //For if they hit reset while on the original color, keep the bookmark colored.
-        //If the button has already been clicked and we change its state because we only save once, then we reset the bookmark
-        //If we are not only saving once per color, then we cannot rely on isButtonClickedNew. Instead, we can check if the new and old values are the same.
-        if((isButtonClickedNew && ONLY_SAVE_ONCE_PER_COLOR) ||
-                (!ONLY_SAVE_ONCE_PER_COLOR &&
-                        (seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue)
-                )
-        ){
+        //For if they hit reset while on the original color, keep the bookmark colored. (only reset if the color changed)
+        if(seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue){
             resetBookmark();
         }
     }
