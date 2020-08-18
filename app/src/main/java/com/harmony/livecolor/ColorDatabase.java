@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * TOC (for easier Ctrl+F searching)
- *   - COLOR ADDING METHODS
+ *   - COLOR/PALETTE ADDING/DELETING METHODS
  *   - CURSOR METHODS
  *   - SEARCHING/CHECKING METHODS
  *   - ARRAYLIST HELPER METHODS
@@ -26,11 +26,13 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public static final String COLOR_TABLE_NAME = "colorInfo_table";
     public static final String PALETTE_TABLE_NAME = "paletteInfo_table";
 
+    public static final String COL1 = "ID"; //COLOR ENTRY ID
     public static final String COL2 = "NAME"; //COLOR NAME
     public static final String COL3 = "HEX"; //COLOR HEX value
     public static final String COL4 = "RGB"; //COLOR RGB value
     public static final String COL5 = "HSV"; //COLOR HSV value
 
+    public static final String PAL1 = "ID"; //PALETTE ENTRY ID
     public static final String PAL2 = "NAME"; //PALETTE NAME
     public static final String PAL3 = "REF"; //String containing all IDs of colors in palette, separated by spaces
 
@@ -52,7 +54,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         this.db.execSQL(createColorInfoTable);
         this.db.execSQL(createPaletteInfoTable);
         //creates a saved colors palette
-        addPaletteInfoData("Saved Colors","");
+        addNewPalette("Saved Colors","");
     }
 
     @Override
@@ -75,7 +77,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * COLOR ADDING METHODS:
+     * COLOR/PALETTE ADDING/DELETING METHODS:
      */
 
     /**
@@ -116,9 +118,9 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * add a new palette to the palette database with its first color
      * @param name of the palette
      * @param id of the color to add to the palette
-     * @return
+     * @return true if successful, false otherwise
      */
-    public boolean addPaletteInfoData(String name, String id) {
+    public boolean addNewPalette(String name, String id) {
         db = this.getWritableDatabase();
         ContentValues paletteInfoContentValues = new ContentValues();
         paletteInfoContentValues.put(PAL2, name);
@@ -136,10 +138,41 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
     }
 
-    //TODO: addPaletteByRef(String name, String ref) : add a new palette given a palette ref string, for full harmony saving?
+    /**
+     * ADD GIVEN MYPALETTE OBJECT TO DATABASE AS A NEW PALETTE (WIP)
+     * add the given MyPalette data to the database as a *new* palette. Currently for undoing palette deletion
+     * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
+     * @return true if successful, false otherwise
+     */
+    public boolean addPalette(MyPalette palette) {
+        db = this.getWritableDatabase();
+        ContentValues paletteCVs = new ContentValues();
+        paletteCVs.put(PAL1, palette.getId());
+        paletteCVs.put(PAL2, palette.getName());
+        paletteCVs.put(PAL3, " ");
+
+        Log.d(TAG_PALETTE, "addPaletteInfoData: adding new palette " + palette.getId() + palette.getName());
+        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
+        Log.d(TAG_PALETTE, "addPaletteInfoData: id of new palette = " + insertResult);
+
+        if (insertResult == -1) {
+            return false;
+        } else {
+            Log.d(TAG_PALETTE, "addPaletteInfoData: insertResult = " + insertResult);
+            for(MyColor color : palette.getColors()) {
+                addColorToPalette(Long.toString(insertResult),color.getId());
+            }
+            return true;
+        }
+    }
+
+    //TODO: Might be used for harmony saving, but could probably be replaced with the above depending on implementation
+    public boolean addPalette(String name, String ref) {
+        return false;
+    }
 
     /**
-     * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS THERE) (BROKEN)
+     * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS THERE) (DONE)
      * add a color existing in the color database to an existing palette if not already in the palette
      * @param paletteId id of the palette to be added to
      * @param colorId id of the color to add to the palette
@@ -170,6 +203,28 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
         Log.d(TAG_PALETTE, "addPaletteInfoData: color already existed");
         return false;
+    }
+
+    /**
+     * FOR DELETING A PALETTE FROM THE DATABASE (WIP)
+     * deletes a palette from the database given the palette's unique id
+     * @param paletteId the id of the palette to be deleted from the database
+     * @return true if deletion was a success, false otherwise
+     */
+    public boolean deletePalette(String paletteId) {
+        db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE * FROM " + PALETTE_TABLE_NAME
+                + " WHERE ID = \'" + paletteId + "\'";
+        try {
+            db.execSQL(deleteQuery);
+            Log.d(TAG_PALETTE, "deletePalette: palette id " + paletteId + " has been deleted");
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -323,9 +378,10 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * GET AN ARRAYLIST OF MYCOLOR OBJECTS FROM A PALETTE (DONE)
      * retrieves a usable arraylist of colors from a given palette
      * @param id of the palette to get the color list from
+     * @param isReversed determines whether to retrieve the list in reverse or not
      * @return ArrayList of MyColor objects
      */
-    public ArrayList<MyColor> getColorList(String id) {
+    public ArrayList<MyColor> getColorList(String id, boolean isReversed) {
         ArrayList<MyColor> colorList = new ArrayList<>();
         //get string ref of color ids in given palette
         String colorIds = getPaletteColors(id).trim();
@@ -336,44 +392,28 @@ public class ColorDatabase extends SQLiteOpenHelper {
         String[] splitIds = colorIds.split("\\s+");
         //get each color by id, add as MyColor object to arraylist
         Log.d(TAG_COLOR, "getColorList: colorIds = " + colorIds + ", # of colors = " + splitIds.length);
-        for(int i = 0; i < splitIds.length; i++) {
-            String colorId = splitIds[i];
-            Cursor cursor = getColorInfoById(colorId);
-            String name = cursor.getString(1);
-            String hex = cursor.getString(2);
-            String rgb = cursor.getString(3);
-            String hsv = cursor.getString(4);
-            colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+        if(isReversed) {
+            for(int i = splitIds.length - 1; i >= 0; i--) {
+                String colorId = splitIds[i];
+                Cursor cursor = getColorInfoById(colorId);
+                String name = cursor.getString(1);
+                String hex = cursor.getString(2);
+                String rgb = cursor.getString(3);
+                String hsv = cursor.getString(4);
+                colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+            }
+        } else {
+            for(int i = 0; i < splitIds.length; i++) {
+                String colorId = splitIds[i];
+                Cursor cursor = getColorInfoById(colorId);
+                String name = cursor.getString(1);
+                String hex = cursor.getString(2);
+                String rgb = cursor.getString(3);
+                String hsv = cursor.getString(4);
+                colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+            }
         }
-        return colorList;
-    }
 
-    /**
-     * GET AN ARRAYLIST OF MYCOLOR OBJECTS FROM A PALETTE IN REVERSE (DONE)
-     * retrieves a usable arraylist of colors from a given palette in reverse order
-     * @param id of the palette to get the color list from
-     * @return ArrayList of MyColor objects
-     */
-    public ArrayList<MyColor> getColorListReverse(String id) {
-        ArrayList<MyColor> colorList = new ArrayList<>();
-        //get string ref of color ids in given palette
-        String colorIds = getPaletteColors(id).trim();
-        //return empty list if palette is empty
-        if(colorIds.isEmpty()) {
-            return colorList;
-        }
-        String[] splitIds = colorIds.split("\\s+");
-        //get each color by id, add as MyColor object to arraylist
-        Log.d(TAG_COLOR, "getColorList: colorIds = " + colorIds + ", # of colors = " + splitIds.length);
-        for(int i = splitIds.length - 1; i >= 0; i--) {
-            String colorId = splitIds[i];
-            Cursor cursor = getColorInfoById(colorId);
-            String name = cursor.getString(1);
-            String hex = cursor.getString(2);
-            String rgb = cursor.getString(3);
-            String hsv = cursor.getString(4);
-            colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
-        }
         return colorList;
     }
 
@@ -393,14 +433,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
             paletteId = cursor.getString(0);
             if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
                 paletteName = cursor.getString(1);
-                colorList = getColorList(paletteId);
+                colorList = getColorList(paletteId, false);
                 paletteList.add(new MyPalette(paletteId, paletteName, colorList));
             }
             while(cursor.moveToNext()) {
                 paletteId = cursor.getString(0);
                 if(!paletteId.equals("1")) { //do not count Saved Colors as a palette
                     paletteName = cursor.getString(1);
-                    colorList = getColorList(paletteId);
+                    colorList = getColorList(paletteId, false);
                     paletteList.add(new MyPalette(paletteId, paletteName, colorList));
                 }
             }
@@ -409,19 +449,17 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS OBJECT (WIP)
+     * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS LIST (WIP)
      * updates the database ref string of the given MyColors list of a palette
      * @param id the id of the palette to be updated
      * @param colors the MyColors arraylist of the palette that needs to be updated in the database
+     * @param isReversed determines whether the ref string should be updated in reverse order or not
      * @return boolean of whether the database update was successful
      */
-    public boolean updateRefString(String id, ArrayList<MyColor> colors){
+    public boolean updateRefString(String id, ArrayList<MyColor> colors, boolean isReversed){
         db = this.getWritableDatabase();
         //create new ref string
-        String newRef = " ";
-        for (MyColor color : colors) {
-            newRef = newRef.concat(color.getId() + " ");
-        }
+        String newRef = getRefString(colors, isReversed);
         //update database with new ref string
         String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
                 + " SET REF = \'" + newRef + "\'"
@@ -488,5 +526,28 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
 
         return result;
+    }
+
+    /**
+     * GETS REF STRING OF A PALETTE FROM MYCOLORS LIST (DONE)
+     * makes the ref string for the palette based on the given arraylist of MyColor objects
+     * @param colors arraylist of MyColor objects
+     * @param isReversed determines whether the the arraylist should be processed in reverse or not
+     * @return the ref string for the given palette
+     */
+    public String getRefString(ArrayList<MyColor> colors, boolean isReversed) {
+        String ref = " ";
+
+        if(isReversed){
+            for (int i = colors.size() - 1; i >= 0; i--) {
+                ref = ref.concat(colors.get(i).getId() + " ");
+            }
+        } else {
+            for (MyColor color : colors) {
+                ref = ref.concat(color.getId() + " ");
+            }
+        }
+
+        return ref;
     }
 }

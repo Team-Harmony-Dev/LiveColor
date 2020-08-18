@@ -106,7 +106,7 @@ public class SavedColorsFragment extends Fragment {
 
     public void initColors() {
         //initialize ArrayList<MyColors> here, gets the colors in reverse order to show most recently picked colors at the top
-        colorList = db.getColorListReverse("1");
+        colorList = db.getColorList("1",true);
     }
 
     /**
@@ -192,7 +192,7 @@ public class SavedColorsFragment extends Fragment {
             deletedColor = colorList.get(position);
             Log.d("SavedColorsFragment", "onSwiped: Color is " + deletedColor.getName());
             colorList.remove(position);
-            db.updateRefString("1", colorList);
+            db.updateRefString("1", colorList, true);
             adapter.notifyItemRemoved(position);
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
@@ -200,7 +200,7 @@ public class SavedColorsFragment extends Fragment {
                         public void onClick(View v) {
                             Log.d("SavedColorsFragment", "onClick: Adding deleted color " + deletedColor.getName() + " to position " + position);
                             colorList.add(position, deletedColor);
-                            db.updateRefString("1", colorList);
+                            db.updateRefString("1", colorList, true);
                             adapter.notifyItemInserted(position);
                         }
                     }).show();

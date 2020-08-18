@@ -127,14 +127,14 @@ public class PaletteInfoActivity extends AppCompatActivity {
             final int position = viewHolder.getAdapterPosition();
             deletedColor = colorList.get(position);
             colorList.remove(position);
-            db.updateRefString(palette.getId(), colorList);
+            db.updateRefString(palette.getId(), colorList, false);
             adapter.notifyItemRemoved(position);
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             colorList.add(position, deletedColor);
-                            db.updateRefString(palette.getId(), colorList);
+                            db.updateRefString(palette.getId(), colorList, false);
                             adapter.notifyItemInserted(position);
                         }
                     }).show();
