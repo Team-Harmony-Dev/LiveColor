@@ -129,12 +129,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
             paletteList.add(testEvenEvenSpacedPalette);
         }
 
-        //Now that we have the palettes, we can add names asynchronously?
-        //Doesn't work in our version of Java
-//        Thread newThread = new Thread(() -> {
-//            Log.d("Harmony", "Test thread");
-//        });
-//        newThread.start();
+        //Now that we have the palettes, we can add names asynchronously.
         Log.d("Harmony palettes", "Test before");
         Thread t = new HarmonyPaletteDelayedNames(paletteList);
         t.start();

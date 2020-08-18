@@ -232,13 +232,14 @@ public class HarmonyGenerator {
         return resultColors;
     }
 
-    //TODO check this
-    //Valid hue values are 0 thru 360, inclusive.
+    //Note that 0 and 360 are the same. If they go to 361, they loop around to 1, not 0.
+    final static int MAX_HUE_DEGREES = 360;
+    final static int MIN_HUE_DEGREES = 0;
     private static float checkHueForOverflow(float hue){
-        if(hue > 360){
-            return hue - 361;
-        } else if(hue < 0){
-            return hue + 361;
+        if(hue > MAX_HUE_DEGREES){
+            return hue - MAX_HUE_DEGREES;
+        } else if(hue < MIN_HUE_DEGREES){
+            return hue + MAX_HUE_DEGREES;
         } else {
             return hue;
         }
