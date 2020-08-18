@@ -450,11 +450,11 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * @author Gabby
      */
     public void resetBookmark(){
-        if(isButtonClickedNew){
+        //if(isButtonClickedNew){
             saveNC.setImageResource(R.drawable.unsaved);
             saveNC.setColorFilter(null);
             isButtonClickedNew = false;
-        }
+        //}
     }
 
     /**
