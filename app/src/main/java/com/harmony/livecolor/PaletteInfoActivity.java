@@ -1,8 +1,9 @@
 package com.harmony.livecolor;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,20 +11,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class PaletteInfoActivity extends AppCompatActivity {
 
     private MyPalette palette;
-    private ArrayList<MyColor> paletteColors;
+    private ArrayList<MyColor> colorList;
     private SavedColorsFragment.OnListFragmentInteractionListener listener;
+
+    private RecyclerView recyclerView;
+    private MySavedColorsRecyclerViewAdapter adapter;
+
+    ColorDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-
+        db = new ColorDatabase(this);
 
         //get extra containing the palette object
         Intent intent = getIntent();
@@ -45,7 +49,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
         paletteName.setText(palette.getName());
 
         //Color arraylist is initialized here. Gets arraylist of colors from palette object
-        paletteColors = palette.getColors();
+        colorList = palette.getColors();
 
         //initialize the recycler
         initRecycler();
@@ -82,25 +86,60 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
     public void initColors(){
         //Color arraylist is initialized here. Gets arraylist of colors from palette object
-        paletteColors = palette.getColors();
+        colorList = palette.getColors();
     }
 
     //initializes the recycler view with the given color information
     public void initRecycler(){
         //get the RecyclerView from the view
-        RecyclerView recyclerView = findViewById(R.id.paletteInfoRecycler);
+        recyclerView = findViewById(R.id.paletteInfoRecycler);
         //then initialize the adapter, passing in the bookList
-        MySavedColorsRecyclerViewAdapter adapter = new MySavedColorsRecyclerViewAdapter(this,paletteColors,listener,"list");
+        adapter = new MySavedColorsRecyclerViewAdapter(this, colorList,listener,"list");
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(this));
+        //set ItemTouchHelper for item deletion
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
     }
 
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyContent.DummyItem item);
     }
+
+    MyColor deletedColor = null;
+    String deleteMsg = "Deleted ";
+
+    /**
+     * Handles swipe listening for individual list items. Used for list item deletion. Can be used for list rearranging as well in the future.
+     */
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            //we can use a switch to handle different cases for different swipe directions if desired
+            final int position = viewHolder.getAdapterPosition();
+            deletedColor = colorList.get(position);
+            colorList.remove(position);
+            db.updateRefString(palette.getId(), colorList, false);
+            adapter.notifyItemRemoved(position);
+            Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            colorList.add(position, deletedColor);
+                            db.updateRefString(palette.getId(), colorList, false);
+                            adapter.notifyItemInserted(position);
+                        }
+                    }).show();
+        }
+    };
 
     @Override
     protected void onResume() {

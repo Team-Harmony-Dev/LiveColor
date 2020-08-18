@@ -1,13 +1,12 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,15 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
-import com.harmony.livecolor.dummy.DummyContent;
+import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -39,9 +34,10 @@ public class SavedColorsFragment extends Fragment {
     private View view;
     private ArrayList<MyColor> colorList;
 
+    private RecyclerView recyclerView;
     private MySavedColorsRecyclerViewAdapter adapter;
 
-    ColorDatabase colorDatabase;
+    ColorDatabase db;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -72,7 +68,7 @@ public class SavedColorsFragment extends Fragment {
 
         context = view.getContext();
 
-        colorDatabase = new ColorDatabase(getActivity());
+        db = new ColorDatabase(getActivity());
 
         initColors();
 
@@ -109,8 +105,8 @@ public class SavedColorsFragment extends Fragment {
     }
 
     public void initColors() {
-        //initialize ArrayList<MyColors> here
-        colorList = colorDatabase.getColorList("1");
+        //initialize ArrayList<MyColors> here, gets the colors in reverse order to show most recently picked colors at the top
+        colorList = db.getColorList("1",true);
     }
 
     /**
@@ -119,7 +115,7 @@ public class SavedColorsFragment extends Fragment {
      */
     public void initRecycler(String selectedView){
         //get the RecyclerView from the view
-        RecyclerView recyclerView = view.findViewById(R.id.savedColorsRecycler);
+        recyclerView = view.findViewById(R.id.savedColorsRecycler);
         //then initialize the adapter, passing in the bookList
         adapter = new MySavedColorsRecyclerViewAdapter(context,colorList,listener, selectedView);
         //and set the adapter for the RecyclerView
@@ -131,14 +127,16 @@ public class SavedColorsFragment extends Fragment {
          * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
          */
         if(selectedView == "list"){
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,true);
+            LinearLayoutManager layoutManager = new LinearLayoutManagerWrapper(context);
             recyclerView.setLayoutManager(layoutManager);
-            layoutManager.setStackFromEnd(true);
         } else {
             int numberOfColumns = 3;
             GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
             recyclerView.setLayoutManager(layoutManager);
         }
+
+        //set ItemTouchHelper for item deletion
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
 
@@ -173,6 +171,41 @@ public class SavedColorsFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
     }
+
+    MyColor deletedColor = null;
+    String deleteMsg = "Deleted ";
+
+    /**
+     * Handles swipe listening for individual list items. Used for list item deletion. Can be used for list rearranging as well in the future.
+     */
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            //we can use a switch to handle different cases for different swipe directions if desired
+            final int position = viewHolder.getAdapterPosition();
+            Log.d("SavedColorsFragment", "onSwiped: deleting " + position);
+            deletedColor = colorList.get(position);
+            Log.d("SavedColorsFragment", "onSwiped: Color is " + deletedColor.getName());
+            colorList.remove(position);
+            db.updateRefString("1", colorList, true);
+            adapter.notifyItemRemoved(position);
+            Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d("SavedColorsFragment", "onClick: Adding deleted color " + deletedColor.getName() + " to position " + position);
+                            colorList.add(position, deletedColor);
+                            db.updateRefString("1", colorList, true);
+                            adapter.notifyItemInserted(position);
+                        }
+                    }).show();
+        }
+    };
 
     @Override
     public void onResume() {

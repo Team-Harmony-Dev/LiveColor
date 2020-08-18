@@ -4,16 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -227,7 +222,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                     //adds the color to the database
                     long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
                     //gets newest added color and adds it to the palette
-                    colorDB.addPaletteInfoData(newName, Long.toString(colorId));
+                    colorDB.addNewPalette(newName, Long.toString(colorId));
 
                     dialog.dismiss();
                     makeToast("New palette \"" + newName + "\" created!", context);

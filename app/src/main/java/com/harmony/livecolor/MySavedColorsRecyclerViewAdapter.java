@@ -49,14 +49,14 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
         this.context = context;
         this.myColors = myColors;
 
-        /* Makes a shallow copy of the saved color array, reverses it, and sets it as the arrayList used by the recycler adapter
-           This is so the grid layout will have the newest colors at the top - Gabby
-         */
-        if(selectedV != "list"){
-            ArrayList<MyColor> copyColors = new ArrayList<>(myColors);
-            Collections.reverse(copyColors);
-            this.myColors = copyColors;
-        }
+//        /* Makes a shallow copy of the saved color array, reverses it, and sets it as the arrayList used by the recycler adapter
+//           This is so the grid layout will have the newest colors at the top - Gabby
+//         */
+//        if(selectedV != "list"){
+//            ArrayList<MyColor> copyColors = new ArrayList<>(myColors);
+//            Collections.reverse(copyColors);
+//            this.myColors = copyColors;
+//        }
 
         this.listener = listener;
         this.selectedView = selectedV;
