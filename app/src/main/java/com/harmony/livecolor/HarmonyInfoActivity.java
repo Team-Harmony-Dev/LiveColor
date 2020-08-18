@@ -130,6 +130,15 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         }
 
         //Now that we have the palettes, we can add names asynchronously?
+        //Doesn't work in our version of Java
+//        Thread newThread = new Thread(() -> {
+//            Log.d("Harmony", "Test thread");
+//        });
+//        newThread.start();
+        Log.d("Harmony palettes", "Test before");
+        Thread t = new HarmonyPaletteDelayedNames();
+        t.start();
+        Log.d("Harmony palettes", "Test after");
     }
 
     public void initRecycler(){
