@@ -41,6 +41,7 @@ import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
  */
 public class EditColorActivity extends AppCompatActivity implements SaveListener {
 
+    final static boolean ONLY_SAVE_ONCE_PER_COLOR = false;
     int colorValue;
     //For the save button animation/color fill
     private ImageView saveButtonCB;
@@ -372,7 +373,6 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         saveButtonCB.setImageResource(R.drawable.bookmark_selected );
         saveButtonCB.setColorFilter(colorICB);
 
-        final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
         if(ONLY_SAVE_ONCE_PER_COLOR) {
             isButtonClickedNew = true;
         }
@@ -450,11 +450,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * @author Gabby
      */
     public void resetBookmark(){
-        //if(isButtonClickedNew){
+        //Conditional prevents the save button from clearing if you tap reset after saving the original color.
+        //TODO change the call to this function instead?
+        if(isButtonClickedNew){
             saveNC.setImageResource(R.drawable.unsaved);
             saveNC.setColorFilter(null);
             isButtonClickedNew = false;
-        //}
+        }
     }
 
     /**
