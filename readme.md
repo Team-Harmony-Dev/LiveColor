@@ -10,7 +10,7 @@ Color Picking              | Color Info                | Harmonies              
 :-------------------------:|:-------------------------:|:-------------------------:
 <img height="322" src="https://github.com/TheBrows/LiveColor/blob/Gabby/color_picker.gif">  | <img height="322" src="https://github.com/TheBrows/LiveColor/blob/Gabby/color_info.png"> | <img height="322" src="https://github.com/TheBrows/LiveColor/blob/Gabby/harmonies.png">
 
-## Usage
+## Installation
 
 - Download **[Android Studio](https://developer.android.com/studio)**
 - Set up GitHub through Android Studio’s VCS options
@@ -19,4 +19,5 @@ Color Picking              | Color Info                | Harmonies              
 
 ## Sources
 [Color Names](https://github.com/meodai/color-names#about-)
+[Touch View](https://github.com/MikeOrtiz/TouchImageView)
 
