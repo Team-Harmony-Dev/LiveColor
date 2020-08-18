@@ -12,6 +12,10 @@ import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
+/**
+ * This class shows harmonies for a chosen color. Accessed through a button on ColorInfoActivity.
+ * @author Dustin
+ */
 public class HarmonyInfoActivity extends AppCompatActivity {
 
     //In case we want delete option

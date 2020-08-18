@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import static android.graphics.Color.RGBToHSV;
 import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 
-//Contains functions for generating colors for palettes based on a given color.
+/**
+ * Contains functions for generating colors for palettes based on a given color for HarmonyInfoActivity.java.
+ * @author Dustin
+ */
 public class HarmonyGenerator {
     //Each color[] should be the hsv like what is returned by the rest of the functions in this file.
     public static ArrayList<MyColor> colorsToMyColors(float[][] colors, int numberOfColors){
