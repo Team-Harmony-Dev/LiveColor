@@ -81,12 +81,12 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
 
     /**
-     * CALL FOR ADDING COLOR TO COLOR DATABASE FOR FIRST TIME (DONE)
-     * adds a new color or retrieves matching existing color from the database
-     * @param name name of the new color
-     * @param hex hex of the new color
-     * @param rgb rgb of the new color
-     * @param hsv hsv of the new color
+     * CALL FOR ADDING COLOR TO COLOR DATABASE (DONE)
+     * adds a new color or retrieves matching existing color from the database. Checks for duplicates by HEX
+     * @param name name of the color
+     * @param hex hex of the color
+     * @param rgb rgb of the color
+     * @param hsv hsv of the color
      * @return id of the new color or existing id if the color already exists in the database
      */
     public long addColorInfoData(String name, String hex, String rgb, String hsv) {
@@ -146,6 +146,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
     public boolean addPalette(MyPalette palette) {
         db = this.getWritableDatabase();
+        //add empty palette to the database
         ContentValues paletteCVs = new ContentValues();
         paletteCVs.put(PAL1, palette.getId());
         paletteCVs.put(PAL2, palette.getName());
@@ -155,12 +156,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
         long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
         Log.d(TAG_PALETTE, "addPaletteInfoData: id of new palette = " + insertResult);
 
+        //returns the id of the newly added item if successful
         if (insertResult == -1) {
             return false;
         } else {
             Log.d(TAG_PALETTE, "addPaletteInfoData: insertResult = " + insertResult);
             for(MyColor color : palette.getColors()) {
-                addColorToPalette(Long.toString(insertResult),color.getId());
+                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
+                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
             }
             return true;
         }
@@ -172,7 +175,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS THERE) (DONE)
+     * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
      * add a color existing in the color database to an existing palette if not already in the palette
      * @param paletteId id of the palette to be added to
      * @param colorId id of the color to add to the palette
