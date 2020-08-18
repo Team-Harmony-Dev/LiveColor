@@ -125,7 +125,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         saveButtonCB.setImageResource(R.drawable.bookmark_selected);
         saveButtonCB.setColorFilter(colorT);
 
-        isColorSaved = true;
+        final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
+        if(ONLY_SAVE_ONCE_PER_COLOR) {
+            isColorSaved = true;
+        }
         //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
 
         Log.d("V2S2 bugfix", "Got callback (save happened). isColorSaved="+isColorSaved+" colorT="+colorT);

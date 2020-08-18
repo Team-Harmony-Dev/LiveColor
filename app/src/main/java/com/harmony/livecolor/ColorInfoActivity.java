@@ -261,7 +261,10 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
         saveButtonCB.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
         saveButtonCB.setColorFilter(colorValue);
 
-        isButtonClicked = true;
+        final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
+        if(ONLY_SAVE_ONCE_PER_COLOR) {
+            isButtonClicked = true;
+        }
         //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
 
         Log.d("V2S2 bugfix", "Got callback (save happened). isButtonClicked="+isButtonClicked+" colorValue="+colorValue);
