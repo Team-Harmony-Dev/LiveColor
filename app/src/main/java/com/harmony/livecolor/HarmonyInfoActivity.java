@@ -136,7 +136,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
 //        });
 //        newThread.start();
         Log.d("Harmony palettes", "Test before");
-        Thread t = new HarmonyPaletteDelayedNames();
+        Thread t = new HarmonyPaletteDelayedNames(paletteList);
         t.start();
         Log.d("Harmony palettes", "Test after");
     }
