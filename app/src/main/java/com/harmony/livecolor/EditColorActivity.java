@@ -365,7 +365,10 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
             updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
             TextView colorNameN = findViewById(R.id.colorNN);
             colorNameN.setText(colorNameT);
-            resetBookmark();
+            //If they hit reset while on the original color, keep the bookmark colored.
+            if(true){
+                resetBookmark();
+            }
         }
 
     //Color the save button in if the save occurred (wasn't cancelled)
@@ -450,13 +453,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * @author Gabby
      */
     public void resetBookmark(){
-        //Conditional prevents the save button from clearing if you tap reset after saving the original color.
-        //TODO change the call to this function instead?
-        if(isButtonClickedNew){
-            saveNC.setImageResource(R.drawable.unsaved);
-            saveNC.setColorFilter(null);
-            isButtonClickedNew = false;
-        }
+        saveNC.setImageResource(R.drawable.unsaved);
+        saveNC.setColorFilter(null);
+        isButtonClickedNew = false;
     }
 
     /**
