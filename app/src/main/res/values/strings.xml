@@ -37,4 +37,9 @@
     <string name="inactive_members">Inactive Members</string>
     <string name="melanie_wong">Melanie Wong</string>
     <string name="andrew_tran">Andrew Tran</string>
+    <string name="get_to_know_us"><u>Get to Know Us</u></string>
+    <string name="meet_the_livecolor_team"><u>Meet the LiveColor Team</u></string>
+    <string name="about_livecolor"><u>About LiveColor</u></string>
+    <string name="github"><u>GitHub</u></string>
+    <string name="accent_choice_prompt">Light Mode Accent</string>
 </resources>

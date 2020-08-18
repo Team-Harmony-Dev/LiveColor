@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,10 +21,12 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -44,8 +49,12 @@ import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 
-//https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
-//TODO comment.
+/**
+ * Interface for callback for filling in save button iff
+ *   a save actually happened after opening CustomDialog.
+ *
+ * https://stackoverflow.com/questions/18279302/how-do-i-perform-a-java-callback-between-classes
+ */
 interface SaveListener{
     void saveHappened();
 }
@@ -145,6 +154,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         editRgb = rootView.findViewById(R.id.plainRgb);
         editHsv = rootView.findViewById(R.id.plainHsv);
 
+        //"Add" is the button you press for uploading or taking a picture. Refactor?
         add = rootView.findViewById(R.id.addButton);
         add.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -288,14 +298,67 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         return imagePath;
     }
 
+    /**
+     * Used for getting color using coordinates (without annoying math stuff) from the ImageView on ColorPickerFragment
+     *
+     * @param view The view to get the bitmap from
+     * @return A bitmap of what was displayed in the view
+     * @author https://stackoverflow.com/a/52905682
+     */
+    public Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+    /**
+     * The background checkered pattern appeared in the bitmap of above. So lets change the background while we grab it.
+     * @param view The imageview. TODO yeah this shouldn't accept normal view, probably.
+     * @param backgroundColor The background color you want the bitmap to have
+     * @param background The background you want it to end up with (checkered, probably)
+     * @return
+     */
+    public Bitmap getBitmapFromViewWithBackground(View view, int backgroundColor, Drawable background) {
+        view.setBackgroundColor(backgroundColor);
+        Bitmap bitmap = getBitmapFromView(view);
+        view.setBackground(background);
+        return bitmap;
+    }
+
+    /**
+     * Change visibility of all three buttons.
+     * @param visibility View.INVISIBLE, View.GONE, or View.VISIBLE
+     */
+    public void changeVisibilityInfoEditSaveButtons(int visibility){
+        getActivity().findViewById(R.id.infoButton).setVisibility(visibility);
+        getActivity().findViewById(R.id.editButton).setVisibility(visibility);
+        getActivity().findViewById(R.id.saveButton).setVisibility(visibility);
+    }
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
 
+        //TODO Dustin should clean this up. Lots of math and name stuff has changed, some comments outdated.
+        //TODO the round button isn't disappearing properly all the time?
+        //  Fixed?
+        //TODO make more efficient:
+        //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
+        //    Due to way we get background info I think we should remove it. Imagine a round or donut shaped picture, that math won't find background.
+        //  Done: When zoomed we don't need name while panning.
+        //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
+        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded.
+        
+        //This is where the color picking happens.
+        //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
         @Override
         public boolean onTouch(View view, MotionEvent event) {
+            //Hide the image selection button while dragging.
+            if(event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                add.hide();
+            }
+
             //Retrieve image from view
-            add.hide();
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
             //get image as bitmap to get color data
@@ -340,6 +403,29 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
 
+            com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
+
+            //Was attempting to account for Touchview zoom/pan stuff, but this should no longer be needed.
+            /*
+            //Account for zoom
+            RectF rect = touchView.getZoomedRect();
+            Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
+            //Handle zoom. Reduce click coordinate by %?
+            x *= rect.right;
+            y *= rect.bottom;
+
+            //Screen dimensions
+            //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+            //int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+            //Actually we want ImageView's dimensions.
+
+            //Then add based on where the screen was on the image
+            double offsetX = touchView.getX();//TODO not like that
+            double offsetY = touchView.getY();
+            x += offsetX;
+            y += offsetY;
+            Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
+            */
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
             x = x - (newImageMaxWidth/2 - newImageWidth/2);
@@ -361,10 +447,49 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 wasValidClick = false;
             }
-            //Get color int from said pixel coordinates using the source image
-            int pixel;
-            if(wasValidClick){
-                pixel = bitmap.getPixel((int) x, (int) y);
+            final int BACKGROUND_COLOR = 0;
+            //Get color int from said pixel coordinates using the source image. Default to background color.
+            int pixel = BACKGROUND_COLOR;
+            boolean wasBackgroundPixel = false;
+            //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
+            //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
+            final boolean USE_FILE_BITMAP = true;
+            //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
+            if(wasValidClick || USE_FILE_BITMAP){
+                if(USE_FILE_BITMAP){
+                    final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
+                    Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
+                    if(view_bitmap == null){
+                        Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
+                    } else {
+                        try {
+                            pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
+                            //Check if the pixel is a part of the background
+                            if(pixel == BACKGROUND_COLOR) {
+                                //3 Possible cases for pixels:
+                                //1. Pixel is opaque. Always the same no matter the background
+                                //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
+                                //3. Pixel is fully transparent. Exactly equal to background.
+                                //  But the background might be the same color as some pixel actually in the image.
+                                //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
+                                //Any not completely transparent color should be fine.
+                                final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
+                                Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
+                                int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
+                                if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
+                                    wasBackgroundPixel = true;
+                                }
+                            }
+
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " pixel=" + pixel);
+                        } catch (Exception e){
+                            //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
+                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
+                        }
+                    }
+                } else {
+                    pixel = bitmap.getPixel((int) x, (int) y);
+                }
             } else {
                 //This is a bug fix for dragging outside of the valid area not getting the color
                 // name (previously we returned above, but then that ended up with no color name)
@@ -373,24 +498,46 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 pixel = imgWithOurColor.getSolidColor();
             }
 
-            updateColorValues(view, pixel);
-            isColorSaved = false;
-            ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-            saveColorB.setImageResource(R.drawable.unsaved);
-            saveColorB.setColorFilter(null);
 
+            //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
+            final float MAX_ZOOM_MULT = 100;
+            touchView.setMaxZoom(MAX_ZOOM_MULT);
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
             final boolean USE_API_FOR_NAMES = false;
 
             //Get the color name from an API call
             //It takes a second to load and I don't want to spam the API so we only call it when we release
-            if(event.getActionMasked() == MotionEvent.ACTION_UP
+            if(
+                    //It used to be that we wanted to be able to drag around and then update the name once, when we let go, after finding the color we wanted.
+                    //event.getActionMasked() == MotionEvent.ACTION_UP
+                    //With how it works now, I think we want the updated color when we press down instead of up.
+                    //Since we get the updated color on every drag as well, getting it when we let go is a bit redundant.
+                    event.getActionMasked() == MotionEvent.ACTION_DOWN
                     //We don't want to spam the API, but local color names are so fast we can just do it live.
-                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES)) {
+                    //If we're zoomed we are panning on drag, so ignore name in that case as well.
+                    || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES && !touchView.isZoomed())) {
                 Log.d("S3US5", "Release detected");
+                Log.d("DEBUG S2US2 pinchzoom", "action up or drag detected");
 
-                if(USE_API_FOR_NAMES) {
+                //Update the color info being displayed (the patch of color the user sees, and hex, and save button)
+                updateColorValues(view, pixel);
+                isColorSaved = false;
+                ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+                saveColorB.setImageResource(R.drawable.unsaved);
+                saveColorB.setColorFilter(null);
+                changeVisibilityInfoEditSaveButtons(View.VISIBLE);
+
+                if(wasBackgroundPixel) {
+                    //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
+                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
+                    //TODO load this from somewhere else? We do need to reset it here in case the last name loaded had been using a reduced font size
+                    //TODO I suppose there's the potential issue of this string not fitting and needing a size reduction. I should change how the fitter works probably to allow for calling it here.
+                    final int FONT_SIZE = 30;
+                    viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+                    viewToUpdateColorName.setText("Background");
+                    changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
+                } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
                     final double viewWidthPercentOfScreen = 0.60;
                     final float maxFontSize = 30;
@@ -413,15 +560,19 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                         Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
                     }
                 }
+            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                //Wipe the color name until we get a new one during drags.
+                //((TextView) getActivity().findViewById(R.id.colorName)).setText("");
+            }
 
+            //Anything other than dragging should have this reappear afterwards.
+            if(event.getActionMasked() != MotionEvent.ACTION_MOVE){
                 //I believe this is the button to select an image or take a picture.
                 //  It disappears when dragging so it doesn't cover any part of the image.
                 //  So after you're done dragging it needs to reappear.
                 add.show();
-            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                //Wipe the color name until we get a new one during drags.
-                ((TextView) getActivity().findViewById(R.id.colorName)).setText("");
             }
+
             return true;
         }
     };

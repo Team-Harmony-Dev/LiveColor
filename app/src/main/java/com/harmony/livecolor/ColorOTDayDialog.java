@@ -7,11 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,8 +49,8 @@ public class ColorOTDayDialog {
 
         //Get/Set the current date
         todayDate = Calendar.getInstance().getTime();
-        TextView dateView = (TextView) colorOTDView.findViewById(R.id.dateView);
-        SimpleDateFormat simpleDate =  new SimpleDateFormat("MM/dd/yyyy");
+        TextView dateView = (TextView) colorOTDView.findViewById(R.id.textView);
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("MMMM dd yyyy");
         SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
         strDt = simpleDate.format(todayDate);
         dateView.setText(strDt);
@@ -79,8 +74,10 @@ public class ColorOTDayDialog {
 
             //Be able to fetch color name on first load? Works after first "start"
             final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
-            ColorNameGetter.updateViewWithColorName(colorName, colorOfTheDay, 0.25, 30);
-            final String colorNameStr = (String) colorName.getText();
+            Log.d("V2S2 bugfix cotd", "------------------------------------------------------size before="+colorName.getTextSize());
+            //70% is arbitraryish.
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.70, 30);
+            Log.d("V2S2 bugfix cotd", "size after set="+colorName.getTextSize());
 
             //Set onClick for back button
             final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
@@ -96,6 +93,9 @@ public class ColorOTDayDialog {
             saveCOTD.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("V2S2 bugfix cotd", "size on click="+colorName.getTextSize());
+                    final String colorNameStr = (String) colorName.getText();
+
                     int RV = Color.red(colorOfTheDay);
                     int GV = Color.green(colorOfTheDay);
                     int BV = Color.blue(colorOfTheDay);
@@ -121,6 +121,7 @@ public class ColorOTDayDialog {
 
             alertDialogSave.show();
             //makeShine();
+            Log.d("V2S2 bugfix cotd", "size after show="+colorName.getTextSize());
         }
     }
 
@@ -151,9 +152,27 @@ public class ColorOTDayDialog {
 
         Log.d("DEBUG", "generateRandomColor: seeds" + " R: " + nowRed + " G: " + nowGreen + " B: " + nowBlue);
 
-        Random randRedGen = new Random(nowRed);
-        Random randGreenGen = new Random(nowGreen);
-        Random randBlueGen = new Random(nowBlue);
+
+
+        Random randRedGen;
+        Random randGreenGen;
+        Random randBlueGen;
+
+        // rotation to keep things fresh each day
+        if (nowGreen % 3 == 0){
+            randRedGen = new Random(nowRed);
+            randGreenGen = new Random(nowGreen);
+            randBlueGen = new Random(nowBlue);
+        } else if (nowGreen % 3 == 1){
+            randRedGen = new Random(nowBlue);
+            randGreenGen = new Random(nowRed);
+            randBlueGen = new Random(nowGreen);
+
+        } else {
+            randRedGen = new Random(nowGreen);
+            randGreenGen = new Random(nowBlue);
+            randBlueGen = new Random(nowRed);
+        }
 
         int randRed = randRedGen.nextInt(256);
         int randGreen = randGreenGen.nextInt(256);

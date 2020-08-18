@@ -11,7 +11,7 @@
         android:id="@+id/toolbarHarmony"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ic_launcher_background"
+        android:background="@color/colorCard"
         android:gravity="center_vertical"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutToolbarInner"
+            android:id="@+id/constraintLayoutToolbarInnerColorInfo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="16dp"

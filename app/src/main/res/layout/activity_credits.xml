@@ -6,29 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".CreditsActivity">
 
-    <TextView
-        android:id="@+id/helloWorldText"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCredits"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/lato_bold"
-        android:text="@string/live_color_team"
-        android:textAlignment="center"
-        android:textSize="30sp"
+        android:background="@color/colorCard"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:gravity="center_vertical"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutToolbarInnerCredits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="32dp">
+
+            <TextView
+                android:id="@+id/textViewHeading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:text="@string/live_color_team"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:fillViewport="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/helloWorldText">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarCredits">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,8 +110,8 @@
 
                             <Button
                                 android:id="@+id/button13"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
                                 android:onClick="onClickLinkedInLink"
@@ -93,15 +119,15 @@
 
                             <View
                                 android:id="@+id/divider21"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button14"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
                                 android:onClick="onClickGitHubLink"
@@ -109,7 +135,7 @@
 
                             <View
                                 android:id="@+id/divider22"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -120,8 +146,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
@@ -180,8 +205,8 @@
 
                             <Button
                                 android:id="@+id/button11"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
                                 android:onClick="onClickLinkedInLink"
@@ -189,15 +214,15 @@
 
                             <View
                                 android:id="@+id/divider18"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button12"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
                                 android:onClick="onClickGitHubLink"
@@ -205,7 +230,7 @@
 
                             <View
                                 android:id="@+id/divider19"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -216,8 +241,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
@@ -277,8 +301,8 @@
 
                             <Button
                                 android:id="@+id/button9"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
                                 android:onClick="onClickLinkedInLink"
@@ -286,15 +310,15 @@
 
                             <View
                                 android:id="@+id/divider15"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button10"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
                                 android:onClick="onClickGitHubLink"
@@ -302,7 +326,7 @@
 
                             <View
                                 android:id="@+id/divider16"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -313,8 +337,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
@@ -382,8 +405,8 @@
 
                             <Button
                                 android:id="@+id/button5"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
                                 android:onClick="onClickLinkedInLink"
@@ -391,15 +414,15 @@
 
                             <View
                                 android:id="@+id/divider7"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button6"
-                                android:layout_width="20sp"
-                                android:layout_height="20sp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
                                 android:onClick="onClickGitHubLink"
@@ -408,7 +431,7 @@
 
                             <View
                                 android:id="@+id/divider10"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -420,6 +443,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
+                            android:layout_marginRight="20sp"
                             android:text="@string/daniel_blurb"
                             android:textAlignment="viewStart"
                             android:textSize="11sp"
@@ -482,8 +506,8 @@
 
                             <Button
                                 android:id="@+id/button7"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
                                 android:onClick="onClickLinkedInLink"
@@ -491,15 +515,15 @@
 
                             <View
                                 android:id="@+id/divider12"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button8"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
                                 android:onClick="onClickGitHubLink"
@@ -507,7 +531,7 @@
 
                             <View
                                 android:id="@+id/divider13"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -518,8 +542,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
@@ -531,7 +554,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -556,7 +579,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -600,30 +623,32 @@
 
                             <Button
                                 android:id="@+id/button15"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
+                                android:onClick="onClickLinkedInLink"
                                 android:tag="melanie" />
 
                             <View
                                 android:id="@+id/divider24"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button16"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
+                                android:onClick="onClickGitHubLink"
                                 android:tag="melanie" />
 
                             <View
                                 android:id="@+id/divider25"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -634,20 +659,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
                             android:textAlignment="viewStart"
-                            android:textSize="13sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -691,30 +715,32 @@
 
                             <Button
                                 android:id="@+id/button18"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/linkedin_icon"
+                                android:onClick="onClickLinkedInLink"
                                 android:tag="andrew" />
 
                             <View
                                 android:id="@+id/divider27"
-                                android:layout_width="5dp"
+                                android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button17"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
                                 android:layout_gravity="left"
                                 android:background="@drawable/github_icon"
+                                android:onClick="onClickGitHubLink"
                                 android:tag="andrew" />
 
                             <View
                                 android:id="@+id/divider28"
-                                android:layout_width="10sp"
+                                android:layout_width="15dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/listDivider"
                                 android:visibility="invisible" />
@@ -725,8 +751,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="10sp"
+                            android:layout_marginRight="20sp"
                             android:layout_marginBottom="10sp"
                             android:lineSpacingExtra="4sp"
                             android:text="@string/placeholder_text"
