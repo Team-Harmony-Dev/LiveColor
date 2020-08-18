@@ -101,7 +101,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
             paletteList.add(testBasicColorPalette);
         }
 
-        //TODO to fix this might be harder. Generate more of the other lightness?
+        //Changed the function to have parameter skipRedundantColors. If true, the returned list might be missing some entries for one side (won't get extra black when it's already black, etc).
         //Testing getting the monochromatic colors to each side of the given color based on percent.
         float[][] testMonochromatic = HarmonyGenerator.monochromaticScheme(hue, saturation, value, (float) 0.50, 5, true);
         int actualNumberOfColors = testMonochromatic.length;
@@ -128,6 +128,8 @@ public class HarmonyInfoActivity extends AppCompatActivity {
             MyPalette testEvenEvenSpacedPalette = new MyPalette("5", "Four evenly spaced hues", testEvenEvenSpacedMyColors);
             paletteList.add(testEvenEvenSpacedPalette);
         }
+
+        //Now that we have the palettes, we can add names asynchronously?
     }
 
     public void initRecycler(){
