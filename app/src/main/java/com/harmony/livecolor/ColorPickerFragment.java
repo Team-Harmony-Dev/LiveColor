@@ -85,6 +85,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private static final int IMAGE_CAPTURE_CODE = 1001;
     //Text displayed as color name if you click on the background
     private static final String BACKGROUND_COLOR_TEXT = "Background";
+    private final static double MAX_TEXTVIEW_WIDTH_PERCENT = 0.60;
+    //Font size in sp
+    private final static float MAX_FONT_SIZE = 30;
     private String imagePath = null;
     private ImageView pickingImage;
     private Uri imageUri;
@@ -536,17 +539,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 if(wasBackgroundPixel) {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    //TODO load this from somewhere else? We do need to reset it here in case the last name loaded had been using a reduced font size
-                    //TODO I suppose there's the potential issue of this string not fitting and needing a size reduction. I should change how the fitter works probably to allow for calling it here.
-                    final int FONT_SIZE = 30;
-                    viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-                    viewToUpdateColorName.setText(BACKGROUND_COLOR_TEXT);
+                    //Fit the name into the textview
+                    ColorNameGetterCSV.setAppropriatelySizedText(viewToUpdateColorName, BACKGROUND_COLOR_TEXT, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
+                    //Remove the buttons
                     changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
                 } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
                 } else {
                     //Get the hex, and then name that corresponds to the hex
                     String hex = "#"+colorToHex(pixel);
@@ -554,9 +553,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
                         //Display the name on one line
                         TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                        final double viewWidthPercentOfScreen = 0.60;
-                        final float maxFontSize = 30;
-                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
                     } else {
                         String colorName = ColorNameGetterCSV.getName(hex);
                         //Display the name
@@ -632,40 +629,15 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         String savedColorName = prefs.getString("colorName", null);
         // loads saved name, if it exists
         if(savedColorName != null) {
-            ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
-            //Hide the buttons if it was a background color
+            TextView view = getActivity().findViewById(R.id.colorName);
             if(savedColorName.equals(BACKGROUND_COLOR_TEXT)){
+                //Set the text to whatever we call the background
+                ColorNameGetterCSV.setAppropriatelySizedText(view, BACKGROUND_COLOR_TEXT, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
+                //Hide the buttons iff it was a background color
                 changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
-            }
-            //TODO name sure it fits the space, set font size properly.
-            /*
-            final boolean USE_API_FOR_NAMES = false;
-            if(USE_API_FOR_NAMES) {
-                final double viewWidthPercentOfScreen = 0.60;
-                final float maxFontSize = 30;
-                TextView view = getActivity().findViewById(R.id.colorName);
-                ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
             } else {
-                final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
-                if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
-                    //Display the name on one line
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    String hex = "#" + colorToHex(savedColorInt);
-                    ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
-                } else {
-                    //Get the hex, and then name that corresponds to the hex
-                    String hex = "#" + colorToHex(savedColorInt);
-                    String colorName = ColorNameGetterCSV.getName(hex);
-                    //Display the name
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    viewToUpdateColorName.setText(colorName);
-                }
-                //Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+                ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
             }
-
-            */
         }
         updateColorValues(getView(), savedColorInt);
     }
