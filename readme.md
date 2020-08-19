@@ -18,6 +18,6 @@ Color Picking              | Color Info                | Harmonies              
 - Using Android Studio’s AVD manager, set up and run an emulator using Pixel 2 API 27
 
 ## Sources
-[Color Names](https://github.com/meodai/color-names#about-)
+[Color Names](https://github.com/meodai/color-names#about-)  
 [Touch View](https://github.com/MikeOrtiz/TouchImageView)
 
