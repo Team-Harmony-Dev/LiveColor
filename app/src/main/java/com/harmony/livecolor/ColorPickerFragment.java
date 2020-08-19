@@ -629,6 +629,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
+            //Will this just work?
+            ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
+            //TODO name sure it fits the space, set font size properly.
+            /*
             final boolean USE_API_FOR_NAMES = false;
             if(USE_API_FOR_NAMES) {
                 final double viewWidthPercentOfScreen = 0.60;
@@ -654,6 +658,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 }
                 //Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
             }
+
+            */
         }
         updateColorValues(getView(), savedColorInt);
     }
