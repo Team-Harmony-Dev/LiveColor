@@ -233,8 +233,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekRed.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekRed.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
@@ -270,8 +275,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekGreen.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekGreen.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
@@ -307,8 +317,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekBlue.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekBlue.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
