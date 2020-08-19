@@ -366,6 +366,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 add.hide();
             }
 
+            /*
             //Retrieve image from view
             ImageView pickedImage = view.findViewById(R.id.pickingImage);
 
@@ -410,6 +411,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             double x = event.getX();
             double y = event.getY();
             Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
+            */
 
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
@@ -434,6 +436,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             y += offsetY;
             Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
             */
+            /*
             //The image might not take the whole imageview. We could try to resize the imageview, or
             //  we could translate the x y coordinates like this:
             x = x - (newImageMaxWidth/2 - newImageWidth/2);
@@ -447,7 +450,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             y = y * rescaleY;
 
             Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
-
             //If you click in the image and then drag outside the image this function still fires,
             //  but with invalid x & y, causing a crash on bitmap.getPixel()
             boolean wasValidClick = true;
@@ -455,6 +457,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
                 wasValidClick = false;
             }
+            */
             final int BACKGROUND_COLOR = 0;
             //Get color int from said pixel coordinates using the source image. Default to background color.
             int pixel = BACKGROUND_COLOR;
@@ -463,7 +466,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
-            if(wasValidClick || USE_FILE_BITMAP){
+            if(/*wasValidClick ||*/ USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
@@ -495,17 +498,18 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                         }
                     }
-                } else {
+                } /*else {
                     pixel = bitmap.getPixel((int) x, (int) y);
                 }
-            } else {
+                */
+            }/* else {
                 //This is a bug fix for dragging outside of the valid area not getting the color
                 // name (previously we returned above, but then that ended up with no color name)
                 //So lets just get the last valid color, which was stored in the imageview
                 ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
                 pixel = imgWithOurColor.getSolidColor();
             }
-
+            */
 
             //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
             final float MAX_ZOOM_MULT = 100;
