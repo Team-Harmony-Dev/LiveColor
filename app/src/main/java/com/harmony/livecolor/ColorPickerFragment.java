@@ -83,6 +83,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private static final int CAMERA_OR_GALLERY = 0;
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int IMAGE_CAPTURE_CODE = 1001;
+    //Text displayed as color name if you click on the background
+    private static final String BACKGROUND_COLOR_TEXT = "Background";
     private String imagePath = null;
     private ImageView pickingImage;
     private Uri imageUri;
@@ -538,7 +540,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //TODO I suppose there's the potential issue of this string not fitting and needing a size reduction. I should change how the fitter works probably to allow for calling it here.
                     final int FONT_SIZE = 30;
                     viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-                    viewToUpdateColorName.setText("Background");
+                    viewToUpdateColorName.setText(BACKGROUND_COLOR_TEXT);
                     changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
                 } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
@@ -630,7 +632,12 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         String savedColorName = prefs.getString("colorName", null);
         if(savedColorName != null) { // loads saved name, if it exists
             //Will this just work?
+            Log.d("I54", "Read name "+savedColorName + " eq="+(savedColorName == BACKGROUND_COLOR_TEXT));
             ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
+            //Hide the buttons if it was a background color
+            if(savedColorName == BACKGROUND_COLOR_TEXT){
+                changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
+            }
             //TODO name sure it fits the space, set font size properly.
             /*
             final boolean USE_API_FOR_NAMES = false;
