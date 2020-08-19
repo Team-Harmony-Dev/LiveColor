@@ -630,12 +630,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
-        if(savedColorName != null) { // loads saved name, if it exists
-            //Will this just work?
-            Log.d("I54", "Read name "+savedColorName + " eq="+(savedColorName == BACKGROUND_COLOR_TEXT));
+        // loads saved name, if it exists
+        if(savedColorName != null) {
             ((TextView) getActivity().findViewById(R.id.colorName)).setText(savedColorName);
             //Hide the buttons if it was a background color
-            if(savedColorName == BACKGROUND_COLOR_TEXT){
+            if(savedColorName.equals(BACKGROUND_COLOR_TEXT)){
                 changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
             }
             //TODO name sure it fits the space, set font size properly.
