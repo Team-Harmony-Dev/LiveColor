@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     //colorNameGetter changes the text in these views
     //Name on the main picker page
     static TextView colorNameView;
+    boolean isEnabledCotd;
 
 
     @Override
@@ -79,8 +80,6 @@ public class MainActivity extends AppCompatActivity
         int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // dark mode changes
-
-
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
                 // Night mode is not active, we're using the light theme
@@ -98,6 +97,14 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences myPrefs;
         myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
+        // is cotd enabled?
+        if(myPrefs.contains("dialogCotd")){
+           isEnabledCotd = myPrefs.getBoolean("dialogCotd", true);
+        }else{
+            isEnabledCotd = true;
+            myPrefs.edit().putBoolean("dialogCotd", true);
+        }
 
         onLoadFragment();
 
@@ -198,10 +205,14 @@ public class MainActivity extends AppCompatActivity
     //Overwritten Lifecycle methods for debugging purposes
     @Override
     protected void onStart() {
-        Log.d("Lifecycles", "onStart: MainActivity started");
-        ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
-        cotdDialog.showColorOTD();
 
+
+        Log.d("Lifecycles", "onStart: MainActivity started");
+
+        if(isEnabledCotd) {
+            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
+            cotdDialog.showColorOTD();
+        }
         super.onStart();
     }
 

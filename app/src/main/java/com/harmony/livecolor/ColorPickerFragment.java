@@ -83,6 +83,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private static final int CAMERA_OR_GALLERY = 0;
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int IMAGE_CAPTURE_CODE = 1001;
+    //Text displayed as color name if you click on the background
+    private static final String BACKGROUND_COLOR_TEXT = "Background";
+    private final static double MAX_TEXTVIEW_WIDTH_PERCENT = 0.60;
+    //Font size in sp
+    private final static float MAX_FONT_SIZE = 30;
     private String imagePath = null;
     private ImageView pickingImage;
     private Uri imageUri;
@@ -125,7 +130,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         saveButtonCB.setImageResource(R.drawable.bookmark_selected);
         saveButtonCB.setColorFilter(colorT);
 
-        isColorSaved = true;
+        final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
+        if(ONLY_SAVE_ONCE_PER_COLOR) {
+            isColorSaved = true;
+        }
         //Log.d("V2S2 bugfix", "callback saveColorB="+saveColorB);
 
         Log.d("V2S2 bugfix", "Got callback (save happened). isColorSaved="+isColorSaved+" colorT="+colorT);
@@ -237,7 +245,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         infoColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
-                updateColorName(getView());
+                //updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
                 startActivity(startCIA);
             }
@@ -247,7 +255,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         editColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
-                updateColorName(getView());
+                //updateColorName(getView());
                 Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
                 startActivity(startEditColorActivity);
             }
@@ -338,17 +346,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
-
-        //TODO Dustin should clean this up. Lots of math and name stuff has changed, some comments outdated.
-        //TODO the round button isn't disappearing properly all the time?
-        //  Fixed?
-        //TODO make more efficient:
-        //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
-        //    Due to way we get background info I think we should remove it. Imagine a round or donut shaped picture, that math won't find background.
-        //  Done: When zoomed we don't need name while panning.
-        //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
-        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded.
-        
         //This is where the color picking happens.
         //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
         @Override
@@ -358,95 +355,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 add.hide();
             }
 
-            //Retrieve image from view
-            ImageView pickedImage = view.findViewById(R.id.pickingImage);
-
-            //get image as bitmap to get color data
-            Bitmap bitmap;
-            try {
-                bitmap = ((BitmapDrawable) pickedImage.getDrawable()).getBitmap();
-            } catch (Exception e){
-                Log.w("onTouch() possible error", "(Probably unable to retrieve image and/or turn it into a bitmap): "+e);
-                return true;
-            }
-
-            //The horizontal space we have to display it in, in pixels.
-            //Image doesn't necessarily take the entire ImageView!
-            double newImageMaxWidth = pickedImage.getWidth();
-            double newImageMaxHeight = pickedImage.getHeight();
-            //The original image size, before it was scaled to our screen.
-            double originalImageWidth = bitmap.getWidth();
-            double originalImageHeight = bitmap.getHeight();
-            //The space that it actually uses, in pixels.
-            double newImageWidth = 0.0;
-            double newImageHeight = 0.0;
-
-            // https://stackoverflow.com/a/13318469
-            // Gets the actual size of the image inside the imageview, since it might not take
-            //   up the entire space.
-            if (newImageMaxHeight * originalImageWidth <= newImageMaxWidth * originalImageHeight) {
-                newImageWidth = originalImageWidth * newImageMaxHeight / originalImageHeight;
-                newImageHeight = newImageMaxHeight;
-            } else {
-                newImageWidth = newImageMaxWidth;
-                newImageHeight = originalImageHeight * newImageMaxWidth / originalImageWidth;
-            }
-
-            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
-                    +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
-
-
-            Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
-            //This should get us x and y with respect to the ImageView we click on,
-            //  not the whole screen, and not the image itself.
-            double x = event.getX();
-            double y = event.getY();
-            Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
-
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
-            //Was attempting to account for Touchview zoom/pan stuff, but this should no longer be needed.
-            /*
-            //Account for zoom
-            RectF rect = touchView.getZoomedRect();
-            Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
-            //Handle zoom. Reduce click coordinate by %?
-            x *= rect.right;
-            y *= rect.bottom;
-
-            //Screen dimensions
-            //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-            //int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-            //Actually we want ImageView's dimensions.
-
-            //Then add based on where the screen was on the image
-            double offsetX = touchView.getX();//TODO not like that
-            double offsetY = touchView.getY();
-            x += offsetX;
-            y += offsetY;
-            Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
-            */
-            //The image might not take the whole imageview. We could try to resize the imageview, or
-            //  we could translate the x y coordinates like this:
-            x = x - (newImageMaxWidth/2 - newImageWidth/2);
-            //For some reason this doesn't work? Maybe newImageHeight contains the wrong values?
-            y = y - (newImageMaxHeight/2 - newImageHeight/2);
-            //Now we need to change the coordinates because when we get stuff from the bitmap it's
-            //  using pixels based on the original image size.
-            double rescaleX = originalImageWidth / newImageWidth;
-            double rescaleY = originalImageHeight / newImageHeight;
-            x = x * rescaleX;
-            y = y * rescaleY;
-
-            Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
-
-            //If you click in the image and then drag outside the image this function still fires,
-            //  but with invalid x & y, causing a crash on bitmap.getPixel()
-            boolean wasValidClick = true;
-            if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
-                Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
-                wasValidClick = false;
-            }
             final int BACKGROUND_COLOR = 0;
             //Get color int from said pixel coordinates using the source image. Default to background color.
             int pixel = BACKGROUND_COLOR;
@@ -455,7 +365,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
-            if(wasValidClick || USE_FILE_BITMAP){
+            if(/*wasValidClick ||*/ USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
@@ -487,17 +397,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                         }
                     }
-                } else {
-                    pixel = bitmap.getPixel((int) x, (int) y);
                 }
-            } else {
-                //This is a bug fix for dragging outside of the valid area not getting the color
-                // name (previously we returned above, but then that ended up with no color name)
-                //So lets just get the last valid color, which was stored in the imageview
-                ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
-                pixel = imgWithOurColor.getSolidColor();
             }
-
 
             //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
             final float MAX_ZOOM_MULT = 100;
@@ -531,17 +432,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 if(wasBackgroundPixel) {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    //TODO load this from somewhere else? We do need to reset it here in case the last name loaded had been using a reduced font size
-                    //TODO I suppose there's the potential issue of this string not fitting and needing a size reduction. I should change how the fitter works probably to allow for calling it here.
-                    final int FONT_SIZE = 30;
-                    viewToUpdateColorName.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-                    viewToUpdateColorName.setText("Background");
+                    //Fit the name into the textview
+                    ColorNameGetterCSV.setAppropriatelySizedText(viewToUpdateColorName, BACKGROUND_COLOR_TEXT, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
+                    //Remove the buttons
                     changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
                 } else if(USE_API_FOR_NAMES) {
                     TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, viewWidthPercentOfScreen, maxFontSize);
+                    ColorNameGetter.updateViewWithColorName(viewToUpdateColorName, pixel, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
                 } else {
                     //Get the hex, and then name that corresponds to the hex
                     String hex = "#"+colorToHex(pixel);
@@ -549,9 +446,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
                         //Display the name on one line
                         TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                        final double viewWidthPercentOfScreen = 0.60;
-                        final float maxFontSize = 30;
-                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
+                        ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
                     } else {
                         String colorName = ColorNameGetterCSV.getName(hex);
                         //Display the name
@@ -572,7 +467,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 //  So after you're done dragging it needs to reappear.
                 add.show();
             }
-
+            //The view parameter actually isn't used.
+            //Save the new name to storage in case the app closes or fragment switches.
+            updateColorName(getView());
             return true;
         }
     };
@@ -591,7 +488,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
+        //updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
     }
 
     @Override
@@ -625,32 +522,14 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
         int savedColorInt = prefs.getInt("colorValue", Color.WHITE);
         String savedColorName = prefs.getString("colorName", null);
-        if(savedColorName != null) { // loads saved name, if it exists
-            final boolean USE_API_FOR_NAMES = false;
-            if(USE_API_FOR_NAMES) {
-                final double viewWidthPercentOfScreen = 0.60;
-                final float maxFontSize = 30;
-                TextView view = getActivity().findViewById(R.id.colorName);
-                ColorNameGetter.updateViewWithColorName(view, savedColorInt, viewWidthPercentOfScreen, maxFontSize);
-            } else {
-                final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
-                if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
-                    //Display the name on one line
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    final double viewWidthPercentOfScreen = 0.60;
-                    final float maxFontSize = 30;
-                    String hex = "#" + colorToHex(savedColorInt);
-                    ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen, maxFontSize);
-                } else {
-                    //Get the hex, and then name that corresponds to the hex
-                    String hex = "#" + colorToHex(savedColorInt);
-                    String colorName = ColorNameGetterCSV.getName(hex);
-                    //Display the name
-                    TextView viewToUpdateColorName = getActivity().findViewById(R.id.colorName);
-                    viewToUpdateColorName.setText(colorName);
-                }
-                //Log.d("V2S1 colorname", "Hex "+hex+": "+colorName);
+        // loads saved name, if it exists
+        if(savedColorName != null) {
+            TextView view = getActivity().findViewById(R.id.colorName);
+            if(savedColorName.equals(BACKGROUND_COLOR_TEXT)){
+                //Hide the buttons iff it was a background color
+                changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
             }
+            ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
         }
         updateColorValues(getView(), savedColorInt);
     }
