@@ -635,13 +635,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         if(savedColorName != null) {
             TextView view = getActivity().findViewById(R.id.colorName);
             if(savedColorName.equals(BACKGROUND_COLOR_TEXT)){
-                //Set the text to whatever we call the background
-                ColorNameGetterCSV.setAppropriatelySizedText(view, BACKGROUND_COLOR_TEXT, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
                 //Hide the buttons iff it was a background color
                 changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
-            } else {
-                ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
             }
+            ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
         }
         updateColorValues(getView(), savedColorInt);
     }
