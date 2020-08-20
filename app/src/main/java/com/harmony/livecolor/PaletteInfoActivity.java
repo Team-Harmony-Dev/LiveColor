@@ -129,6 +129,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
             colorList.remove(position);
             db.updateRefString(palette.getId(), colorList, false);
             adapter.notifyItemRemoved(position);
+            adapter.notifyItemRangeChanged(position,colorList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
