@@ -126,14 +126,14 @@ public class ColorDatabase extends SQLiteOpenHelper {
         paletteInfoContentValues.put(PAL2, name);
         paletteInfoContentValues.put(PAL3, " ");
 
-        Log.d(TAG_PALETTE, "addPaletteInfoData: adding new palette " + name);
+        Log.d(TAG_PALETTE, "addNewPalette: adding new palette " + name);
         long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteInfoContentValues);
-        Log.d(TAG_PALETTE, "addPaletteInfoData: id of new palette = " + insertResult);
+        Log.d(TAG_PALETTE, "addNewPalette: id of new palette = " + insertResult);
 
         if (insertResult == -1) {
             return false;
         } else {
-            Log.d(TAG_PALETTE, "addPaletteInfoData: insertResult = " + insertResult);
+            Log.d(TAG_PALETTE, "addNewPalette: insertResult = " + insertResult);
             return addColorToPalette(Long.toString(insertResult),id);
         }
     }
@@ -144,7 +144,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
      * @return true if successful, false otherwise
      */
-    public boolean addPalette(MyPalette palette) {
+    public boolean addPreExistingPalette(MyPalette palette) {
         db = this.getWritableDatabase();
         //add empty palette to the database
         ContentValues paletteCVs = new ContentValues();
@@ -152,15 +152,15 @@ public class ColorDatabase extends SQLiteOpenHelper {
         paletteCVs.put(PAL2, palette.getName());
         paletteCVs.put(PAL3, " ");
 
-        Log.d(TAG_PALETTE, "addPaletteInfoData: adding new palette " + palette.getId() + palette.getName());
+        Log.d(TAG_PALETTE, "addPreExistingPalette: adding new palette " + palette.getId() + palette.getName());
         long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
-        Log.d(TAG_PALETTE, "addPaletteInfoData: id of new palette = " + insertResult);
+        Log.d(TAG_PALETTE, "addPreExistingPalette: id of new palette = " + insertResult);
 
         //returns the id of the newly added item if successful
         if (insertResult == -1) {
             return false;
         } else {
-            Log.d(TAG_PALETTE, "addPaletteInfoData: insertResult = " + insertResult);
+            Log.d(TAG_PALETTE, "addPreExistingPalette: insertResult = " + insertResult);
             for(MyColor color : palette.getColors()) {
                 Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
                 addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
@@ -170,8 +170,28 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     //TODO: Might be used for harmony saving, but could probably be replaced with the above depending on implementation
-    public boolean addPalette(String name, String ref) {
-        return false;
+    public boolean addPalette(MyPalette palette) {
+        db = this.getWritableDatabase();
+        //add empty palette to the database
+        ContentValues paletteCVs = new ContentValues();
+        paletteCVs.put(PAL2, palette.getName());
+        paletteCVs.put(PAL3, " ");
+
+        Log.d(TAG_PALETTE, "addPalette: adding new palette " + palette.getId() + palette.getName());
+        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
+        Log.d(TAG_PALETTE, "addPalette: id of new palette = " + insertResult);
+
+        //returns the id of the newly added item if successful
+        if (insertResult == -1) {
+            return false;
+        } else {
+            Log.d(TAG_PALETTE, "addPalette: insertResult = " + insertResult);
+            for(MyColor color : palette.getColors()) {
+                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
+                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
+            }
+            return true;
+        }
     }
 
     /**
@@ -217,7 +237,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public boolean deletePalette(String paletteId) {
         db = this.getWritableDatabase();
 
-        String deleteQuery = "DELETE * FROM " + PALETTE_TABLE_NAME
+        String deleteQuery = "DELETE FROM " + PALETTE_TABLE_NAME
                 + " WHERE ID = \'" + paletteId + "\'";
         try {
             db.execSQL(deleteQuery);

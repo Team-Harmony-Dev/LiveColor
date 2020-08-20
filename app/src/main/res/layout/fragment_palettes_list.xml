@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:autofillHints="Test"
         android:iconifiedByDefault="false"
+        android:queryBackground="@color/empty"
         android:queryHint="Enter Palette Name or # HEX value"
         app:layout_constraintBottom_toTopOf="@+id/guidelineSearch"
         app:layout_constraintEnd_toEndOf="parent"
