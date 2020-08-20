@@ -366,98 +366,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 add.hide();
             }
 
-            /*
-            //Retrieve image from view
-            ImageView pickedImage = view.findViewById(R.id.pickingImage);
-
-            //get image as bitmap to get color data
-            Bitmap bitmap;
-            try {
-                bitmap = ((BitmapDrawable) pickedImage.getDrawable()).getBitmap();
-            } catch (Exception e){
-                Log.w("onTouch() possible error", "(Probably unable to retrieve image and/or turn it into a bitmap): "+e);
-                return true;
-            }
-
-            //The horizontal space we have to display it in, in pixels.
-            //Image doesn't necessarily take the entire ImageView!
-            double newImageMaxWidth = pickedImage.getWidth();
-            double newImageMaxHeight = pickedImage.getHeight();
-            //The original image size, before it was scaled to our screen.
-            double originalImageWidth = bitmap.getWidth();
-            double originalImageHeight = bitmap.getHeight();
-            //The space that it actually uses, in pixels.
-            double newImageWidth = 0.0;
-            double newImageHeight = 0.0;
-
-            // https://stackoverflow.com/a/13318469
-            // Gets the actual size of the image inside the imageview, since it might not take
-            //   up the entire space.
-            if (newImageMaxHeight * originalImageWidth <= newImageMaxWidth * originalImageHeight) {
-                newImageWidth = originalImageWidth * newImageMaxHeight / originalImageHeight;
-                newImageHeight = newImageMaxHeight;
-            } else {
-                newImageWidth = newImageMaxWidth;
-                newImageHeight = originalImageHeight * newImageMaxWidth / originalImageWidth;
-            }
-
-            Log.d("DEBUG S2US2","Found ImageView dimensions: "+newImageMaxWidth+" "
-                    +newImageMaxHeight +" image takes up "+newImageWidth +" "+newImageHeight);
-
-
-            Log.d("DEBUG S2US2","Source image has dimensions "+originalImageWidth+" "+originalImageHeight);
-            //This should get us x and y with respect to the ImageView we click on,
-            //  not the whole screen, and not the image itself.
-            double x = event.getX();
-            double y = event.getY();
-            Log.d("DEBUG S2US2", "ImageView click x="+x+" y="+y);
-            */
-
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
-            //Was attempting to account for Touchview zoom/pan stuff, but this should no longer be needed.
-            /*
-            //Account for zoom
-            RectF rect = touchView.getZoomedRect();
-            Log.d("DEBUG S2US2 pinchzoom", "rect(l, t, r, b)="+rect);
-            //Handle zoom. Reduce click coordinate by %?
-            x *= rect.right;
-            y *= rect.bottom;
-
-            //Screen dimensions
-            //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-            //int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-            //Actually we want ImageView's dimensions.
-
-            //Then add based on where the screen was on the image
-            double offsetX = touchView.getX();//TODO not like that
-            double offsetY = touchView.getY();
-            x += offsetX;
-            y += offsetY;
-            Log.d("DEBUG S2US2 pinchzoom", "offsetX="+offsetX+" offsetY="+offsetY);
-            */
-            /*
-            //The image might not take the whole imageview. We could try to resize the imageview, or
-            //  we could translate the x y coordinates like this:
-            x = x - (newImageMaxWidth/2 - newImageWidth/2);
-            //For some reason this doesn't work? Maybe newImageHeight contains the wrong values?
-            y = y - (newImageMaxHeight/2 - newImageHeight/2);
-            //Now we need to change the coordinates because when we get stuff from the bitmap it's
-            //  using pixels based on the original image size.
-            double rescaleX = originalImageWidth / newImageWidth;
-            double rescaleY = originalImageHeight / newImageHeight;
-            x = x * rescaleX;
-            y = y * rescaleY;
-
-            Log.d("DEBUG S2US2", "Modified coordinates are now x="+x+" y="+y+" using rescales "+rescaleX+" "+rescaleY);
-            //If you click in the image and then drag outside the image this function still fires,
-            //  but with invalid x & y, causing a crash on bitmap.getPixel()
-            boolean wasValidClick = true;
-            if(x < 0 || y < 0 || x > originalImageWidth || y > originalImageHeight) {
-                Log.d("DEBUG S2US2", "Ignoring invalid click coordinates");
-                wasValidClick = false;
-            }
-            */
             final int BACKGROUND_COLOR = 0;
             //Get color int from said pixel coordinates using the source image. Default to background color.
             int pixel = BACKGROUND_COLOR;
@@ -498,18 +408,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                             Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                         }
                     }
-                } /*else {
-                    pixel = bitmap.getPixel((int) x, (int) y);
                 }
-                */
-            }/* else {
-                //This is a bug fix for dragging outside of the valid area not getting the color
-                // name (previously we returned above, but then that ended up with no color name)
-                //So lets just get the last valid color, which was stored in the imageview
-                ImageView imgWithOurColor = getActivity().findViewById(R.id.pickedColorDisplayView);
-                pixel = imgWithOurColor.getSolidColor();
             }
-            */
 
             //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
             final float MAX_ZOOM_MULT = 100;
