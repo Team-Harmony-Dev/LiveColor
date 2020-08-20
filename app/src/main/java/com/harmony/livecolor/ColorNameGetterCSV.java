@@ -272,7 +272,7 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @param maximumFontSize The font size that will be used if no reduction is needed.
      * @author Dustin
      */
-    protected static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
+    public static void setAppropriatelySizedText(TextView view, String colorName, double maximumViewWidthPercentOfScreen, float maximumFontSize) {
         view.setText(colorName);
 
         // The idea is to detect how much we need to reduce the font size by, and then

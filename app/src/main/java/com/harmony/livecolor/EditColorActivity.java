@@ -41,6 +41,7 @@ import static com.harmony.livecolor.UsefulFunctions.getIntFromColor;
  */
 public class EditColorActivity extends AppCompatActivity implements SaveListener {
 
+    final static boolean ONLY_SAVE_ONCE_PER_COLOR = false;
     int colorValue;
     //For the save button animation/color fill
     private ImageView saveButtonCB;
@@ -232,8 +233,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekRed.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekRed.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
@@ -269,8 +275,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekGreen.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekGreen.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
@@ -306,8 +317,13 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = Integer.parseInt(input.getText().toString());
-                        seekBlue.setProgress(m_Text);
+                        try {
+                            m_Text = Integer.parseInt(input.getText().toString());
+                            Log.d("I34", "m_Text="+m_Text);
+                            seekBlue.setProgress(m_Text);
+                        } catch (NumberFormatException e) {
+                            Log.d("I34", "Input was empty");
+                        }
                         EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                         updateColorNameWithView(colorNNView);
                     }
@@ -348,30 +364,40 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * changed as part of the onCreate inner to outer method refactor
      */
     public void onClickReset(View view) {
+        int oldRed = seekRed.getProgress();
+        int oldGreen = seekGreen.getProgress();
+        int oldBlue = seekBlue.getProgress();
 
-            ImageButton reset = (ImageButton) view;
-            ToggleButtonState = simpleToggleButton.isChecked();
-            reset.startAnimation(rotate);
-            if(!ToggleButtonState){
-                updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            } else {
-                int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
-                updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            }
+        ImageButton reset = (ImageButton) view;
+        ToggleButtonState = simpleToggleButton.isChecked();
+        reset.startAnimation(rotate);
+        if(!ToggleButtonState){
+            updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        } else {
+            int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        }
 
-            updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-            TextView colorNameN = findViewById(R.id.colorNN);
-            colorNameN.setText(colorNameT);
+        updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        TextView colorNameN = findViewById(R.id.colorNN);
+        colorNameN.setText(colorNameT);
+        //For if they hit reset while on the original color, keep the bookmark colored. (only reset if the color changed)
+        if(seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue){
             resetBookmark();
         }
+    }
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
         saveButtonCB.setImageResource(R.drawable.bookmark_selected );
         saveButtonCB.setColorFilter(colorICB);
-        isButtonClickedNew = true;
+
+        if(ONLY_SAVE_ONCE_PER_COLOR) {
+            isButtonClickedNew = true;
+        }
+
         Log.d("V2S2 bugfix", "Got callback (save happened).");
     }
 
@@ -445,11 +471,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
      * @author Gabby
      */
     public void resetBookmark(){
-        if(isButtonClickedNew){
-            saveNC.setImageResource(R.drawable.unsaved);
-            saveNC.setColorFilter(null);
-            isButtonClickedNew = false;
-        }
+        saveNC.setImageResource(R.drawable.unsaved);
+        saveNC.setColorFilter(null);
+        isButtonClickedNew = false;
     }
 
     /**
