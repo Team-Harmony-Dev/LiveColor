@@ -7,9 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -30,6 +37,8 @@ import android.widget.ToggleButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,6 +49,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
+import static com.harmony.livecolor.UsefulFunctions.convertRGBtoHSV;
 
 public class SettingsFragment  extends  Fragment{
 
@@ -49,7 +59,7 @@ public class SettingsFragment  extends  Fragment{
     TextView textViewMeetTeam;
     Switch switchDarkMode;
     ToggleButton toggleButtonCotd;
-
+    EditText editTextAccent;
     private WeakReference<Activity> mActivity;
 
     public SettingsFragment() {
@@ -98,6 +108,7 @@ public class SettingsFragment  extends  Fragment{
         textViewMeetTeam =  rootView.findViewById(R.id.textView13);
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
+        editTextAccent = rootView.findViewById(R.id.editTextAccentHex);
 
 
         // show proper darkmode val
@@ -107,6 +118,58 @@ public class SettingsFragment  extends  Fragment{
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isCotdEnabled = preferences.getBoolean("dialogCotd",true);
         toggleButtonCotd.setChecked(isCotdEnabled);
+
+
+        editTextAccent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {}
+        });
+        // filter for proper hex (with #)
+        InputFilter hexFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+                Pattern pattern = Pattern.compile("^(#)?\\p{XDigit}+$");
+                StringBuilder sb = new StringBuilder();
+                if(source.length() > 7) return source.subSequence(start, end-1); // max 7 characters
+                for (int i = start; i < end; i++) {
+                    //Only allow characters "0123456789ABCDEF";
+                    Matcher matcher = pattern.matcher(String.valueOf(source.charAt(i)));
+                    if (!matcher.matches()) {
+                        return source.subSequence(start, end);
+                    }
+                    //Add character to Strinbuilder
+                    sb.append(source.charAt(i));
+                }
+                //Return text in UpperCase. if all good
+                if (sb.toString().length() == 7 ){
+                    if(sb.toString().matches("^(#)\\p{XDigit}+$")){
+                        return  sb.toString().toUpperCase();
+                    }else{
+                        return "";
+                    }
+                }else{
+                if (sb.toString().length() == 6 ){
+                    if(sb.toString().matches("^\\p{XDigit}+$")){
+                        return  sb.toString().toUpperCase();
+                    }else{
+                        return "";
+                    }
+                }
+                }
+                return  sb.toString().toUpperCase();
+            }
+        };
+        editTextAccent.setFilters(new InputFilter[] { hexFilter });
+        editTextAccent.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
 
         textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,6 +308,69 @@ public class SettingsFragment  extends  Fragment{
         buttonView.setChecked(isChecked);
 
     }
+
+
+    public void afterTextChangedAccentHex(Editable seq){
+
+        String accentColor = "";
+
+        if (seq.toString().length() == 7 ){
+            if(seq.toString().matches("^(#)\\p{XDigit}+$")){
+                accentColor = seq.toString().toUpperCase();
+            }else{
+                accentColor = "";
+            }
+        }else{
+            if (seq.toString().length() == 6 ){
+                if(seq.toString().matches("^\\p{XDigit}+$")){
+                    accentColor = "#"+seq.toString().toUpperCase();
+                }else{
+                    accentColor = "";
+                }
+            }else{
+                accentColor = "";
+            }
+        }
+
+        if (accentColor.length() > 0){
+
+            if(NightModeUtils.isNightModeEnabled(this.getContext())){
+
+            }
+
+        }else{
+            seq.clear();
+
+        }
+    }
+
+//    /**
+//     * RESET COLOR
+//     * clear new color according to toggle, rotate reset button
+//     * @param view view of button
+//     *
+//     * @author Gabby
+//     * changed as part of the onCreate inner to outer method refactor
+//     */
+//    public void onClickReset(View view) {
+//
+//        ImageButton reset = (ImageButton) view;
+//        ToggleButtonState = simpleToggleButton.isChecked();
+//        reset.startAnimation(rotate);
+//        if(!ToggleButtonState){
+//            updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+//            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+//        } else {
+//            int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+//            updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
+//            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+//        }
+//
+//        updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+//        TextView colorNameN = findViewById(R.id.colorNN);
+//        colorNameN.setText(colorNameT);
+//        resetBookmark();
+//    }
 
 
 
