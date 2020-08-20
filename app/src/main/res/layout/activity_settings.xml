@@ -66,11 +66,11 @@
                         android:fontFamily="@font/lato_bold"
                         android:text="Color of the Day"
                         android:textSize="20sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/toggleButton5"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/toggleButtonCotd"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <ToggleButton
-                        android:id="@+id/toggleButton5"
+                        android:id="@+id/toggleButtonCotd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
