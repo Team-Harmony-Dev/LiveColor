@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -47,6 +48,7 @@ public class SettingsFragment  extends  Fragment{
     TextView textViewGetToKnow;
     TextView textViewMeetTeam;
     Switch switchDarkMode;
+    ToggleButton toggleButtonCotd;
 
     private WeakReference<Activity> mActivity;
 
@@ -95,8 +97,16 @@ public class SettingsFragment  extends  Fragment{
         textViewGetToKnow = rootView.findViewById(R.id.textView11);
         textViewMeetTeam =  rootView.findViewById(R.id.textView13);
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
+        toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
 
+
+        // show proper darkmode val
         switchDarkMode.setChecked(NightModeUtils.isDarkMode(getActivity()));
+
+        // show proper Cotd val
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        boolean isCotdEnabled = preferences.getBoolean("dialogCotd",true);
+        toggleButtonCotd.setChecked(isCotdEnabled);
 
         textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +126,13 @@ public class SettingsFragment  extends  Fragment{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 onCheckedChangedDarkMode(buttonView, isChecked);
+            }
+        });
+
+        toggleButtonCotd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                onCheckChangedCotd(buttonView, isChecked);
             }
         });
 
@@ -203,6 +220,30 @@ public class SettingsFragment  extends  Fragment{
         buttonView.setChecked(isChecked);
         mActivity = new WeakReference<Activity>(this.getActivity());
         mActivity.get().recreate();
+    }
+
+    /**
+     * COTD TOGGLE
+     * toggle button for Cotd
+     *
+     * @param buttonView view of switch
+     * @param isChecked value
+     *
+     * @author Daniel
+     */
+    public void onCheckChangedCotd(CompoundButton buttonView, boolean isChecked){
+
+
+        Log.d("COTD","COTD current value: " + isChecked);
+
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().putBoolean("dialogCotd", isChecked).commit();
+//
+//        NightModeUtils.setIsToogleEnabled(getContext(),isChecked);
+//        NightModeUtils.setIsNightModeEnabled(getContext(),isChecked);
+
+        buttonView.setChecked(isChecked);
+
     }
 
 
