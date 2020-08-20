@@ -245,7 +245,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         infoColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
-                updateColorName(getView());
+                //updateColorName(getView());
                 Intent startCIA = new Intent(getActivity(), ColorInfoActivity.class);
                 startActivity(startCIA);
             }
@@ -255,7 +255,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         editColorB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
-                updateColorName(getView());
+                //updateColorName(getView());
                 Intent startEditColorActivity = new Intent(getActivity(), EditColorActivity.class);
                 startActivity(startEditColorActivity);
             }
@@ -578,7 +578,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 //  So after you're done dragging it needs to reappear.
                 add.show();
             }
-
+            //The view parameter actually isn't used.
+            //Save the new name to storage in case the app closes or fragment switches.
+            updateColorName(getView());
             return true;
         }
     };
@@ -597,7 +599,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
+        //updateColorName(getView()); // saves color name to sharedprefs upon leaving fragment
     }
 
     @Override
