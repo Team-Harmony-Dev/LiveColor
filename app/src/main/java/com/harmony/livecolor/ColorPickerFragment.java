@@ -346,17 +346,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
-
-        //TODO Dustin should clean this up. Lots of math and name stuff has changed, some comments outdated.
-        //TODO the round button isn't disappearing properly all the time?
-        //  Fixed?
-        //TODO make more efficient:
-        //  TODO: When not zoomed we can use old math. If we don't use it, remove it.
-        //    Due to way we get background info I think we should remove it. Imagine a round or donut shaped picture, that math won't find background.
-        //  Done: When zoomed we don't need name while panning.
-        //TODO The default max zoom level is pretty arbitrary (3x). We could change that for sure, allow for more zoom. touchView.setMaxZoom(float max);
-        //TODO the custom background name and button hiding doesn't stay between fragments or if the app is reloaded.
-        
         //This is where the color picking happens.
         //User's clicked on the image, we goota take their click coordinates and get the appropriate color, its name, and update info displayed.
         @Override
