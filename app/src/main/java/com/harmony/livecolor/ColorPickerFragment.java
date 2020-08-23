@@ -222,10 +222,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
 
-                //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
-                //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
-                //  Probably if they cancel we don't want it to display the color though.
-
                 //Animate each time they clicked, even if it was already pressed?
                 //If we do, we should probably have a notification saying why nothing is happening.
                 //But it's totally reasonable that they'd want to save again to a different place. Should probably allow that.
