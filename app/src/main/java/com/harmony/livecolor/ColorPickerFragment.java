@@ -128,6 +128,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 //        viewCB.startAnimation(scaleAnimation);
 
         saveButtonCB.setImageResource(R.drawable.bookmark_selected);
+
+        //To stay consistent with the color displayed in the box, we must strip transparency
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        colorT = colorT | TRANSPARENT;
         saveButtonCB.setColorFilter(colorT);
 
         final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
