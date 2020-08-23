@@ -1,6 +1,9 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
@@ -69,6 +73,10 @@ public class SavedColorsFragment extends Fragment {
         context = view.getContext();
 
         db = new ColorDatabase(getActivity());
+
+        final View rootView = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.savedColorsConstraint));
 
         initColors();
 
@@ -212,5 +220,46 @@ public class SavedColorsFragment extends Fragment {
         super.onResume();
         initColors();
         initRecycler("list");
+    }
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        ImageButton listView = view.findViewById(R.id.listViewButton);
+        ImageButton gridView = view.findViewById(R.id.gridViewButton);
+
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] { android.R.attr.state_active}, // active
+                new int[] { android.R.attr.state_pressed}, // pressed
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_enabled} // enabled
+//                new int[] { android.R.attr.}
+        };
+
+        int[] colors = new int[] {
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
+
+        listView.setImageTintMode(PorterDuff.Mode.SRC_ATOP);
+        listView.setImageTintList(myList);
+//        addButton.setBackgroundColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
+//        addButton.setSupportBackgroundTintList(myList);
     }
 }

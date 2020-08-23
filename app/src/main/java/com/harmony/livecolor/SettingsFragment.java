@@ -60,6 +60,7 @@ public class SettingsFragment  extends  Fragment{
     Switch switchDarkMode;
     ToggleButton toggleButtonCotd;
     EditText editTextAccent;
+    ImageButton imageButtonReset;
     private WeakReference<Activity> mActivity;
 
     public SettingsFragment() {
@@ -109,6 +110,7 @@ public class SettingsFragment  extends  Fragment{
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
         editTextAccent = rootView.findViewById(R.id.editTextAccentHex);
+        imageButtonReset = rootView.findViewById(R.id.imageButtonAccentReset);
 
 
         // show proper darkmode val
@@ -122,7 +124,9 @@ public class SettingsFragment  extends  Fragment{
 
         editTextAccent.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                afterTextChangedAccentHex(s);
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {}
@@ -199,6 +203,12 @@ public class SettingsFragment  extends  Fragment{
             }
         });
 
+        imageButtonReset.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                    onClickReset(view);
+            }
+        });
 
         return rootView;
     }
@@ -309,6 +319,18 @@ public class SettingsFragment  extends  Fragment{
 
     }
 
+    /**
+     * ACCENT RESET
+     * reset button for custom accent pref
+     *
+     * @param view view of button
+     *
+     * @author Daniel
+     */
+    public void onClickReset(View view){
+        // still need to put in spin
+        AccentUtils.resetAccent(getContext());
+    }
 
     public void afterTextChangedAccentHex(Editable seq){
 
@@ -334,12 +356,9 @@ public class SettingsFragment  extends  Fragment{
 
         if (accentColor.length() > 0){
 
-            if(NightModeUtils.isNightModeEnabled(this.getContext())){
-
-            }
+            AccentUtils.setAccent(getContext(), accentColor);
 
         }else{
-            seq.clear();
 
         }
     }

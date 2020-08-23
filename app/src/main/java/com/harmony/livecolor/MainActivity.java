@@ -13,11 +13,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
+        // handles customized accent
+        customAccent(findViewById(R.id.container));
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
@@ -285,6 +290,39 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.d("perms", "All necessary permissions granted");
         }
+    }
+
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        BottomNavigationView nav = view.findViewById(R.id.main_navi);
+        ColorStateList tintList = nav.getItemIconTintList();
+        Log.d("DEBUG", "color tint list: " + tintList.toString());
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_enabled} // enabled
+        };
+
+        int[] colors = new int[] {
+                view.getContext().getResources().getColor(R.color.colorIconPrimary),
+                view.getContext().getResources().getColor(R.color.colorIconPrimary),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                view.getContext().getResources().getColor(R.color.colorIconPrimary)
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
+        nav.setItemIconTintList(myList);
     }
 
 }
