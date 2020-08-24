@@ -127,13 +127,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 //        scaleAnimation.setInterpolator(bounceInterpolator);
 //        viewCB.startAnimation(scaleAnimation);
 
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
-
-        //To stay consistent with the color displayed in the box, we must strip transparency
-        // https://stackoverflow.com/a/7741300
-        final int TRANSPARENT = 0xFF000000;
-        colorT = colorT | TRANSPARENT;
-        saveButtonCB.setColorFilter(colorT);
+        fillInBookmark(colorT);
 
         final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
         if(ONLY_SAVE_ONCE_PER_COLOR) {
@@ -344,6 +338,27 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         getActivity().findViewById(R.id.saveButton).setVisibility(visibility);
     }
 
+    //Strip transparency and fill in save bookmark with color
+    //TODO make version for unfill as well
+    public void fillInBookmark(int pixel){
+        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
+        //To stay consistent with the color displayed in the box, we must strip transparency
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        pixel = pixel | TRANSPARENT;
+        saveButtonCB.setColorFilter(pixel);
+    }
+
+    //Pixel being an int color
+    public boolean findPixelInDatabase(int pixel){
+        //TODO move this stuff to functions, probably
+        //get the hex representation minus the first ff
+        String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
+
+        Log.d("pixelDB", "Searching for "+hexValue);
+        return false;
+    }
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
@@ -404,6 +419,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
             final float MAX_ZOOM_MULT = 100;
             touchView.setMaxZoom(MAX_ZOOM_MULT);
+
+            //If we find the color in the DB already, fill in the bookmark
+            //TODO query the DB
+            if(findPixelInDatabase(pixel)){
+                fillInBookmark(pixel);
+            }
+
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
             final boolean USE_API_FOR_NAMES = false;
