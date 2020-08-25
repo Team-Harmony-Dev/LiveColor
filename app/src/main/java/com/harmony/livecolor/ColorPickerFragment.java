@@ -438,7 +438,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             touchView.setMaxZoom(MAX_ZOOM_MULT);
 
             //If we find the color in the DB already, fill in the bookmark
-            //TODO query the DB
+            //TODO it seems like dragging doesn't trigger this for some reason? Letting up on the click does though
             if(findPixelInDatabase(pixel)){
                 fillInBookmark(pixel);
             }
@@ -570,6 +570,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
             }
             ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
+            //If we find the color in the DB already, fill in the bookmark
+            if(findPixelInDatabase(savedColorInt)){
+                fillInBookmark(savedColorInt);
+            }
         }
         updateColorValues(getView(), savedColorInt);
     }
