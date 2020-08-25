@@ -13,12 +13,14 @@
         android:fontFamily="@font/lato_bold"
         android:paddingBottom="16dp"
         android:text="Name your palette:"
+        android:theme="@style/PhoAppTheme"
         android:textSize="24sp" />
 
     <EditText
         android:id="@+id/newPaletteName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/PhoAppTheme"
         android:ems="10"
         android:inputType="textPersonName" />
 

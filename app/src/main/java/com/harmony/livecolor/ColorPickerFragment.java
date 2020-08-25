@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -37,6 +38,7 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -150,9 +152,11 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         );
 
 
-
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
+
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutColorPicker));
 
         colorDB = new ColorDatabase(getActivity());
 
@@ -653,6 +657,42 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     //Ignores transparency.
     public static String colorToHex(int color){
         return String.format("%06X", (0xFFFFFF & color));
+    }
+
+
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        FloatingActionButton addButton = view.findViewById(R.id.addButton);
+
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_enabled} // enabled
+//                new int[] { android.R.attr.}
+        };
+
+        int[] colors = new int[] {
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
+
+        addButton.setBackgroundColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
+        addButton.setSupportBackgroundTintList(myList);
     }
 }
 

@@ -9,6 +9,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -374,5 +377,7 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
         toast.show();
     }
+
+
 
 }

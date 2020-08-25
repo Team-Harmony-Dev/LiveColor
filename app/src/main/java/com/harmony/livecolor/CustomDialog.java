@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -206,6 +208,39 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         setNameDialogView = activity.getLayoutInflater().inflate(R.layout.dialog_rename_palette,null);
         newPaletteName = setNameDialogView.findViewById(R.id.newPaletteName);
 
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] {-android.R.attr.state_selected}, // unselected
+                new int[] { android.R.attr.state_active}, // active
+                new int[] { android.R.attr.state_pressed}, // pressed
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_selected}, // selected
+                new int[] { android.R.attr.state_enabled} // enabled
+        };
+
+        int[] accent = new int[] {
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context))
+        };
+
+        ColorStateList accentList = new ColorStateList(states, accent);
+
+
+        newPaletteName.setTextColor(accentList);
+        newPaletteName.setCompoundDrawableTintList(accentList);
+        newPaletteName.setHintTextColor(accentList);
+        newPaletteName.setForegroundTintList(accentList);
+        newPaletteName.setBackgroundTintList(accentList);
+//        newPaletteName.setTextCursorDrawable(R.id.color_cursor);
+
         builder.setView(setNameDialogView);
 
         //Positive Confirm Button Click Listener that adds the input palette name to the database
@@ -249,8 +284,10 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             }
         });
 
+
         alertDialogName = builder.create();
         alertDialogName.show();
+        alertDialogName.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor(AccentUtils.getAccent(context)));
     }
 
     /**

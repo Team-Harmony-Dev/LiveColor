@@ -38,4 +38,5 @@
     <string name="melanie_wong">Melanie Wong</string>
     <string name="andrew_tran">Andrew Tran</string>
     <string name="accent_choice_prompt">Dark Mode Accent</string>
+    <string name="accent_choice">#FB6FEA</string>
 </resources>

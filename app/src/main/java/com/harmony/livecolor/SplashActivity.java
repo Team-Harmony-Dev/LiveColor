@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ public class SplashActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this, MainActivity.class);
+
         startActivity(intent);
         finish();
     }
