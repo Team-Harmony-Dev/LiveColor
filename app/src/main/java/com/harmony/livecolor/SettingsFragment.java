@@ -342,9 +342,12 @@ public class SettingsFragment  extends  Fragment{
      * @author Daniel
      */
     public void onClickReset(View view){
-        // still need to put in spin
+        // animation
+        ImageButton reset =  (ImageButton) view;
+        reset.startAnimation(rotate); // technically in there, but gets immediately cut off by the recreate
+        // function
         AccentUtils.resetAccent(getContext());
-        // this is such a hack
+        // this is such a hack to redraw
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         preferences.edit().putString("fragStatic", "true").commit();
         mActivity = new WeakReference<Activity>(this.getActivity());
@@ -426,7 +429,6 @@ public class SettingsFragment  extends  Fragment{
                 new int[] { android.R.attr.state_checked},  // checked
                 new int[] { android.R.attr.state_selected}, // selected
                 new int[] { android.R.attr.state_enabled} // enabled
-//                new int[] { android.R.attr.}
         };
 
         int[] accent = new int[] {
@@ -439,41 +441,7 @@ public class SettingsFragment  extends  Fragment{
                 Color.parseColor(AccentUtils.getAccent(view.getContext())),
                 Color.parseColor(AccentUtils.getAccent(view.getContext()))
         };
-        int[] mix = new int[] {
-                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext()))
-        };
-        int[] greys  = new int[] {
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary)
-        };
-        int[] stated  = new int[] {
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                Color.parseColor(AccentUtils.getAccent(view.getContext()))
-        };
 
-
-
-        ColorStateList mixList = new ColorStateList(states, mix);
-        ColorStateList  stateList = new ColorStateList(states, stated);
         ColorStateList  accentList = new ColorStateList(states, accent);
 
       switchDM.setThumbTintList(accentList);
@@ -485,41 +453,7 @@ public class SettingsFragment  extends  Fragment{
       editTextAccent.setForegroundTintList(accentList);
       editTextAccent.setBackgroundTintList(accentList);
 
-        //return selectedLists;
-
-
-
     }
-
-//    /**
-//     * RESET COLOR
-//     * clear new color according to toggle, rotate reset button
-//     * @param view view of button
-//     *
-//     * @author Gabby
-//     * changed as part of the onCreate inner to outer method refactor
-//     */
-//    public void onClickReset(View view) {
-//
-//        ImageButton reset = (ImageButton) view;
-//        ToggleButtonState = simpleToggleButton.isChecked();
-//        reset.startAnimation(rotate);
-//        if(!ToggleButtonState){
-//            updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-//            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-//        } else {
-//            int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-//            updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
-//            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-//        }
-//
-//        updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
-//        TextView colorNameN = findViewById(R.id.colorNN);
-//        colorNameN.setText(colorNameT);
-//        resetBookmark();
-//    }
-
-
 
 }
 
