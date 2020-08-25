@@ -358,6 +358,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
         //DEBUG
         //hexValue = "#0F29B3";//Saved
+        //hexValue = "#000000";//Saved, but only in palette
         //hexValue = "#0F29B2";//Not saved
 
         Log.d("I29", "Searching for "+hexValue);
