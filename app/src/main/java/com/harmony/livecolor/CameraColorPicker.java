@@ -103,4 +103,6 @@ public class CameraColorPicker extends AppCompatActivity {
             mImageView.setImageURI(image_uri);
         }
     }
+
+
 }

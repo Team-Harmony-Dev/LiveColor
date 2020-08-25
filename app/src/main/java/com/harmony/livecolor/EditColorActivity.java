@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.InputStream;
 
@@ -77,10 +80,10 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        // dark theme check
 
 
-
+        // handles customized accent
+        customAccent(findViewById(R.id.constraintLayoutEditActivity));
 
         saveNC = findViewById(R.id.saveNewColor);
 
@@ -609,5 +612,50 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
             }
         }
+    }
+
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        SeekBar seekBarRed = view.findViewById(R.id.seekBarRed);
+        SeekBar seekBarGreen = view.findViewById(R.id.seekBarGreen);
+        SeekBar seekBarBlue = view.findViewById(R.id.seekBarBlue);
+
+        ToggleButton toggleButton = view.findViewById(R.id.toggleButton);
+
+
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_enabled} // enabled
+//                new int[] { android.R.attr.}
+        };
+
+        int[] colors = new int[] {
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
+
+        seekBarRed.setProgressTintList(myList);
+        seekBarGreen.setProgressTintList(myList);
+        seekBarBlue.setProgressTintList(myList);
+
+        toggleButton.setButtonTintList(myList);
+        toggleButton.setTextColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
+
     }
 }

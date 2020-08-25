@@ -42,4 +42,6 @@
     <string name="about_livecolor"><u>About LiveColor</u></string>
     <string name="github"><u>GitHub</u></string>
     <string name="accent_choice_prompt">Light Mode Accent</string>
+    <string name="accent_choice">#86357C</string>
+
 </resources>
