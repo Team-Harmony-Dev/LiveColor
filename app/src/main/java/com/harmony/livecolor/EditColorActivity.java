@@ -59,9 +59,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
     ToggleButton simpleToggleButton;
     Boolean ToggleButtonState;
     private int m_Text = 0;
-    String colorNameT;
     ScaleAnimation scaleAnimation;
     ColorDatabase colorDB;
+    final static String EMPTY_STRING = "";
 
     RotateAnimation rotate;
 
@@ -118,14 +118,15 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         seekBlue.setProgress(BV);
 
         TextView colorNameView = findViewById(R.id.colorN);
-        colorNameView.setText(colorNameT);
+        //This is probably redundant
+        colorNameView.setText(EMPTY_STRING);
         //When you press edit color on a saved color, the name is incorrect. This should fix it...
         //Actually doesn't work. onCreate isn't called when that happens or something? TODO fix this.
         final double viewWidthPercentOfScreen = 0.50;
         final float maxFontSize = 30;
 
         TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText("");
+        colorNameN.setText(EMPTY_STRING);
 
         TextView colorNameV = findViewById(R.id.colorN);
         updateColorNameWithView(colorNameV);
@@ -385,7 +386,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
         updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
         TextView colorNameN = findViewById(R.id.colorNN);
-        colorNameN.setText(colorNameT);
+        colorNameN.setText(EMPTY_STRING);
         //For if they hit reset while on the original color, keep the bookmark colored. (only reset if the color changed)
         if(seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue){
             resetBookmark();
@@ -429,7 +430,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
                 name = colorNNView.getText().toString();
                 //If the color is unedited it saves "" as the name. We can get the name from the other view.
-                if(name == ""){
+                if(name.equals(EMPTY_STRING)){
                     name = ((TextView) findViewById(R.id.colorN)).getText().toString();
                 }
 
@@ -447,7 +448,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
                 name = colorNNView.getText().toString();
                 //If the color is unedited it saves "" as the name. We can get the name from the other view.
-                if(name == ""){
+                if(name.equals(EMPTY_STRING)){
                     name = ((TextView) findViewById(R.id.colorN)).getText().toString();
                 }
 
@@ -593,24 +594,29 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         final int numberOfLines = 2;
         final float maxFontSize = 30;
 
-        if(USE_API_FOR_NAMES) {
-            ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen*numberOfLines, maxFontSize);
-        } else {
-            final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
-            if(CHANGE_FONT_SIZE_IF_TOO_LONG) {
-                //Display the name on one line
-                TextView viewToUpdateColorName = thisView;
-                String hex = "#" + colorToHex(colorI);
-                ColorNameGetterCSV.getAndFitName(viewToUpdateColorName, hex, viewWidthPercentOfScreen*numberOfLines, maxFontSize);
+        //colorValue is the original value. If we're the same as colorValue, then we don't want to display a second name for the new color.
+        //(If it's updating a name in the first TextView though then it does need the name, so we check that it's not the new view)
+        if(colorValue != colorI || ! thisView.equals(colorNNView)) {
+            if (USE_API_FOR_NAMES) {
+                ColorNameGetter.updateViewWithColorName(thisView, colorI, viewWidthPercentOfScreen * numberOfLines, maxFontSize);
             } else {
-                //Get the hex, and then name that corresponds to the hex
-                String hex = "#" + colorToHex(colorI);
-                String colorName = ColorNameGetterCSV.getName(hex);
-                //Display the name
-                thisView.setText(colorName);
+                final boolean CHANGE_FONT_SIZE_IF_TOO_LONG = true;
+                if (CHANGE_FONT_SIZE_IF_TOO_LONG) {
+                    //Display the name on one line
+                    String hex = "#" + colorToHex(colorI);
+                    ColorNameGetterCSV.getAndFitName(thisView, hex, viewWidthPercentOfScreen * numberOfLines, maxFontSize);
+                } else {
+                    //Get the hex, and then name that corresponds to the hex
+                    String hex = "#" + colorToHex(colorI);
+                    String colorName = ColorNameGetterCSV.getName(hex);
+                    //Display the name
+                    thisView.setText(colorName);
 
-                //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+                    //Log.d("V2S1 colorname", "Hex " + hex + ": " + colorName);
+                }
             }
+        } else {
+            thisView.setText(EMPTY_STRING);
         }
     }
 

@@ -129,8 +129,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 //        scaleAnimation.setInterpolator(bounceInterpolator);
 //        viewCB.startAnimation(scaleAnimation);
 
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
-        saveButtonCB.setColorFilter(colorT);
+        fillInBookmark(colorT);
 
         final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
         if(ONLY_SAVE_ONCE_PER_COLOR) {
@@ -225,10 +224,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 String hex = editHex.getText().toString();
                 String rgb = editRgb.getText().toString();
                 String hsv = editHsv.getText().toString();
-
-                //ImageButton saveButton = rootView.findViewById(R.id.saveButton);
-                //TODO if they want to save to multiple palettes, or unsave the color, having the button allow saving again might be good. What behavior do we want exactly?
-                //  Probably if they cancel we don't want it to display the color though.
 
                 //Animate each time they clicked, even if it was already pressed?
                 //If we do, we should probably have a notification saying why nothing is happening.
@@ -347,6 +342,40 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         getActivity().findViewById(R.id.saveButton).setVisibility(visibility);
     }
 
+    //Strip transparency and fill in save bookmark with color
+    //TODO make version for unfill as well
+    public void fillInBookmark(int pixel){
+        //TODO saveButtonCB doesn't really work for this. Should do it the same way both places
+        ImageView saveButton = getActivity().findViewById(R.id.saveButton);
+        saveButton.setImageResource(R.drawable.bookmark_selected);
+        //To stay consistent with the color displayed in the box, we must strip transparency
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        pixel = pixel | TRANSPARENT;
+        saveButton.setColorFilter(pixel);
+    }
+
+    //Pixel being an int color
+    public boolean findPixelInDatabase(int pixel){
+        //TODO move this stuff to functions, probably
+        //get the hex representation minus the first ff
+        String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
+
+        Log.d("I29", "Searching for "+hexValue);
+
+        //Search DB
+        Context context = getContext();
+        colorDB = new ColorDatabase((Activity) context);
+        //GetString: Looks like it's id,  name, hex, rgb, hsv.
+        //We can just check count to tell if any results exist
+        Cursor cur = colorDB.getColorInfoByHex(hexValue);
+        Log.d("I29", "#Rows: "+cur.getCount());
+        if(cur.getCount() != 0){
+            return true;
+        }
+        return false;
+    }
+
     // https://stackoverflow.com/a/39588899
     // For Sprint 2 User Story 2.
     private View.OnTouchListener handleTouch = new View.OnTouchListener() {
@@ -362,14 +391,14 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
             final int BACKGROUND_COLOR = 0;
-            //Get color int from said pixel coordinates using the source image. Default to background color.
+            //Get color int from said pixel coordinates. Defaults to background color.
             int pixel = BACKGROUND_COLOR;
             boolean wasBackgroundPixel = false;
             //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
             //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
             final boolean USE_FILE_BITMAP = true;
             //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
-            if(/*wasValidClick ||*/ USE_FILE_BITMAP){
+            if(USE_FILE_BITMAP){
                 if(USE_FILE_BITMAP){
                     final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
                     Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
@@ -408,6 +437,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             final float MAX_ZOOM_MULT = 100;
             touchView.setMaxZoom(MAX_ZOOM_MULT);
 
+
+
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
             final boolean USE_API_FOR_NAMES = false;
 
@@ -422,16 +453,26 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     //We don't want to spam the API, but local color names are so fast we can just do it live.
                     //If we're zoomed we are panning on drag, so ignore name in that case as well.
                     || (event.getActionMasked() == MotionEvent.ACTION_MOVE && !USE_API_FOR_NAMES && !touchView.isZoomed())) {
-                Log.d("S3US5", "Release detected");
+                //Log.d("S3US5", "Release detected");
                 Log.d("DEBUG S2US2 pinchzoom", "action up or drag detected");
 
                 //Update the color info being displayed (the patch of color the user sees, and hex, and save button)
                 updateColorValues(view, pixel);
-                isColorSaved = false;
-                ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-                saveColorB.setImageResource(R.drawable.unsaved);
-                saveColorB.setColorFilter(null);
+
+                //Make it visible in case last time was a background click.
+                //We can hide this again if this too is a background click.
                 changeVisibilityInfoEditSaveButtons(View.VISIBLE);
+
+                //If we find the color in the DB already, fill in the bookmark
+                if(findPixelInDatabase(pixel)){
+                    fillInBookmark(pixel);
+                } else {
+                    isColorSaved = false;
+                    //Clear bookmark
+                    ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+                    saveColorB.setImageResource(R.drawable.unsaved);
+                    saveColorB.setColorFilter(null);
+                }
 
                 if(wasBackgroundPixel) {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
@@ -534,6 +575,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 changeVisibilityInfoEditSaveButtons(View.INVISIBLE);
             }
             ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
+            //If we find the color in the DB already, fill in the bookmark
+            if(findPixelInDatabase(savedColorInt)){
+                fillInBookmark(savedColorInt);
+            }
         }
         updateColorValues(getView(), savedColorInt);
     }
