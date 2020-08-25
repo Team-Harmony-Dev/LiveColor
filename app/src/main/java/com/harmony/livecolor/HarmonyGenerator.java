@@ -27,9 +27,6 @@ public class HarmonyGenerator {
         String hex = hsvToStringHex(color);
         String rgb = hsvToStringRgb(color);
         String hsv = hsvToStringHsv(color);
-        //TODO the name works now, but opening harmonies takes a few seconds because it does it for all palettes at once.
-        //String colorName = ColorNameGetterCSV.getName(hex);
-        //Easiest fix: just use a blank name and let them go to color info if they want a name.
         String colorName = "";
         MyColor colorObj = new MyColor(""+id, colorName, hex, rgb, hsv);
         return colorObj;

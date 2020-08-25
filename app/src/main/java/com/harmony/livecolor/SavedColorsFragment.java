@@ -213,6 +213,7 @@ public class SavedColorsFragment extends Fragment {
             colorList.remove(position);
             db.updateRefString("1", colorList, true);
             adapter.notifyItemRemoved(position);
+            adapter.notifyItemRangeChanged(position,colorList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
@@ -221,6 +222,7 @@ public class SavedColorsFragment extends Fragment {
                             colorList.add(position, deletedColor);
                             db.updateRefString("1", colorList, true);
                             adapter.notifyItemInserted(position);
+                            adapter.notifyItemRangeChanged(position,colorList.size());
                         }
                     }).show();
         }

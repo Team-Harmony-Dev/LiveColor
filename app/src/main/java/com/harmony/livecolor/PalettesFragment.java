@@ -207,13 +207,17 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
             final int position = viewHolder.getAdapterPosition();
             deletedPalette = paletteList.get(position);
             paletteList.remove(position);
+            colorDB.deletePalette(deletedPalette.getId());
             adapter.notifyItemRemoved(position);
+            adapter.notifyItemRangeChanged(position,paletteList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedPalette.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             paletteList.add(position, deletedPalette);
+                            colorDB.addPreExistingPalette(deletedPalette);
                             adapter.notifyItemInserted(position);
+                            adapter.notifyItemRangeChanged(position,paletteList.size());
                         }
                     }).show();
         }
