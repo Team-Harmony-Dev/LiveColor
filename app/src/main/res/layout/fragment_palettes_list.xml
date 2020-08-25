@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
+    android:id="@+id/constraintLayoutPalettes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -14,6 +14,7 @@
         android:autofillHints="Test"
         android:iconifiedByDefault="false"
         android:queryHint="Enter Palette Name or # HEX value"
+        android:theme="@style/PhoAppTheme"
         app:layout_constraintBottom_toTopOf="@+id/guidelineSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

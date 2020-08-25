@@ -404,10 +404,6 @@ public class SettingsFragment  extends  Fragment{
      * CUSTOM ACCENT HANDLER
      * changes colors of specific activity/fragment
      *
-     * THIS ONE WORKS A LITTLE DIFFERENT
-     * so, each time this is used, its a bespoke solution
-     * this time needed a little something extra to change the tints on the fly
-     * didnt want to crowd out onCreateView
      *
      * @param view view of root container
      *

@@ -375,19 +375,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
         toast.show();
     }
 
-    /**
-     * CUSTOM ACCENT HANDLER
-     * changes colors of specific activity/fragment
-     *
-     * @param view view of root container
-     *
-     * @author Daniel
-     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
-     * nothing to do here, but placed for future use
-     */
-    public void customAccent(View view){
 
-
-    }
 
 }

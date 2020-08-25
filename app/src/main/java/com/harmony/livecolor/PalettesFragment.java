@@ -1,7 +1,9 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
@@ -64,6 +69,12 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         view = inflater.inflate(R.layout.fragment_palettes_list, container, false);
 
         Log.d("Lifecycles", "onCreateView: PaletteFragment created");
+
+        // Inflate the layout for this fragment
+        final View rootView = inflater.inflate(R.layout.fragment_palettes_list, container, false);
+
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutPalettes));
 
         context = view.getContext();
 
@@ -215,5 +226,48 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         //TODO: There *must* be a better way to refresh the lists than this (notifyDataSetChanged() isn't working)
         initPalettes(colorDB.getPaletteDatabaseCursor());
         initRecycler();
+    }
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        SearchView searchViewBar = view.findViewById(R.id.searchBarPalette);
+
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] {-android.R.attr.state_selected}, // unselected
+                new int[] { android.R.attr.state_active}, // active
+                new int[] { android.R.attr.state_pressed}, // pressed
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_selected}, // selected
+                new int[] { android.R.attr.state_enabled} // enabled
+        };
+
+        int[] accent = new int[] {
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
+        ColorStateList accentList = new ColorStateList(states, accent);
+
+        searchViewBar.setBackgroundTintList(accentList);
+        searchViewBar.setForegroundTintList(accentList);
+        searchViewBar.setBackgroundColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
+
     }
 }

@@ -223,7 +223,6 @@
                 android:hint="@string/accent_choice"
                 android:inputType="textCapCharacters"
                 android:maxLength="7"
-                android:textAlignment="center"
                 android:textSize="20sp"
                 android:theme="@style/PhoAppTheme"
                 app:layout_constraintBottom_toBottomOf="parent"
