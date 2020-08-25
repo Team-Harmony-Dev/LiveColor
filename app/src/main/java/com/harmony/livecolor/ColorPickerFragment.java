@@ -437,11 +437,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             final float MAX_ZOOM_MULT = 100;
             touchView.setMaxZoom(MAX_ZOOM_MULT);
 
-            //If we find the color in the DB already, fill in the bookmark
-            //TODO it seems like dragging doesn't trigger this for some reason? Letting up on the click does though
-            if(findPixelInDatabase(pixel)){
-                fillInBookmark(pixel);
-            }
 
 
             //TODO clean this up a lot. Make functions for this sort of thing, it will be reused.
@@ -463,11 +458,20 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
                 //Update the color info being displayed (the patch of color the user sees, and hex, and save button)
                 updateColorValues(view, pixel);
-                isColorSaved = false;
-                ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
-                saveColorB.setImageResource(R.drawable.unsaved);
-                saveColorB.setColorFilter(null);
+
+                //We can hide this again if it was a background click.
                 changeVisibilityInfoEditSaveButtons(View.VISIBLE);
+
+                //If we find the color in the DB already, fill in the bookmark
+                if(findPixelInDatabase(pixel)){
+                    fillInBookmark(pixel);
+                } else {
+                    isColorSaved = false;
+                    //Clear bookmark
+                    ImageButton saveColorB = (ImageButton) getView().findViewById(R.id.saveButton);
+                    saveColorB.setImageResource(R.drawable.unsaved);
+                    saveColorB.setColorFilter(null);
+                }
 
                 if(wasBackgroundPixel) {
                     //We don't need a name, we can call it whatever we want to make it clear that it wasn't a real color.
