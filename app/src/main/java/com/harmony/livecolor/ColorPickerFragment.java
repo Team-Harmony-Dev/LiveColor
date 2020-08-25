@@ -341,12 +341,14 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     //Strip transparency and fill in save bookmark with color
     //TODO make version for unfill as well
     public void fillInBookmark(int pixel){
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected);
+        //TODO saveButtonCB doesn't really work for this. Should do it the same way both places
+        ImageView saveButton = getActivity().findViewById(R.id.saveButton);
+        saveButton.setImageResource(R.drawable.bookmark_selected);
         //To stay consistent with the color displayed in the box, we must strip transparency
         // https://stackoverflow.com/a/7741300
         final int TRANSPARENT = 0xFF000000;
         pixel = pixel | TRANSPARENT;
-        saveButtonCB.setColorFilter(pixel);
+        saveButton.setColorFilter(pixel);
     }
 
     //Pixel being an int color
@@ -354,8 +356,22 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         //TODO move this stuff to functions, probably
         //get the hex representation minus the first ff
         String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
+        //DEBUG
+        //hexValue = "#0F29B3";//Saved
+        //hexValue = "#0F29B2";//Not saved
 
-        Log.d("pixelDB", "Searching for "+hexValue);
+        Log.d("I29", "Searching for "+hexValue);
+
+        //Search DB
+        Context context = getContext();
+        colorDB = new ColorDatabase((Activity) context);
+        //GetString: Looks like it's id,  name, hex, rgb, hsv.
+        //I think we can just check count to tell if it exists
+        Cursor cur = colorDB.getColorInfoByHex(hexValue);
+        Log.d("I29", "#Rows: "+cur.getCount());
+        if(cur.getCount() != 0){
+            return true;
+        }
         return false;
     }
 
@@ -374,7 +390,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             com.ortiz.touchview.TouchImageView touchView = getActivity().findViewById(R.id.pickingImage);
 
             final int BACKGROUND_COLOR = 0;
-            //Get color int from said pixel coordinates using the source image. Default to background color.
+            //Get color int from said pixel coordinates. Defaults to background color.
             int pixel = BACKGROUND_COLOR;
             boolean wasBackgroundPixel = false;
             //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
