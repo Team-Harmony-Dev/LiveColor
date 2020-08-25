@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -44,6 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -61,6 +65,7 @@ public class SettingsFragment  extends  Fragment{
     ToggleButton toggleButtonCotd;
     EditText editTextAccent;
     ImageButton imageButtonReset;
+    RotateAnimation rotate;
     private WeakReference<Activity> mActivity;
 
     public SettingsFragment() {
@@ -105,6 +110,9 @@ public class SettingsFragment  extends  Fragment{
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
+
         textViewGetToKnow = rootView.findViewById(R.id.textView11);
         textViewMeetTeam =  rootView.findViewById(R.id.textView13);
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
@@ -121,11 +129,12 @@ public class SettingsFragment  extends  Fragment{
         boolean isCotdEnabled = preferences.getBoolean("dialogCotd",true);
         toggleButtonCotd.setChecked(isCotdEnabled);
 
-
+        // handle edit text interaction
         editTextAccent.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 afterTextChangedAccentHex(s);
+                editTextAccent.setHint(AccentUtils.getAccent(getContext()));
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -172,7 +181,12 @@ public class SettingsFragment  extends  Fragment{
         };
         editTextAccent.setFilters(new InputFilter[] { hexFilter });
         editTextAccent.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
+        // set hint to match accent
+        editTextAccent.setHint(AccentUtils.getAccent(rootView.getContext()));
+        // reset animation stuff
+        rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(250);
+        rotate.setInterpolator(new LinearInterpolator());
 
 
         textViewGetToKnow.setOnClickListener(new View.OnClickListener() {
@@ -330,8 +344,22 @@ public class SettingsFragment  extends  Fragment{
     public void onClickReset(View view){
         // still need to put in spin
         AccentUtils.resetAccent(getContext());
+        // this is such a hack
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        preferences.edit().putString("fragStatic", "true").commit();
+        mActivity = new WeakReference<Activity>(this.getActivity());
+        mActivity.get().recreate();
     }
 
+
+    /**
+     * AFTER TEXT CHANGED FOR CUSTOM ACCENT
+     * decides what to do once the custom hex has been entered
+     *
+     * @param seq sequence entered into the editText view
+     *
+     * @author Daniel
+     */
     public void afterTextChangedAccentHex(Editable seq){
 
         String accentColor = "";
@@ -357,10 +385,110 @@ public class SettingsFragment  extends  Fragment{
         if (accentColor.length() > 0){
 
             AccentUtils.setAccent(getContext(), accentColor);
-
+            seq.clear();
+            // this is such a hack
+            SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+            preferences.edit().putString("fragStatic", "true").commit();
+            mActivity = new WeakReference<Activity>(this.getActivity());
+            mActivity.get().recreate();
         }else{
 
         }
+    }
+
+
+    /**
+     * CUSTOM ACCENT HANDLER
+     * changes colors of specific activity/fragment
+     *
+     * THIS ONE WORKS A LITTLE DIFFERENT
+     * so, each time this is used, its a bespoke solution
+     * this time needed a little something extra to change the tints on the fly
+     * didnt want to crowd out onCreateView
+     *
+     * @param view view of root container
+     *
+     * @author Daniel
+     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+     */
+    public void customAccent(View view){
+        Switch switchDM = view.findViewById(R.id.switchDarkMode);
+        ToggleButton toggleButtonCotd = view.findViewById(R.id.toggleButtonCotd);
+        EditText editTextAccent = view.findViewById(R.id.editTextAccentHex);
+
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] {-android.R.attr.state_selected}, // unselected
+                new int[] { android.R.attr.state_active}, // active
+                new int[] { android.R.attr.state_pressed}, // pressed
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_selected}, // selected
+                new int[] { android.R.attr.state_enabled} // enabled
+//                new int[] { android.R.attr.}
+        };
+
+        int[] accent = new int[] {
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+        int[] mix = new int[] {
+                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getOtherAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+        int[] greys  = new int[] {
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary)
+        };
+        int[] stated  = new int[] {
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
+
+
+        ColorStateList mixList = new ColorStateList(states, mix);
+        ColorStateList  stateList = new ColorStateList(states, stated);
+        ColorStateList  accentList = new ColorStateList(states, accent);
+
+      switchDM.setThumbTintList(accentList);
+      switchDM.setBackgroundTintList(accentList);
+      switchDM.setTrackTintList(accentList);
+      editTextAccent.setTextColor(accentList);
+      editTextAccent.setCompoundDrawableTintList(accentList);
+      editTextAccent.setHintTextColor(accentList);
+      editTextAccent.setForegroundTintList(accentList);
+      editTextAccent.setBackgroundTintList(accentList);
+
+        //return selectedLists;
+
+
+
     }
 
 //    /**

@@ -79,6 +79,26 @@ public class AccentUtils {
         }
     }
 
+    /**
+     * RETURN OPPOSITE ACCENT
+     * returns accent pref for opposite mode
+     *
+     * @param context context of app
+     *
+     * @return hexString color of hex for opposite mode
+     *
+     * @author Daniel
+     *
+     */
+    public static String getOtherAccent(Context context) {
+        SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        if(!NightModeUtils.isNightModeEnabled(context)){
+            return mPrefs.getString("accentDark", "#aaffff");
+        }else{
+            return mPrefs.getString("accentLight", "#10246a");
+        }
+    }
+
 
 
 
