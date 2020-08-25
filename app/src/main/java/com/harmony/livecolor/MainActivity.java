@@ -315,10 +315,10 @@ public class MainActivity extends AppCompatActivity
         };
 
         int[] colors = new int[] {
-                view.getContext().getResources().getColor(R.color.colorIconPrimary),
-                view.getContext().getResources().getColor(R.color.colorIconPrimary),
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary),
                 Color.parseColor(AccentUtils.getAccent(view.getContext())),
-                view.getContext().getResources().getColor(R.color.colorIconPrimary)
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary)
         };
 
         ColorStateList myList = new ColorStateList(states, colors);

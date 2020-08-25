@@ -605,6 +605,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         SeekBar seekBarGreen = view.findViewById(R.id.seekBarGreen);
         SeekBar seekBarBlue = view.findViewById(R.id.seekBarBlue);
 
+        ToggleButton toggleButton = view.findViewById(R.id.toggleButton);
+
+
         int[][] states = new int[][] {
 
                 new int[] {-android.R.attr.state_enabled}, // disabled
@@ -626,6 +629,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         seekBarRed.setProgressTintList(myList);
         seekBarGreen.setProgressTintList(myList);
         seekBarBlue.setProgressTintList(myList);
+
+        toggleButton.setButtonTintList(myList);
+        toggleButton.setTextColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
 
     }
 }

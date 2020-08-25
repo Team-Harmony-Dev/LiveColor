@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -76,7 +77,7 @@ public class SavedColorsFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_saved_colors_list, container, false);
         // handles customized accent
-        customAccent(rootView.findViewById(R.id.savedColorsConstraint));
+        final ColorStateList[] myLists = customAccent(view.findViewById(R.id.savedColorsConstraint));
 
         initColors();
 
@@ -90,13 +91,21 @@ public class SavedColorsFragment extends Fragment {
         final ImageButton listButton = view.findViewById(R.id.listViewButton);
         final ImageButton gridButton = view.findViewById(R.id.gridViewButton);
 
+        listButton.setImageResource(R.drawable.list_view_selected);
+        gridButton.setImageResource(R.drawable.grid_view_selected);
+
+        listButton.setImageTintList(myLists[0]);
+        gridButton.setImageTintList(myLists[1]);
+
         listButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 initRecycler("list");
                 //Sets the image buttons to reflect current state
-                listButton.setImageResource(R.drawable.list_view_selected);
-                gridButton.setImageResource(R.drawable.grid_view);
+                listButton.setImageTintList(myLists[0]);
+                gridButton.setImageTintList(myLists[1]);
+//                listButton.setImageResource(R.drawable.list_view_selected);
+//                gridButton.setImageResource(R.drawable.grid_view);
             }
         });
 
@@ -104,8 +113,10 @@ public class SavedColorsFragment extends Fragment {
             @Override
             public void onClick (View view){
                 initRecycler("grid");
-                listButton.setImageResource(R.drawable.list_view);
-                gridButton.setImageResource(R.drawable.grid_view_selected);
+                listButton.setImageTintList(myLists[1]);
+                gridButton.setImageTintList(myLists[0]);
+//                listButton.setImageResource(R.drawable.list_view);
+//                gridButton.setImageResource(R.drawable.grid_view_selected);
             }
         });
 
@@ -219,19 +230,25 @@ public class SavedColorsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initColors();
-        initRecycler("list");
+//        initRecycler("list");
+        // was there a reason this was here? ~Daniel
     }
 
     /**
      * CUSTOM ACCENT HANDLER
      * changes colors of specific activity/fragment
      *
+     * THIS ONE WORKS A LITTLE DIFFERENT
+     * so, each time this is used, its a bespoke solution
+     * this time needed a little something extra to change the tints on the fly
+     * didnt want to crowd out onCreateView
+     *
      * @param view view of root container
      *
      * @author Daniel
      * takes a bit of elbow grease, and there maybe a better way to do this, but it works
      */
-    public void customAccent(View view){
+    public ColorStateList[] customAccent(View view){
         ImageButton listView = view.findViewById(R.id.listViewButton);
         ImageButton gridView = view.findViewById(R.id.gridViewButton);
 
@@ -239,9 +256,11 @@ public class SavedColorsFragment extends Fragment {
 
                 new int[] {-android.R.attr.state_enabled}, // disabled
                 new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] {-android.R.attr.state_selected}, // unselected
                 new int[] { android.R.attr.state_active}, // active
                 new int[] { android.R.attr.state_pressed}, // pressed
                 new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_selected}, // selected
                 new int[] { android.R.attr.state_enabled} // enabled
 //                new int[] { android.R.attr.}
         };
@@ -252,14 +271,31 @@ public class SavedColorsFragment extends Fragment {
                 Color.parseColor(AccentUtils.getAccent(view.getContext())),
                 Color.parseColor(AccentUtils.getAccent(view.getContext())),
                 Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
                 Color.parseColor(AccentUtils.getAccent(view.getContext()))
         };
+        int[] greys  = new int[] {
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(getContext(), R.color.colorIconPrimary)
+        };
 
-        ColorStateList myList = new ColorStateList(states, colors);
+        ColorStateList accentList = new ColorStateList(states, colors);
+        ColorStateList primaryList = new ColorStateList(states, greys);
 
-        listView.setImageTintMode(PorterDuff.Mode.SRC_ATOP);
-        listView.setImageTintList(myList);
-//        addButton.setBackgroundColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
-//        addButton.setSupportBackgroundTintList(myList);
+        ColorStateList[] selectedLists =  new ColorStateList[2];
+        selectedLists[0] = accentList;
+        selectedLists[1] = primaryList;
+
+        return selectedLists;
+
+
+
     }
 }
