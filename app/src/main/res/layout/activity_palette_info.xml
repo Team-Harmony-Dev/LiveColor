@@ -69,7 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:drawableTop="@color/colorIconPrimary"
             android:gravity="center|top"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:paddingVertical="24dp"
