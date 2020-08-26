@@ -82,10 +82,10 @@ public class SavedColorsFragment extends Fragment {
         // handles customized accent
         final ColorStateList[] myLists = customAccent(view.findViewById(R.id.savedColorsConstraint));
 
-        initColors();
+        //initColors();
 
-        String defaultView = "list";
-        initRecycler(defaultView);
+        //String defaultView = "list";
+        //initRecycler(defaultView);
 
         /**
          * Button on click listeners for the grid/list buttons.
@@ -242,8 +242,7 @@ public class SavedColorsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initColors();
-//        initRecycler("list");
-        // was there a reason this was here? ~Daniel
+        initRecycler("list");
     }
 
     /**
