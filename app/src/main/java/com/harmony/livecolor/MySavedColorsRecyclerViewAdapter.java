@@ -78,7 +78,7 @@ public class MySavedColorsRecyclerViewAdapter extends RecyclerView.Adapter<MySav
 
             ImageView colorImage = view.findViewById(R.id.color);
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) colorImage.getLayoutParams();
-            params2.setMargins(3, 3, 3, 3);
+            //params2.setMargins(3, 3, 3, 3);
             params2.weight = 1.0f;
         }
 

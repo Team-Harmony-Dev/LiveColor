@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageButton;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -143,15 +146,21 @@ public class SavedColorsFragment extends Fragment {
         //Set the layout to be reverse and stacked from the end so that the newest colors appear at the top of the list
 
         /**
-         * Set the appropriate layout manager for the recycler view depending on if list/grid is selected. - Gabby
+         * Set the appropriate layout manager and animation for the recycler view depending on if list/grid is selected. - Gabby
          */
         if(selectedView == "list"){
             LinearLayoutManager layoutManager = new LinearLayoutManagerWrapper(context);
             recyclerView.setLayoutManager(layoutManager);
+            //set animations
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_slide_from_right);
+            recyclerView.setLayoutAnimation(animation);
         } else {
             int numberOfColumns = 3;
             GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
             recyclerView.setLayoutManager(layoutManager);
+            //set animations
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_slide_from_bottom);
+            recyclerView.setLayoutAnimation(animation);
         }
 
         //set ItemTouchHelper for item deletion
@@ -212,6 +221,7 @@ public class SavedColorsFragment extends Fragment {
             Log.d("SavedColorsFragment", "onSwiped: Color is " + deletedColor.getName());
             colorList.remove(position);
             db.updateRefString("1", colorList, true);
+
             adapter.notifyItemRemoved(position);
             adapter.notifyItemRangeChanged(position,colorList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
