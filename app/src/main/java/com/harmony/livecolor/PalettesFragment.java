@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.SearchView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -98,13 +100,16 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         //get the RecyclerView from the view
         recyclerView = view.findViewById(R.id.palettesRecycler);
         //then initialize the adapter, passing in the bookList
-        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener);
+        adapter = new MyPalettesRecyclerViewAdapter(context,paletteList,listener,false);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(context));
         //set ItemTouchHelper for item deletion
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+        //set animation
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down);
+        recyclerView.setLayoutAnimation(animation);
     }
 
     @Override
