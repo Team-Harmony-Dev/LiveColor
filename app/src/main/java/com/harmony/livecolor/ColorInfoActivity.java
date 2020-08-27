@@ -52,18 +52,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
     //For the save button animation/color fill
     private ImageView saveButtonCB;
 
-
-    public void fillInBookmark(int pixel){
-        ImageButton saveButton = (ImageButton) findViewById(R.id.saveButton);
-        saveButton.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
-        //To stay consistent with the color displayed in the box, we must strip transparency. Though this is probably unnecessary for the ColorInfoActivity, it should have been stripped before it was passed.
-        // https://stackoverflow.com/a/7741300
-        final int TRANSPARENT = 0xFF000000;
-        pixel = pixel | TRANSPARENT;
-        saveButton.setColorFilter(pixel);
-        Log.d("I29", "Found in db while loading ColorInfoActivity");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,8 +211,7 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
         //Fill in bookmark if color was found in the db
         if(ColorPickerFragment.findPixelInDatabase(colorValue, newColorDatabase)){
-            fillInBookmark(colorValue);
-            //saveHappened();
+            saveHappened();
         } else {
             isButtonClicked = false;
             ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
@@ -277,8 +264,10 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        saveButtonCB.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
-        saveButtonCB.setColorFilter(colorValue);
+
+        ImageButton saveButton = (ImageButton) findViewById(R.id.saveButton);
+        saveButton.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
+        saveButton.setColorFilter(colorValue);
 
         final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
         if(ONLY_SAVE_ONCE_PER_COLOR) {

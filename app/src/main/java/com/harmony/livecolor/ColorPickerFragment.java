@@ -344,7 +344,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Strip transparency and fill in save bookmark with color
     //TODO make version for unfill as well
-    public void fillInBookmark(int pixel){
+    private void fillInBookmark(int pixel){
         //TODO saveButtonCB doesn't really work for this. Should do it the same way both places
         ImageView saveButton = getActivity().findViewById(R.id.saveButton);
         saveButton.setImageResource(R.drawable.bookmark_selected);
@@ -361,7 +361,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         //get the hex representation minus the first ff
         String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
 
-        Log.d("I29", "Searching for "+hexValue);
+        Log.d("I29", "Searching for "+hexValue+" ("+pixel+")");
 
         //Search DB
         //Context context = getContext();
@@ -465,7 +465,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
                 //If we find the color in the DB already, fill in the bookmark
                 if(findPixelInDatabase(pixel, colorDB)){
-                    fillInBookmark(pixel);
+                    colorT = pixel;
+                    saveHappened();
                 } else {
                     isColorSaved = false;
                     //Clear bookmark
