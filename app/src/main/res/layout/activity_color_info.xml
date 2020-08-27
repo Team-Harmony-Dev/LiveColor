@@ -136,25 +136,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyRGB"
+                android:padding="8dp"
                 android:src="@drawable/ic_twotone_file_copy_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyHEX" />
-
-            <ImageButton
-                android:id="@+id/copyHSV"
-                style="@android:style/Widget.DeviceDefault.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginTop="8dp"
-                android:background="#00FFFFFF"
-                android:onClick="onClickCopyHSV"
-                android:src="@drawable/ic_twotone_file_copy_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/copyRGB" />
 
             <ImageButton
                 android:id="@+id/copyHEX"
@@ -162,12 +150,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyHEX"
+                android:padding="8dp"
                 android:src="@drawable/ic_twotone_file_copy_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/colorNameCIA" />
+
+            <ImageButton
+                android:id="@+id/copyHSV"
+                style="@android:style/Widget.DeviceDefault.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
+                android:background="#00FFFFFF"
+                android:onClick="onClickCopyHSV"
+                android:padding="8dp"
+                android:src="@drawable/ic_twotone_file_copy_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/copyRGB" />
 
             <Button
                 android:id="@+id/harmonyButton"
