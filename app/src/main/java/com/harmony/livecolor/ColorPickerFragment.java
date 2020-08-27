@@ -344,7 +344,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     //Strip transparency and fill in save bookmark with color
     //TODO make version for unfill as well
-    public void fillInBookmark(int pixel){
+    private void fillInBookmark(int pixel){
         //TODO saveButtonCB doesn't really work for this. Should do it the same way both places
         ImageView saveButton = getActivity().findViewById(R.id.saveButton);
         saveButton.setImageResource(R.drawable.bookmark_selected);
@@ -356,19 +356,19 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     }
 
     //Pixel being an int color
-    public boolean findPixelInDatabase(int pixel){
+    public static boolean findPixelInDatabase(int pixel, ColorDatabase colorDatabase){
         //TODO move this stuff to functions, probably
         //get the hex representation minus the first ff
         String hexValue = String.format("#%06X", (0xFFFFFF & pixel));
 
-        Log.d("I29", "Searching for "+hexValue);
+        Log.d("I29", "Searching for "+hexValue+" ("+pixel+")");
 
         //Search DB
-        Context context = getContext();
-        colorDB = new ColorDatabase((Activity) context);
+        //Context context = getContext();
+        //ColorDatabase colorDB_tmp = new ColorDatabase((Activity) context);
         //GetString: Looks like it's id,  name, hex, rgb, hsv.
         //We can just check count to tell if any results exist
-        Cursor cur = colorDB.getColorInfoByHex(hexValue);
+        Cursor cur = colorDatabase.getColorInfoByHex(hexValue);
         Log.d("I29", "#Rows: "+cur.getCount());
         if(cur.getCount() != 0){
             return true;
@@ -464,8 +464,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 changeVisibilityInfoEditSaveButtons(View.VISIBLE);
 
                 //If we find the color in the DB already, fill in the bookmark
-                if(findPixelInDatabase(pixel)){
-                    fillInBookmark(pixel);
+                if(findPixelInDatabase(pixel, colorDB)){
+                    colorT = pixel;
+                    saveHappened();
                 } else {
                     isColorSaved = false;
                     //Clear bookmark
@@ -576,7 +577,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             }
             ColorNameGetterCSV.setAppropriatelySizedText(view, savedColorName, MAX_TEXTVIEW_WIDTH_PERCENT, MAX_FONT_SIZE);
             //If we find the color in the DB already, fill in the bookmark
-            if(findPixelInDatabase(savedColorInt)){
+            if(findPixelInDatabase(savedColorInt, colorDB)){
                 fillInBookmark(savedColorInt);
             }
         }
