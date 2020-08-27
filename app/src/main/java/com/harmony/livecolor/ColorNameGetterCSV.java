@@ -29,7 +29,6 @@ public class ColorNameGetterCSV extends android.app.Application {
     private static ArrayList<String[]> colorNames;
     //Hex -> Name
     private static Map<String, String> colorCache;
-    private static int cacheLength;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
     //If for some reason the csv changes format, you can change these and it all should still work.
@@ -155,7 +154,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Check if we have this hex value cached. If so, we don't need to loop through the whole thing, we already know the name.
         if(colorCache.get(hex) != null){
-            Log.d("colorname I76", "("+cacheLength+") Found hex "+hex+" in cache, "+colorCache.get(hex));
+            Log.d("colorname I76", "Found hex "+hex+" in cache, "+colorCache.get(hex));
             return colorCache.get(hex);
         }
 
@@ -245,7 +244,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         String name = colors.searchForName(hex);
 
         colorCache.put(hex, name);
-        ++cacheLength;
 
         return name;
     }
