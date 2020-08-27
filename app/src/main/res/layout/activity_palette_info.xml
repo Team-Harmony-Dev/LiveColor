@@ -67,11 +67,12 @@
         <TextView
             android:id="@+id/paletteName"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:layout_weight=".1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:gravity="center|top"
-            android:text="Palette Name is Super Long and Annoying"
+            android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:paddingVertical="24dp"
+            android:text="Palette Name Super Long and Very Annoying Two Lines"
             android:textSize="28sp"
             android:textStyle="bold" />
 

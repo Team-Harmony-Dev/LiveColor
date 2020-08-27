@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
@@ -144,10 +146,13 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //get the RecyclerView from the view
         RecyclerView recyclerView = findViewById(R.id.harmonyRecycler);
         //then initialize the adapter, passing in the bookList
-        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(this, paletteList,listener);
+        MyPalettesRecyclerViewAdapter adapter = new MyPalettesRecyclerViewAdapter(this, paletteList,listener,true);
         //and set the adapter for the RecyclerView
         recyclerView.setAdapter(adapter);
         //and set the layout manager as well
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //set animation
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this,R.anim.layout_fall_down);
+        recyclerView.setLayoutAnimation(animation);
     }
 }
