@@ -52,6 +52,18 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
     //For the save button animation/color fill
     private ImageView saveButtonCB;
 
+
+    public void fillInBookmark(int pixel){
+        ImageButton saveButton = (ImageButton) findViewById(R.id.saveButton);
+        saveButton.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
+        //To stay consistent with the color displayed in the box, we must strip transparency. Though this is probably unnecessary for the ColorInfoActivity, it should have been stripped before it was passed.
+        // https://stackoverflow.com/a/7741300
+        final int TRANSPARENT = 0xFF000000;
+        pixel = pixel | TRANSPARENT;
+        saveButton.setColorFilter(pixel);
+        Log.d("I29", "Found in db while loading ColorInfoActivity");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,12 +92,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
                 break;
         }
 
-
-        // save color check
-        isButtonClicked = false;
-        ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
-        saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
-        saveColorB.setColorFilter(null);
 
         // save button setup animation
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,Animation.RELATIVE_TO_SELF, 0.7f,Animation.RELATIVE_TO_SELF, 0.7f);
@@ -215,6 +221,16 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
         //initRecycler();
 
+        //Fill in bookmark if color was found in the db
+        if(ColorPickerFragment.findPixelInDatabase(colorValue, newColorDatabase)){
+            fillInBookmark(colorValue);
+            //saveHappened();
+        } else {
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
+            saveColorB.setColorFilter(null);
+        }
 
     }
 
@@ -289,8 +305,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
                 pickerDialog.addListener(callbackToHere);
                 pickerDialog.showSaveDialog();
             }
-
-
 
     }
 
