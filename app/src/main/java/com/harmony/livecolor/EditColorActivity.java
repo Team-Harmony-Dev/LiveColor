@@ -345,6 +345,10 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
 
 
+        if(ColorPickerFragment.findPixelInDatabase(colorValue, colorDB)){
+            colorICB = colorValue;
+            saveHappened();
+        }
     }
 
     /**
@@ -395,8 +399,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected );
-        saveButtonCB.setColorFilter(colorICB);
+        ImageButton saveButton = findViewById(R.id.saveNewColor);
+        saveButton.setImageResource(R.drawable.bookmark_selected );
+        saveButton.setColorFilter(colorICB);
 
         if(ONLY_SAVE_ONCE_PER_COLOR) {
             isButtonClickedNew = true;
