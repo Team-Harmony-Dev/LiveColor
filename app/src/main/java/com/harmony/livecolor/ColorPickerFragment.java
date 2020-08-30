@@ -559,6 +559,19 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     }
 
     @Override
+    public void onResume() {
+        Log.d("Lifecycles", "onResume: ColorPicker resumed");
+
+        //If we find the color in the DB already, fill in the bookmark
+        int colorInt = colorT;
+        if(findPixelInDatabase(colorInt, colorDB)){
+            fillInBookmark(colorInt);
+        }
+
+        super.onResume();
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d("Lifecycles", "onViewCreated: View Created for Color Picker Fragment");
         loadColorView();
