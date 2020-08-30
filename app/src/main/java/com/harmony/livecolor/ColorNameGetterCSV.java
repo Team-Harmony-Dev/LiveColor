@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 //Credit for color names:
 //https://github.com/meodai/color-names
@@ -25,6 +27,8 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
     private static ArrayList<String[]> colorNames;
+    //Hex -> Name
+    private static Map<String, String> colorCache;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
     //If for some reason the csv changes format, you can change these and it all should still work.
@@ -99,6 +103,9 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void readColors(){
         this.colorNames = this.read();
         this.haveAlreadyReadNames = true;
+        //TODO not sure about this. Arbitrary number.
+        final int INITIAL_CACHE_CAPACITY = 1024;
+        this.colorCache = new ConcurrentHashMap<String, String>(INITIAL_CACHE_CAPACITY);
         //printArr();
     }
 
@@ -143,6 +150,12 @@ public class ColorNameGetterCSV extends android.app.Application {
             } else {
                 this.readColors();
             }
+        }
+
+        //Check if we have this hex value cached. If so, we don't need to loop through the whole thing, we already know the name.
+        if(colorCache.get(hex) != null){
+            Log.d("colorname I76", "Found hex "+hex+" in cache, "+colorCache.get(hex));
+            return colorCache.get(hex);
         }
 
         //Use the list of names, finds the nearest
@@ -228,7 +241,11 @@ public class ColorNameGetterCSV extends android.app.Application {
     public static String getName(String hex){
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
-        return colors.searchForName(hex);
+        String name = colors.searchForName(hex);
+
+        colorCache.put(hex, name);
+
+        return name;
     }
 
     //TODO mess around more with library functions? https://developer.android.com/reference/android/widget/TextView#setAutoSizeTextTypeUniformWithConfiguration(int,%20int,%20int,%20int)
