@@ -159,7 +159,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
 
         //Use the list of names, finds the nearest
-        //Naive approach with no caching to begin with, see how fast that is.
 
         //Expects #RRGGBB (includes the #, and has  no alpha)
         if(hex.length() != 7) {
@@ -189,11 +188,13 @@ public class ColorNameGetterCSV extends android.app.Application {
         //Now lets do the actual comparisons to tell which color is closest
         double shortestDistance = Double.MAX_VALUE;
         int indexOfBestMatch = -1;
+//        long totalTime = 0;
         for(int i = 0; i < this.colorNames.size(); ++i){
             //Lets get this index's rgb
             int ired = 0;
             int igreen = 0;
             int iblue = 0;
+//            long startTime = System.nanoTime();
             //TODO could store rgb directly rather than doing this on each color each time.
             hex = this.colorNames.get(i)[HEX_INDEX];
             for(int x = 1; x < hex.length(); x+=2){
@@ -211,6 +212,10 @@ public class ColorNameGetterCSV extends android.app.Application {
                     return errorColorName;
                 }
             }
+//            long endTime = System.nanoTime();
+//            long duration = endTime - startTime;
+//            totalTime += duration;
+
 
             double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
@@ -219,6 +224,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 //Log.d("V2S1 colorname", "Found better distance to "+hex+" ("+ired+", "+igreen+", "+iblue+"), now is "+shortestDistance);
             }
         }
+//        Log.d("colorname efficiency", "Total="+(totalTime/1000000000.0)+"s");
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
@@ -241,7 +247,13 @@ public class ColorNameGetterCSV extends android.app.Application {
     public static String getName(String hex){
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+
+        //Seems to take about 0.145-0.155s roughly. Much less when cached (under 0.001s).
+        long startTime = System.nanoTime();
         String name = colors.searchForName(hex);
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        Log.d("colorname efficiency", "Func Total="+(duration/1000000000.0)+"s");
 
         colorCache.put(hex, name);
 
