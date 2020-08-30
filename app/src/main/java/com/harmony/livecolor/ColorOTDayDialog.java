@@ -11,6 +11,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -199,6 +204,64 @@ public class ColorOTDayDialog {
         }
     }
 
+
+
+    /**
+     * GENERATE A RANDOM COTD
+     * generates a random RGB color, based on the date
+     * each color channel is seeded and generated individually as follows
+     * R: MMDDYY
+     * G: YYMMDD
+     * B: DDYYMM
+     * a simple rotation on the american dat format in one number
+     *
+     * shame and guilt
+     *
+     * @return getIntFromColor( R, G, B)
+     *
+     * @author Daniel, Gabby
+     */
+    public HashMap<String, Integer[]> loadSpecialDays(Context context){
+
+        HashMap<String, Integer[]> specialDayColors = new HashMap<String, Integer[]>;
+
+        InputStream intputStream =  context.getResources().openRawResource(R.raw.specialdays);
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(intputStream, Charset.forName("UTF-8"))
+        );
+
+        String line = "";
+        try{
+            while ( (line = bufferedReader.readLine()) != null){
+
+                String[] tokens = line.split(",");
+
+                if (tokens[0].equals("date")){
+                    continue;
+                }
+                if (tokens[1].length() == 0){
+                    continue;
+                }
+                String date = tokens[0];
+                int len = tokens.length - 1;
+                while (tokens[len].length() == 0){
+                    len--;
+                }
+                Integer[] colors = new Integer[len];
+
+                for(int i = 1; i <= len; i++){
+                    colors[i] = Color.parseColor(tokens[i]);
+                }
+
+                specialDayColors.put(date,colors);
+            }
+        }catch(IOException e ){
+            e.printStackTrace();
+            Log.d("DEBUG", "loadSpecialDays: IOException\nError reading ata file on line " + line, e);
+
+        }
+        return  specialDayColors;
+    }
     public void makeShine(){
         ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
         //ImageView shineView = colorOTDView.findViewById(R.id.shine);
