@@ -36,7 +36,7 @@ public class ColorOTDayDialog {
     String strDt;
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
-    HashMap<String, Integer> specialDates;
+    HashMap<String, Integer[]> specialDates;
 
 
     public ColorOTDayDialog(Context context) {
@@ -44,8 +44,9 @@ public class ColorOTDayDialog {
         activity = (Activity) context;
         sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
-        specialDates = new HashMap<String, Integer>();
-        specialDates.put("07/05", Color.parseColor("#006c2e"));
+        specialDates = loadSpecialDays(this.context);
+
+
     }
 
     public void showColorOTD() {
@@ -70,7 +71,9 @@ public class ColorOTDayDialog {
 
             //Generate random color
             if(specialDates.containsKey(shortHand)){
-                colorOfTheDay = specialDates.get(shortHand);
+                // random special day color
+                int rnd =  new Random().nextInt(specialDates.get(shortHand).length);
+                colorOfTheDay = (specialDates.get(shortHand))[rnd];
             } else {
                 colorOfTheDay = generateRandomColor();
             }
@@ -207,23 +210,22 @@ public class ColorOTDayDialog {
 
 
     /**
-     * GENERATE A RANDOM COTD
-     * generates a random RGB color, based on the date
-     * each color channel is seeded and generated individually as follows
-     * R: MMDDYY
-     * G: YYMMDD
-     * B: DDYYMM
-     * a simple rotation on the american dat format in one number
+     * LOADS THE SPECIAL DAY CSV INTO A HASHMAP
+     * loads the special days, skips the empty ones
+     * somewhat inefficient
      *
-     * shame and guilt
+     * @param context context of app
      *
-     * @return getIntFromColor( R, G, B)
+     * @return HashMap<String, Integer[]>
+     *     string being the month/day
+     *     int array being the special colors,
+     *          parsed form hex to int form
      *
-     * @author Daniel, Gabby
+     * @author Daniel
      */
     public HashMap<String, Integer[]> loadSpecialDays(Context context){
 
-        HashMap<String, Integer[]> specialDayColors = new HashMap<String, Integer[]>;
+        HashMap<String, Integer[]> specialDayColors = new HashMap<String, Integer[]>();
 
         InputStream intputStream =  context.getResources().openRawResource(R.raw.specialdays);
         BufferedReader bufferedReader = new BufferedReader(
@@ -239,7 +241,7 @@ public class ColorOTDayDialog {
                 if (tokens[0].equals("date")){
                     continue;
                 }
-                if (tokens[1].length() == 0){
+                if (tokens.length == 1){
                     continue;
                 }
                 String date = tokens[0];
@@ -247,10 +249,14 @@ public class ColorOTDayDialog {
                 while (tokens[len].length() == 0){
                     len--;
                 }
+                
+
                 Integer[] colors = new Integer[len];
 
+
                 for(int i = 1; i <= len; i++){
-                    colors[i] = Color.parseColor(tokens[i]);
+                    colors[i-1] =
+                            Color.parseColor(tokens[i]);
                 }
 
                 specialDayColors.put(date,colors);
@@ -260,6 +266,7 @@ public class ColorOTDayDialog {
             Log.d("DEBUG", "loadSpecialDays: IOException\nError reading ata file on line " + line, e);
 
         }
+
         return  specialDayColors;
     }
     public void makeShine(){
