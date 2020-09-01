@@ -81,12 +81,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
         }
 
 
-        // save color check
-        isButtonClicked = false;
-        ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
-        saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
-        saveColorB.setColorFilter(null);
-
         // save button setup animation
         scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,Animation.RELATIVE_TO_SELF, 0.7f,Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
@@ -215,6 +209,15 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
         //initRecycler();
 
+        //Fill in bookmark if color was found in the db
+        if(ColorPickerFragment.findPixelInDatabase(colorValue, newColorDatabase)){
+            saveHappened();
+        } else {
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
+            saveColorB.setColorFilter(null);
+        }
 
     }
 
@@ -261,8 +264,10 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        saveButtonCB.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
-        saveButtonCB.setColorFilter(colorValue);
+
+        ImageButton saveButton = (ImageButton) findViewById(R.id.saveButton);
+        saveButton.setImageResource(R.drawable.ic_baseline_bookmark_selected_light_grey_48 );
+        saveButton.setColorFilter(colorValue);
 
         final boolean ONLY_SAVE_ONCE_PER_COLOR = false;
         if(ONLY_SAVE_ONCE_PER_COLOR) {
@@ -289,8 +294,6 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
                 pickerDialog.addListener(callbackToHere);
                 pickerDialog.showSaveDialog();
             }
-
-
 
     }
 

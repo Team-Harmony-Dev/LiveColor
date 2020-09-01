@@ -65,6 +65,25 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
     RotateAnimation rotate;
 
+    private void fillInBookmarkIfColorIsSaved(){
+        int colorI = 0;
+        if(ToggleButtonState){
+            int hue = seekRed.getProgress();
+            int sat = seekGreen.getProgress();
+            int val = seekBlue.getProgress();
+
+            int[] newRGBValues = convertHSVtoRGB(hue, sat, val);
+            colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
+        } else {
+            colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        }
+
+        colorICB = colorI;
+        if(ColorPickerFragment.findPixelInDatabase(colorICB, colorDB)) {
+            saveHappened();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,6 +190,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                 updateColorNameWithView(colorNNView);
                 resetBookmark();
+
+                fillInBookmarkIfColorIsSaved();
             }
         });
 
@@ -190,6 +211,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                 updateColorNameWithView(colorNNView);
                 resetBookmark();
+
+                fillInBookmarkIfColorIsSaved();
             }
         });
 
@@ -209,6 +232,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 EditColorActivity.colorNNView = findViewById(R.id.colorNN);
                 updateColorNameWithView(colorNNView);
                 resetBookmark();
+
+                fillInBookmarkIfColorIsSaved();
             }
         });
 
@@ -241,6 +266,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekRed.setProgress(m_Text);
+                            fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
                         }
@@ -283,6 +309,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekGreen.setProgress(m_Text);
+                            fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
                         }
@@ -325,6 +352,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekBlue.setProgress(m_Text);
+                            fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
                         }
@@ -345,6 +373,10 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
 
 
+        if(ColorPickerFragment.findPixelInDatabase(colorValue, colorDB)){
+            colorICB = colorValue;
+            saveHappened();
+        }
     }
 
     /**
@@ -395,8 +427,9 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
     //Color the save button in if the save occurred (wasn't cancelled)
     public void saveHappened(){
-        saveButtonCB.setImageResource(R.drawable.bookmark_selected );
-        saveButtonCB.setColorFilter(colorICB);
+        ImageButton saveButton = findViewById(R.id.saveNewColor);
+        saveButton.setImageResource(R.drawable.bookmark_selected );
+        saveButton.setColorFilter(colorICB);
 
         if(ONLY_SAVE_ONCE_PER_COLOR) {
             isButtonClickedNew = true;
@@ -478,6 +511,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         saveNC.setImageResource(R.drawable.unsaved);
         saveNC.setColorFilter(null);
         isButtonClickedNew = false;
+
+        fillInBookmarkIfColorIsSaved();
     }
 
     /**
