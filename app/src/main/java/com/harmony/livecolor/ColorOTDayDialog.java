@@ -249,7 +249,7 @@ public class ColorOTDayDialog {
                 while (tokens[len].length() == 0){
                     len--;
                 }
-                
+
 
                 Integer[] colors = new Integer[len];
 
