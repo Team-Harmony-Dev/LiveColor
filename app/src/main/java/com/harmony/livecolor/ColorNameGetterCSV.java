@@ -27,6 +27,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
     private static ArrayList<String[]> colorNames;
+    private static ArrayList<int[]> colorRGB;
     //Hex -> Name
     private static Map<String, String> colorCache;
     //This might be redundant? Whatever.
@@ -54,6 +55,7 @@ public class ColorNameGetterCSV extends android.app.Application {
      */
     private ArrayList<String[]> read(){
         ArrayList<String[]> resultList = new ArrayList<String[]>();
+        this.colorRGB = new ArrayList<int[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String csvLine;
@@ -77,6 +79,27 @@ public class ColorNameGetterCSV extends android.app.Application {
                 */
                 //Each row should contain two elements: A name, and a hex value (including the #)
                 String[] row = csvLine.split(",");
+
+                //For #76 testing
+                String hex = row[HEX_INDEX];
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+                for(int i = 1; i < hex.length(); i+=2){
+                    //Substring excludes the end index itself, so +2 instead of +1.
+                    String hexPiece = hex.substring(i, i+2);
+                    int color = Integer.parseInt(hexPiece,16);
+                    if(i == 1){
+                        red = color;
+                    } else if (i == 3) {
+                        green = color;
+                    } else if (i == 5) {
+                        blue = color;
+                    }
+                }
+                int[] rgb = {red, green, blue};
+                colorRGB.add(rgb);
+
                 resultList.add(row);
             }
         }
@@ -195,22 +218,30 @@ public class ColorNameGetterCSV extends android.app.Application {
             int igreen = 0;
             int iblue = 0;
 //            long startTime = System.nanoTime();
-            //TODO could store rgb directly rather than doing this on each color each time.
-            hex = this.colorNames.get(i)[HEX_INDEX];
-            for(int x = 1; x < hex.length(); x+=2){
-                //Substring excludes the end index itself, so +2 instead of +1.
-                String hexPiece = hex.substring(x, x+2);
-                int color = Integer.parseInt(hexPiece,16);
-                if(x == 1){
-                    ired = color;
-                } else if (x == 3) {
-                    igreen = color;
-                } else if (x == 5) {
-                    iblue = color;
-                } else {
-                    Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
-                    return errorColorName;
+            final boolean USE_RGB = true;
+            if(USE_RGB) {
+                //Store rgb directly rather than doing conversion on each color each time.
+                ired = this.colorRGB.get(i)[0];
+                igreen = this.colorRGB.get(i)[1];
+                iblue = this.colorRGB.get(i)[2];
+            } else {
+                hex = this.colorNames.get(i)[HEX_INDEX];
+                for (int x = 1; x < hex.length(); x += 2) {
+                    //Substring excludes the end index itself, so +2 instead of +1.
+                    String hexPiece = hex.substring(x, x + 2);
+                    int color = Integer.parseInt(hexPiece, 16);
+                    if (x == 1) {
+                        ired = color;
+                    } else if (x == 3) {
+                        igreen = color;
+                    } else if (x == 5) {
+                        iblue = color;
+                    } else {
+                        Log.d("V2S1 colorname", "Something weird happened when converting " + hex + "to rgb");
+                        return errorColorName;
+                    }
                 }
+
             }
 //            long endTime = System.nanoTime();
 //            long duration = endTime - startTime;
@@ -248,12 +279,13 @@ public class ColorNameGetterCSV extends android.app.Application {
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
 
-        //Seems to take about 0.145-0.155s roughly. Much less when cached (under 0.001s).
+        //Seems to take about 0.145-0.155s roughly when converting hex to int. Much less when cached (under 0.001s).
+        //Seems to take about 0.040-0.060s roughly when reading straight ints.
         long startTime = System.nanoTime();
         String name = colors.searchForName(hex);
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
-        Log.d("colorname efficiency", "Func Total="+(duration/1000000000.0)+"s");
+        Log.d("colorname efficiency I76", "Func Total="+(duration/1000000000.0)+"s");
 
         colorCache.put(hex, name);
 
