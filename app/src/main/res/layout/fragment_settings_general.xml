@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayoutSettings"
+    android:id="@+id/constraintLayoutSettingsGeneral"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarSettings"
+        android:id="@+id/toolbarSettingsGeneral"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorCard"
@@ -23,14 +23,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutToolbarInnerColorInfo"
+            android:id="@+id/constraintLayoutToolbarSettingsGeneral"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="32dp">
 
             <TextView
-                android:id="@+id/textViewHeading"
+                android:id="@+id/textViewToolbarSettingsGeneral"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato_bold"
