@@ -140,7 +140,7 @@
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyRGB"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyHEX" />
 
@@ -154,7 +154,7 @@
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyHEX"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/colorNameCIA" />
 
@@ -168,7 +168,7 @@
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyHSV"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyRGB" />
 
