@@ -1,6 +1,8 @@
 package com.harmony.livecolor;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,34 +10,31 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextWatcher;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
+
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
+
 import android.widget.Switch;
-import android.widget.TextView;
+
 import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Calendar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+
 import static android.content.Context.MODE_PRIVATE;
+
 
 public class SettingsCOTDFragment extends  Fragment{
 
@@ -43,6 +42,7 @@ public class SettingsCOTDFragment extends  Fragment{
 
 
     ToggleButton toggleButtonCotd;
+    Button buttonNotify;
 
     private WeakReference<Activity> mActivity;
 
@@ -93,6 +93,9 @@ public class SettingsCOTDFragment extends  Fragment{
 
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
 
+        buttonNotify = rootView.findViewById(R.id.buttonNotify);
+
+
         // show proper Cotd val
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isCotdEnabled = preferences.getBoolean("dialogCotd",true);
@@ -103,6 +106,13 @@ public class SettingsCOTDFragment extends  Fragment{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 onCheckChangedCotd(buttonView, isChecked);
+            }
+        });
+
+        buttonNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                createNotification(view);
             }
         });
 
@@ -183,6 +193,31 @@ public class SettingsCOTDFragment extends  Fragment{
 
         buttonView.setChecked(isChecked);
 
+    }
+    /**
+     * NOTIFICATION SETTER
+     * sets notification for COTD
+     * handles the when mostly,
+     * what handeled in NotificationUtils
+     *
+     * @param view view of button
+     *
+     * @author Daniel
+     * testing fuinctionality
+     */
+    public void createNotification (View view) {
+        Intent myIntent = new Intent(view.getContext() , NotificationUtils.class );
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService( this.getContext(), 0 , myIntent , 0 );
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 13);
+        calendar.set(Calendar.HOUR, 6);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP , calendar.getTimeInMillis() , 1000*60*60*24 , pendingIntent);
+
+        Log.d("DEBUG", "createNotification: ");
     }
 
 
