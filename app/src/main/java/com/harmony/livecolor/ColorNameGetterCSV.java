@@ -26,7 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
-    private static ArrayList<String[]> colorNames;
+    //These two arrays are associated by index. TODO pair object?
+    private static ArrayList<String> colorNames;
     private static ArrayList<int[]> colorRGB;
     //Hex -> Name
     private static Map<String, String> colorCache;
@@ -53,8 +54,8 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @return ArrayList of [name, hex] string pairs.
      * @author https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
      */
-    private ArrayList<String[]> read(){
-        ArrayList<String[]> resultList = new ArrayList<String[]>();
+    private ArrayList<String> read(){
+        ArrayList<String> resultList = new ArrayList<String>();
         this.colorRGB = new ArrayList<int[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
@@ -100,7 +101,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 int[] rgb = {red, green, blue};
                 colorRGB.add(rgb);
 
-                resultList.add(row);
+                resultList.add(row[NAME_INDEX]);
             }
         }
         catch (IOException ex) {
@@ -225,22 +226,22 @@ public class ColorNameGetterCSV extends android.app.Application {
                 igreen = this.colorRGB.get(i)[1];
                 iblue = this.colorRGB.get(i)[2];
             } else {
-                hex = this.colorNames.get(i)[HEX_INDEX];
-                for (int x = 1; x < hex.length(); x += 2) {
-                    //Substring excludes the end index itself, so +2 instead of +1.
-                    String hexPiece = hex.substring(x, x + 2);
-                    int color = Integer.parseInt(hexPiece, 16);
-                    if (x == 1) {
-                        ired = color;
-                    } else if (x == 3) {
-                        igreen = color;
-                    } else if (x == 5) {
-                        iblue = color;
-                    } else {
-                        Log.d("V2S1 colorname", "Something weird happened when converting " + hex + "to rgb");
-                        return errorColorName;
-                    }
-                }
+//                hex = this.colorNames.get(i)[HEX_INDEX];
+//                for (int x = 1; x < hex.length(); x += 2) {
+//                    //Substring excludes the end index itself, so +2 instead of +1.
+//                    String hexPiece = hex.substring(x, x + 2);
+//                    int color = Integer.parseInt(hexPiece, 16);
+//                    if (x == 1) {
+//                        ired = color;
+//                    } else if (x == 3) {
+//                        igreen = color;
+//                    } else if (x == 5) {
+//                        iblue = color;
+//                    } else {
+//                        Log.d("V2S1 colorname", "Something weird happened when converting " + hex + "to rgb");
+//                        return errorColorName;
+//                    }
+//                }
 
             }
 //            long endTime = System.nanoTime();
@@ -263,7 +264,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
 
-        return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
+        return this.colorNames.get(indexOfBestMatch)/*[NAME_INDEX]*/;
     }
 
     /**
@@ -280,7 +281,7 @@ public class ColorNameGetterCSV extends android.app.Application {
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
 
         //Seems to take about 0.145-0.155s roughly when converting hex to int. Much less when cached (under 0.001s).
-        //Seems to take about 0.040-0.060s roughly when reading straight ints.
+        //Seems to take about 0.040-0.060s roughly when reading straight ints. Takes more memory I guess? At least until I remove the hex from being stored.
         long startTime = System.nanoTime();
         String name = colors.searchForName(hex);
         long endTime = System.nanoTime();
@@ -394,12 +395,12 @@ public class ColorNameGetterCSV extends android.app.Application {
     /**
      * For debug. Prints all name and hex pairs to log.
      */
-    public void printArr(){
-        //Note: Assumes each line has 2 String elements: Name, Hex
-        for(int i = 0; i < this.colorNames.size(); ++i){
-            String nameAndHex = this.colorNames.get(i)[NAME_INDEX] + ", "
-                    + this.colorNames.get(i)[HEX_INDEX];
-            Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
-        }
-    }
+//    public void printArr(){
+//        //Note: Assumes each line has 2 String elements: Name, Hex
+//        for(int i = 0; i < this.colorNames.size(); ++i){
+//            String nameAndHex = this.colorNames.get(i)[NAME_INDEX] + ", "
+//                    + this.colorNames.get(i)[HEX_INDEX];
+//            Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
+//        }
+//    }
 }
