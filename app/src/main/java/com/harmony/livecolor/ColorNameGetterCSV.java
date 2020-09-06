@@ -71,6 +71,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 /*
                 //API actually seems to give both. https://api.color.pizza/v1/100000 gives "Dark Matter" which is marked
                 //TODO should probably not store the "x" if we aren't using it for anything
+                //  Update: Done, csv is cleaned in Python.
 
                 //Ignore any names marked as not a good name
                 char badNameChar = 'x';
@@ -81,7 +82,8 @@ public class ColorNameGetterCSV extends android.app.Application {
                 //Each row should contain two elements: A name, and a hex value (including the #)
                 String[] row = csvLine.split(",");
 
-                //For #76 testing
+                //By converting the hex to RGB here we can avoid doing it when finding the nearest neighbor distances,
+                //  which makes it (very roughly) 3x faster when searching for the name associated with a hex.
                 String hex = row[HEX_INDEX];
                 int red = 0;
                 int green = 0;
@@ -215,39 +217,9 @@ public class ColorNameGetterCSV extends android.app.Application {
 //        long totalTime = 0;
         for(int i = 0; i < this.colorNames.size(); ++i){
             //Lets get this index's rgb
-            int ired = 0;
-            int igreen = 0;
-            int iblue = 0;
-//            long startTime = System.nanoTime();
-            final boolean USE_RGB = true;
-            if(USE_RGB) {
-                //Store rgb directly rather than doing conversion on each color each time.
-                ired = this.colorRGB.get(i)[0];
-                igreen = this.colorRGB.get(i)[1];
-                iblue = this.colorRGB.get(i)[2];
-            } else {
-//                hex = this.colorNames.get(i)[HEX_INDEX];
-//                for (int x = 1; x < hex.length(); x += 2) {
-//                    //Substring excludes the end index itself, so +2 instead of +1.
-//                    String hexPiece = hex.substring(x, x + 2);
-//                    int color = Integer.parseInt(hexPiece, 16);
-//                    if (x == 1) {
-//                        ired = color;
-//                    } else if (x == 3) {
-//                        igreen = color;
-//                    } else if (x == 5) {
-//                        iblue = color;
-//                    } else {
-//                        Log.d("V2S1 colorname", "Something weird happened when converting " + hex + "to rgb");
-//                        return errorColorName;
-//                    }
-//                }
-
-            }
-//            long endTime = System.nanoTime();
-//            long duration = endTime - startTime;
-//            totalTime += duration;
-
+            int ired = this.colorRGB.get(i)[0];
+            int igreen = this.colorRGB.get(i)[1];
+            int iblue = this.colorRGB.get(i)[2];
 
             double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
@@ -256,7 +228,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 //Log.d("V2S1 colorname", "Found better distance to "+hex+" ("+ired+", "+igreen+", "+iblue+"), now is "+shortestDistance);
             }
         }
-//        Log.d("colorname efficiency", "Total="+(totalTime/1000000000.0)+"s");
+
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
@@ -264,7 +236,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
 
-        return this.colorNames.get(indexOfBestMatch)/*[NAME_INDEX]*/;
+        return this.colorNames.get(indexOfBestMatch);
     }
 
     /**
@@ -280,14 +252,9 @@ public class ColorNameGetterCSV extends android.app.Application {
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
 
-        //Seems to take about 0.145-0.155s roughly when converting hex to int. Much less when cached (under 0.001s).
-        //Seems to take about 0.040-0.060s roughly when reading straight ints. Takes more memory I guess? At least until I remove the hex from being stored.
-        long startTime = System.nanoTime();
         String name = colors.searchForName(hex);
-        long endTime = System.nanoTime();
-        long duration = endTime - startTime;
-        Log.d("colorname efficiency I76", "Func Total="+(duration/1000000000.0)+"s");
 
+        //TODO theoretically it might be able to run out of memory if the app is open a long time. Check size of hashmap here, and only add if it's not over some size?
         colorCache.put(hex, name);
 
         return name;
@@ -391,16 +358,4 @@ public class ColorNameGetterCSV extends android.app.Application {
             //Log.d("V2S1 colorname resizeFont", "Was attempting resize on already fitting text?");
         }
     }
-
-    /**
-     * For debug. Prints all name and hex pairs to log.
-     */
-//    public void printArr(){
-//        //Note: Assumes each line has 2 String elements: Name, Hex
-//        for(int i = 0; i < this.colorNames.size(); ++i){
-//            String nameAndHex = this.colorNames.get(i)[NAME_INDEX] + ", "
-//                    + this.colorNames.get(i)[HEX_INDEX];
-//            Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
-//        }
-//    }
 }
