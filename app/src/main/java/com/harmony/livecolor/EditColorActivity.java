@@ -379,6 +379,11 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         }
     }
 
+    public void onResume() {
+        fillInBookmarkIfColorIsSaved();
+        super.onResume();
+    }
+
     /**
      * BACK
      * simple back button
