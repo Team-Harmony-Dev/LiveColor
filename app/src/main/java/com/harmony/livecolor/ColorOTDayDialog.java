@@ -39,6 +39,7 @@ public class ColorOTDayDialog {
     HashMap<String, Integer[]> specialDates;
 
 
+
     public ColorOTDayDialog(Context context) {
         this.context = context;
         activity = (Activity) context;
@@ -46,7 +47,34 @@ public class ColorOTDayDialog {
         editor = sharedPref.edit();
         specialDates = loadSpecialDays(this.context);
 
+    }
 
+
+    /**
+     * GET THE COLOR OF THE DAY
+     * get the integer representation of the Color
+     *
+     * @return colorOdTheDay Color int
+     *
+     * @author Daniel
+     *
+     */
+    public Integer getColorOTD(){
+        specialDates = loadSpecialDays(this.context);
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("MMMM dd yyyy");
+        SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
+        strDt = simpleDate.format(todayDate);
+        String shortHand = monthDay.format(todayDate);
+        if(specialDates.containsKey(shortHand)){
+            // random special day color
+            int rnd =  new Random().nextInt(specialDates.get(shortHand).length);
+            colorOfTheDay = (specialDates.get(shortHand))[rnd];
+        } else {
+            colorOfTheDay = generateRandomColor();
+        }
+
+        return  colorOfTheDay;
     }
 
     public void showColorOTD() {

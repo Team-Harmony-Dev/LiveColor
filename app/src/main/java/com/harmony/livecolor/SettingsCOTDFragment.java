@@ -27,6 +27,7 @@ import android.widget.ToggleButton;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -112,7 +113,15 @@ public class SettingsCOTDFragment extends  Fragment{
         buttonNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                createNotification(view);
+                NotificationUtils notificationUtils = new NotificationUtils();
+                notificationUtils.createNotificationChannel(getContext(), "COTD");
+                ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(getContext());
+                Integer cotd = colorOTDayDialog.getColorOTD();
+                Log.d("DEBUG", "cotd: " + cotd.toString());
+                String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
+                Log.d("DEBUG", "cotd: " + name);
+                String msg = "The color of the day is " + name + "!!";
+                notificationUtils.addColorNotification(getContext(),msg, "COTD", cotd);
             }
         });
 
