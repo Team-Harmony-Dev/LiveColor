@@ -266,11 +266,9 @@ public class ColorNameGetterCSV extends android.app.Application {
      *     and sets the font size to either maximumFontSize or smaller to ensure that the
      *     TextView with the unpredictable-length name stays on a single line.
      *
-     * Important note: Relies on colors already having been read (happens in MainActivity.java)
+     * Important note: Relies on colors already having been read (read functions are called in MainActivity.java during app start)
      *
      * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
-     *
-     * Note: If you want multiple lines instead of one, multiply maximumViewWidthPercentOfScreen by number of lines.
      *
      * @param view The TextView to put the name in
      * @param hex A string of hex, including the #, excluding any transparency. Ex: #FFFFFF
