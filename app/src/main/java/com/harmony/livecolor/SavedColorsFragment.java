@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -28,6 +29,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A fragment representing a list of Items.
@@ -100,10 +103,13 @@ public class SavedColorsFragment extends Fragment {
         listButton.setImageTintList(myLists[0]);
         gridButton.setImageTintList(myLists[1]);
 
+
         listButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
                 initRecycler("list");
+                SharedPreferences preferences = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+                preferences.edit().putString("savedLayout", "list").commit();
                 //Sets the image buttons to reflect current state
                 listButton.setImageTintList(myLists[0]);
                 gridButton.setImageTintList(myLists[1]);
@@ -116,6 +122,8 @@ public class SavedColorsFragment extends Fragment {
             @Override
             public void onClick (View view){
                 initRecycler("grid");
+                SharedPreferences preferences = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+                preferences.edit().putString("savedLayout", "grid").commit();
                 listButton.setImageTintList(myLists[1]);
                 gridButton.setImageTintList(myLists[0]);
 //                listButton.setImageResource(R.drawable.list_view);
@@ -242,23 +250,44 @@ public class SavedColorsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initColors();
-        initRecycler("list");
+        ImageButton listButton = view.findViewById(R.id.listViewButton);
+        ImageButton gridButton = view.findViewById(R.id.gridViewButton);
+        SharedPreferences preferences = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        String savedLayout = preferences.getString("savedLayout", "list");
+        ColorStateList[] myLists = customAccent(view.findViewById(R.id.savedColorsConstraint));
+        if(savedLayout.equals("grid")) {
+            initRecycler("grid");
+            preferences.edit().putString("savedLayout", "grid").commit();
+            listButton.setImageTintList(myLists[1]);
+            gridButton.setImageTintList(myLists[0]);
+        }else{
+            initRecycler("list");
+            preferences.edit().putString("savedLayout", "list").commit();
+            listButton.setImageTintList(myLists[0]);
+            gridButton.setImageTintList(myLists[1]);
+        }
     }
 
-    /**
-     * CUSTOM ACCENT HANDLER
-     * changes colors of specific activity/fragment
-     *
-     * THIS ONE WORKS A LITTLE DIFFERENT
-     * so, each time this is used, its a bespoke solution
-     * this time needed a little something extra to change the tints on the fly
-     * didnt want to crowd out onCreateView
-     *
-     * @param view view of root container
-     *
-     * @author Daniel
-     * takes a bit of elbow grease, and there maybe a better way to do this, but it works
-     */
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+        /**
+         * CUSTOM ACCENT HANDLER
+         * changes colors of specific activity/fragment
+         *
+         * THIS ONE WORKS A LITTLE DIFFERENT
+         * so, each time this is used, its a bespoke solution
+         * this time needed a little something extra to change the tints on the fly
+         * didnt want to crowd out onCreateView
+         *
+         * @param view view of root container
+         *
+         * @author Daniel
+         * takes a bit of elbow grease, and there maybe a better way to do this, but it works
+         */
     public ColorStateList[] customAccent(View view){
         ImageButton listView = view.findViewById(R.id.listViewButton);
         ImageButton gridView = view.findViewById(R.id.gridViewButton);
