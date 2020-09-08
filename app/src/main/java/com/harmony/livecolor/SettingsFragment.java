@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -47,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -65,6 +67,8 @@ public class SettingsFragment  extends  Fragment{
     ToggleButton toggleButtonCotd;
     EditText editTextAccent;
     ImageButton imageButtonReset;
+    ImageButton imageButtonResetImage;
+    ImageButton imageButtonTodaysColor;
     RotateAnimation rotate;
     private WeakReference<Activity> mActivity;
 
@@ -119,6 +123,8 @@ public class SettingsFragment  extends  Fragment{
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
         editTextAccent = rootView.findViewById(R.id.editTextAccentHex);
         imageButtonReset = rootView.findViewById(R.id.imageButtonAccentReset);
+        imageButtonResetImage = rootView.findViewById(R.id.imageButtonImageReset);
+        imageButtonTodaysColor = rootView.findViewById(R.id.imageButtonTodaysColor);
 
 
         // show proper darkmode val
@@ -221,6 +227,21 @@ public class SettingsFragment  extends  Fragment{
             @Override
             public void onClick(View view){
                     onClickReset(view);
+            }
+        });
+
+        imageButtonResetImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                onClickResetImage(view);
+            }
+        });
+
+        imageButtonTodaysColor.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d("SettingsFragment", "onClick: Today's Color button clicked");
+                onClickTodaysColor();
             }
         });
 
@@ -352,6 +373,36 @@ public class SettingsFragment  extends  Fragment{
         preferences.edit().putString("fragStatic", "true").commit();
         mActivity = new WeakReference<Activity>(this.getActivity());
         mActivity.get().recreate();
+    }
+
+    /**
+     * COLOR PICKER IMAGE RESET
+     * resets the image shown on the color picker page to the original image (the livecolor logo)
+     *
+     * @param view is only needed to animate the button when clicked
+     *
+     * @author Paige
+     */
+    public void onClickResetImage(View view) {
+        ImageButton reset = (ImageButton) view;
+        reset.startAnimation(rotate);
+
+        //clear shared pref of currently saved path
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+        editor.putString("image", null);
+        editor.apply();
+    }
+
+    /**
+     * VIEW TODAYS COLOR
+     * reopens the COTD dialog
+     *
+     * @author Paige
+     */
+    public void onClickTodaysColor() {
+        Log.d("SettingsFragment", "onClickTodaysColor: we're in");
+        ColorOTDayDialog cotdDialog = new ColorOTDayDialog(getContext(), true);
+        cotdDialog.showColorOTD();
     }
 
 

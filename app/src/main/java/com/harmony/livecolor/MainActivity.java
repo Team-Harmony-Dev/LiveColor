@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
-           isEnabledCotd = myPrefs.getBoolean("dialogCotd", true);
+            isEnabledCotd = myPrefs.getBoolean("dialogCotd", true);
         }else{
             isEnabledCotd = true;
             myPrefs.edit().putBoolean("dialogCotd", true);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
      * like changes to the theme
      *
      * @author Daniel
-     * efficacey of using prefs?
+     * efficency of using prefs?
      */
     private void onLoadFragment(){
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("Lifecycles", "onStart: MainActivity started");
 
         if(isEnabledCotd) {
-            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
+            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, false);
             cotdDialog.showColorOTD();
         }
         super.onStart();
@@ -236,9 +236,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         Log.d("Lifecycles", "onResume: MainActivity resumed");
         super.onResume();
-
-
-
     }
 
     @Override

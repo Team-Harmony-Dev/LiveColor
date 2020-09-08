@@ -85,7 +85,7 @@ public class NightModeUtils {
 
     /**
      *  DARK MODE CHECK ACTUAL
-     *  checks the multiple places necisary  for dark mode
+     *  checks the multiple places necessary for dark mode
      *
      * @param activity
      *

@@ -37,10 +37,12 @@ public class ColorOTDayDialog {
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
     HashMap<String, Integer[]> specialDates;
+    boolean reshow; //for reshowing the dialog for todays date through SettingsFragment
 
 
-    public ColorOTDayDialog(Context context) {
+    public ColorOTDayDialog(Context context, boolean reshow) {
         this.context = context;
+        this.reshow = reshow;
         activity = (Activity) context;
         sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -62,7 +64,7 @@ public class ColorOTDayDialog {
         dateView.setText(strDt);
 
         // If it is a new day - create and show the dialog!
-        if(newDay()){
+        if(newDay() || reshow){
             //Store the date in shared preferences
             editor.putString("Date", strDt);
             editor.commit();
