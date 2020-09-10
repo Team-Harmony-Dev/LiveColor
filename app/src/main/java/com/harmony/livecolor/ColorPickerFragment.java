@@ -265,10 +265,13 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         if (pickingImage != null) { // loads saved image to fragment using path
             SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
             imagePath = prefs.getString("image", null);
+            Log.d("ColorPickerFragment", "onCreateView: currently saved image path: " + imagePath);
             pickingImage.setImageURI(imageUri);
             if(imagePath != null) {
                 Drawable drawable = Drawable.createFromPath(imagePath);
                 pickingImage.setImageDrawable(drawable);
+            } else {
+                pickingImage.setImageResource(R.drawable.livecolor_logo);
             }
         }
         //Adds a listener to get the x and y coordinates of taps and update the display

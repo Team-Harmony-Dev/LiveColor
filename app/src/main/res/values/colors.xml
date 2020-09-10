@@ -13,7 +13,6 @@
     <color name="colorIconPrimary">#777777</color>
     <color name="colorModeUltimate">#FFFFFF</color>
     <color name="colorCard">#FFFFFF</color>
-
-
+    <color name="colorBackground">#FFF2F2F2</color>
 
 </resources>

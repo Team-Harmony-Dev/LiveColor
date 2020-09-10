@@ -43,8 +43,7 @@ public class SettingsCOTDFragment extends  Fragment{
 
 
     ToggleButton toggleButtonCotd;
-
-    private WeakReference<Activity> mActivity;
+    ImageButton imageButtonTodaysColor;
 
     public SettingsCOTDFragment() {
         // Required empty public constructor
@@ -92,6 +91,7 @@ public class SettingsCOTDFragment extends  Fragment{
         customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
 
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
+        imageButtonTodaysColor = rootView.findViewById(R.id.imageButtonTodaysColor);
 
         // show proper Cotd val
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
@@ -103,6 +103,13 @@ public class SettingsCOTDFragment extends  Fragment{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 onCheckChangedCotd(buttonView, isChecked);
+            }
+        });
+
+        imageButtonTodaysColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickTodaysColor();
             }
         });
 
@@ -183,6 +190,18 @@ public class SettingsCOTDFragment extends  Fragment{
 
         buttonView.setChecked(isChecked);
 
+    }
+
+    /**
+     * VIEW TODAYS COLOR
+     * reopens the COTD dialog
+     *
+     * @author Paige
+     */
+    public void onClickTodaysColor() {
+        Log.d("SettingsCOTDFragment", "onClickTodaysColor: we're in");
+        ColorOTDayDialog cotdDialog = new ColorOTDayDialog(getContext(), true);
+        cotdDialog.showColorOTD();
     }
 
 

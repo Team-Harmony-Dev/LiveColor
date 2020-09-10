@@ -17,7 +17,7 @@
         android:textSize="24sp" />
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/dividerSaveTo"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider3"
+        android:id="@+id/dividerSavedColors"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
@@ -79,7 +79,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/dividerNewPalette"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
@@ -111,7 +111,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider4"
+        android:id="@+id/dividerMyPalettes"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
