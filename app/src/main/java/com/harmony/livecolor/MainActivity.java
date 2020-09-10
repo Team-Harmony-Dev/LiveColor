@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                     fragment = PalettesFragment.newInstance();
                     break;
                 case "SettingsFragment":
-                    fragment = SettingsFragment.newInstance();
+                    fragment = SettingsStartFragment.newInstance();
                     break;
             }
 
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = PalettesFragment.newInstance();
                 break;
             case R.id.navigation_settings:
-                fragment = SettingsFragment.newInstance();
+                fragment = SettingsStartFragment.newInstance();
                 break;
         }
         return loadFragment(fragment);

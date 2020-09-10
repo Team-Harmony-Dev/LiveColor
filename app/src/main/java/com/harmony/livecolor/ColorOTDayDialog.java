@@ -221,7 +221,7 @@ public class ColorOTDayDialog {
      * @return HashMap<String, Integer[]>
      *     string being the month/day
      *     int array being the special colors,
-     *          parsed form hex to int form
+     *          parsed from hex to int form
      *
      * @author Daniel
      */
