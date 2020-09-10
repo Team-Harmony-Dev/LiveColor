@@ -136,7 +136,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         this.haveAlreadyReadNames = true;
         this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
         this.currentCacheSize = 0;
-        //printArr();
     }
 
     /**
