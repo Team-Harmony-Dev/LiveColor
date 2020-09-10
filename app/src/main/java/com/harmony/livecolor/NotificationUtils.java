@@ -5,19 +5,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
-
-import static android.provider.Settings.System.getString;
 
 
 public class NotificationUtils {
@@ -28,6 +23,15 @@ public class NotificationUtils {
     }
 
     public void addNotification(Context context, String message, String channelID) {
+
+
+//        RelativeLayout relativeLayout =  new RelativeLayout(context);
+//
+//        relativeLayout.setMinimumHeight(128);
+
+//        TextView textView = new TextView(context);
+//        textView.setT
+
 
         int icon = R.drawable.livecolor_logo_vectorized;
         long when = System.currentTimeMillis();
@@ -62,14 +66,29 @@ public class NotificationUtils {
     public void addColorNotification(Context context, String message, String channelID, int color) {
 
 
-        RemoteViews contentView = new RemoteViews(context.getPackageName() , R.xml.custom_notification_layout ) ;
-//        contentView.setInt(R.id.layoutRelativeCustomNotification, "setBackgroundResource", color);
+        RemoteViews contentView = new RemoteViews(context.getPackageName() , R.layout.notification_custom_cotd) ;
+        contentView.setInt(R.id.layoutRelativeCustomNotification, "setBackgroundColor", color);
         contentView.setInt(R.id.imageCustomNotification, "setImageResource", R.drawable.livecolor_logo_vectorized);
+
+        RemoteViews contentViewBig = new RemoteViews(context.getPackageName(), R.layout.notification_custom_cotd);
+        contentViewBig.setInt(R.id.layoutRelativeCustomNotification, "setBackgroundColor", color);
+        contentViewBig.setInt(R.id.imageCustomNotification, "setImageResource", R.drawable.livecolor_logo_vectorized);
+        contentViewBig.setCharSequence(R.id.titleCustomNotification, "setText", "LiveColor");
+        contentViewBig.setCharSequence(R.id.textCustomNotification, "setText", "message");
+        contentViewBig.setInt(R.id.layoutRelativeCustomNotification, "setMinimumHeight", 128);
+//        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_small);
+//        RemoteViews notificationLayoutExpanded = new RemoteViews(context.getPackageName(), R.layout.notification_large);
+
+
+
+
+        Bitmap image = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888);
+        image.eraseColor(color);
 
 
         int icon = R.drawable.livecolor_logo_vectorized;
         Bitmap bitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.livecolor_logo_vectorized);
-        long when = System.currentTimeMillis();
+//        long when = System.currentTimeMillis();
         String appname = context.getResources().getString(R.string.app_name);
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -82,21 +101,24 @@ public class NotificationUtils {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
         notification = builder
-                .setContent(contentView)
+//                .setContent(contentView)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(icon)
-                .setLargeIcon(bitmapIcon)
+                .setLargeIcon(image)
 //                .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)
                 .setTicker(appname)
                 .setWhen(0)
                 .setAutoCancel(true)
                 .setContentTitle(appname)
                 .setContentText(message)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line..."))
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                .bigPicture(image)
+                .bigLargeIcon(null))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setColor(color)
                 .setColorized(true)
+//                .setCustomContentView(contentView)
+//                .setCustomBigContentView(contentViewBig)
                 .build();
 
         notificationManager.notify(0 , notification);
