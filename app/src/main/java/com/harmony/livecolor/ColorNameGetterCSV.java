@@ -31,6 +31,11 @@ public class ColorNameGetterCSV extends android.app.Application {
     private static ArrayList<int[]> colorRGB;
     //Hex -> Name
     private static Map<String, String> colorCache;
+    //Arbitrary. I don't want to eat too much memory but I'm not sure exactly how large is reasonable here.
+    private static final int MAX_CACHE_SIZE = 2048;
+    private static int currentCacheSize;
+    //TODO not sure about this. Arbitrary number. Could just be set to max cache size.
+    //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
     //If for some reason the csv changes format, you can change these and it all should still work.
@@ -129,10 +134,28 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void readColors(){
         this.colorNames = this.read();
         this.haveAlreadyReadNames = true;
-        //TODO not sure about this. Arbitrary number.
-        final int INITIAL_CACHE_CAPACITY = 1024;
-        this.colorCache = new ConcurrentHashMap<String, String>(INITIAL_CACHE_CAPACITY);
+        this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
+        this.currentCacheSize = 0;
         //printArr();
+    }
+
+    /**
+     * Add an entry to the cache.
+     *
+     * @param hex The #XXXXXX string. (Key)
+     * @param name The corresponding name. (Value)
+     * @return Whether or not the entry is now in the cache. (If it ran out of space AND this pair was not already in there, false, otherwise true).
+     */
+    private static boolean addToCache(String hex, String name){
+        if(MAX_CACHE_SIZE > currentCacheSize){
+            //We're only adding a color to the cache if it's not already in there.
+            if(colorCache.get(hex) == null) {
+                colorCache.put(hex, name);
+                ++currentCacheSize;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -254,8 +277,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         String name = colors.searchForName(hex);
 
-        //TODO theoretically it might be able to run out of memory if the app is open a long time. Check size of hashmap here, and only add if it's not over some size?
-        colorCache.put(hex, name);
+        addToCache(hex, name);
 
         return name;
     }
