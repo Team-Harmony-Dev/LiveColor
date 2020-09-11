@@ -144,15 +144,25 @@ public class ColorNameGetterCSV extends android.app.Application {
     //   the db with a new color name csv file, they might be surprised to see their saved names change. This prevents that.
     public void readDatabaseIntoCache(ColorDatabase colorDB){
         if(colorDB == null){
-            Log.e("I59", "Failed to read db into cache because db was null");
+            Log.e(" colorname", "Failed to read db into cache because given db was null");
             return;
         }
         Cursor cur = colorDB.getColorDatabaseCursor();
+        final int DB_HEX_INDEX = cur.getColumnIndex("HEX");
+        final int DB_NAME_INDEX = cur.getColumnIndex("NAME");
+        if(DB_HEX_INDEX == -1 || DB_NAME_INDEX == -1){
+            Log.e("I59 colorname", "Failed to read db into cache because db columns could not be found");
+            return;
+        }
         //Loop through the database and add to cache.
         //TODO deleted colors still stay in the db or something though, right? Ask about how exactly that works.
-        while(true){
-            Log.d("I59", "cursorCols="+cur.getColumnNames().toString());
-            break;
+        //TODO theoretically a large number of saved colors might take too much memory for the cursor to allocate? That'd be a ton of saved colors though.
+        while(!cur.isAfterLast()){
+            final String COLOR_HEX = cur.getString(DB_HEX_INDEX);
+            final String COLOR_NAME = cur.getString(DB_NAME_INDEX);
+            Log.d("I59 colorname", "Read from db "+COLOR_HEX+" -> "+COLOR_NAME);
+            addToCache(COLOR_HEX, COLOR_NAME);
+            cur.moveToNext();
         }
         cur.close();
     }
