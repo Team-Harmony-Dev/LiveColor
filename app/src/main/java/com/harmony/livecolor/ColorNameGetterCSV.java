@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -136,6 +137,24 @@ public class ColorNameGetterCSV extends android.app.Application {
         this.haveAlreadyReadNames = true;
         this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
         this.currentCacheSize = 0;
+    }
+
+    //#59. We want to read the database into the cache not only because it will make some likely queries faster,
+    //  but also because we can use the cache to effectively override some names. If the user is using old color names in
+    //   the db with a new color name csv file, they might be surprised to see their saved names change. This prevents that.
+    public void readDatabaseIntoCache(ColorDatabase colorDB){
+        if(colorDB == null){
+            Log.e("I59", "Failed to read db into cache because db was null");
+            return;
+        }
+        Cursor cur = colorDB.getColorDatabaseCursor();
+        //Loop through the database and add to cache.
+        //TODO deleted colors still stay in the db or something though, right? Ask about how exactly that works.
+        while(true){
+            Log.d("I59", "cursorCols="+cur.getColumnNames().toString());
+            break;
+        }
+        cur.close();
     }
 
     /**
