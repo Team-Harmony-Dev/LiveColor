@@ -397,42 +397,35 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             //Get color int from said pixel coordinates. Defaults to background color.
             int pixel = BACKGROUND_COLOR;
             boolean wasBackgroundPixel = false;
-            //We can just get the bitmap of whatever our imageview is displaying, and not need any annoying math.
-            //Though since we have the math anyway we might as well use it if we aren't zoomed in? Might be more efficient than making the bitmap.  TODO
-            final boolean USE_FILE_BITMAP = true;
-            //The || is required because if we zoom in on a rectangular image we might use more of the imageview than was originally valid.
-            if(USE_FILE_BITMAP){
-                if(USE_FILE_BITMAP){
-                    final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
-                    Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
-                    if(view_bitmap == null){
-                        Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
-                    } else {
-                        try {
-                            pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
-                            //Check if the pixel is a part of the background
-                            if(pixel == BACKGROUND_COLOR) {
-                                //3 Possible cases for pixels:
-                                //1. Pixel is opaque. Always the same no matter the background
-                                //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
-                                //3. Pixel is fully transparent. Exactly equal to background.
-                                //  But the background might be the same color as some pixel actually in the image.
-                                //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
-                                //Any not completely transparent color should be fine.
-                                final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
-                                Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
-                                int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
-                                if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
-                                    wasBackgroundPixel = true;
-                                }
-                            }
 
-                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " pixel=" + pixel);
-                        } catch (Exception e){
-                            //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
-                            Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
+            final Drawable background = ResourcesCompat.getDrawable(getResources(), R.drawable.newtransparent, null);
+            Bitmap view_bitmap = getBitmapFromViewWithBackground(touchView, BACKGROUND_COLOR, background);
+            if(view_bitmap == null){
+                Log.w("DEBUG S2US2 pinchzoom", "Bitmap was null");
+            } else {
+                try {
+                    pixel = view_bitmap.getPixel((int) event.getX(), (int) event.getY());
+                    //Check if the pixel is a part of the background
+                    if(pixel == BACKGROUND_COLOR) {
+                        //3 Possible cases for pixels:
+                        //1. Pixel is opaque. Always the same no matter the background
+                        //2. Pixel is partially transparent. Changes with background, but not exactly equal to the background color.
+                        //3. Pixel is fully transparent. Exactly equal to background.
+                        //  But the background might be the same color as some pixel actually in the image.
+                        //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
+                        //Any not completely transparent color should be fine.
+                        final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
+                        Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
+                        int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
+                        if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
+                            wasBackgroundPixel = true;
                         }
                     }
+
+                    Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, found bg=" + wasBackgroundPixel + " pixel=" + pixel);
+                } catch (Exception e){
+                    //They dragged off the image. I could just check if X and Y are in range, but this should work fine.
+                    Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                 }
             }
 
