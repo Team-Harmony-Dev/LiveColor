@@ -96,6 +96,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         if(cursor != null && cursor.getCount()>0){
             long id = cursor.getLong(0);
             Log.d(TAG_COLOR, "addColorInfoData: id of existing color = " + id);
+            cursor.close();
             return id;
         }
 
@@ -110,6 +111,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         long insertResult = db.insert(COLOR_TABLE_NAME, null, colorInfoContentValues);
         Log.d(TAG_COLOR, "addColorInfoData: id of inserted color = " + insertResult);
 
+        cursor.close();
         return insertResult;
     }
 
@@ -257,6 +259,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * POINT CURSOR TO TOP OF COLOR DATABASE (DONE)
      * allows access to cursor for entire color database access
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @return cursor at top of color database
      */
     public Cursor getColorDatabaseCursor() {
@@ -270,6 +273,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * POINT CURSOR TO TOP OF PALETTE DATABASE (DONE)
      * allows access to cursor for entire palette database access
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @return cursor at top of palette database
      */
     public Cursor getPaletteDatabaseCursor() {
@@ -283,6 +287,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * RETRIEVE CURSOR FOR A SPECIFIC COLOR BY IT'S UNIQUE DATABASE ID (DONE)
      * searches the database for a specific color by id
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @param id of the color to be searched for in the database
      * @return the cursor for the query results
      */
@@ -298,6 +303,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * RETRIEVE CURSOR FOR A SPECIFIC PALETTE BY IT'S UNIQUE DATABASE ID (DONE)
      * searches the database for a specific palette by id
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @param id of the palette to be searched for in the database
      * @return the cursor for the query results
      */
@@ -318,6 +324,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * FOR CHECKING IF A COLOR ALREADY EXISTS IN COLOR DATABASE (DONE)
      * THIS MUST BE ITS OWN METHOD WITH CURSOR RETURN
      * searches the color database for all colors with the given HEX within a palette
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @param hex the Hex to be searched for in the database
      * @return the cursor for the query results
      */
@@ -351,6 +358,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (DONE)
      * retrieve a palette by its user-given name or hex
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @param input query for name of the palette that the user is searching for
      * @return cursor pointing at any matching results
      */
@@ -364,7 +372,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (WIP)
+     * FOR SEARCH BAR FEATURE IN PALETTE FRAGMENT (DONE)
+     * REMEMBER TO CLOSE THE CURSOR IF YOU USE
      * @param input hex query for name of the palette that the user is searching for
      * @return cursor pointing at any matching results
      */
@@ -387,6 +396,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
             Log.d(TAG_PALETTE, "searchPalettesByHex: final query = " + selectQuery);
             Cursor paletteData = db.rawQuery(selectQuery, null);
             paletteData.moveToFirst();
+            colorData.close();
             return paletteData;
         } else {
             return colorData;
@@ -424,6 +434,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
                 String rgb = cursor.getString(3);
                 String hsv = cursor.getString(4);
                 colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+                cursor.close();
             }
         } else {
             for(int i = 0; i < splitIds.length; i++) {
@@ -434,6 +445,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
                 String rgb = cursor.getString(3);
                 String hsv = cursor.getString(4);
                 colorList.add(new MyColor(colorId,name,hex,rgb,hsv));
+                cursor.close();
             }
         }
 
@@ -441,7 +453,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * GET ARRAYLIST OF PALETTES AS MYPALETTE OBJECTS (WIP)
+     * GET ARRAYLIST OF PALETTES AS MYPALETTE OBJECTS (DONE)
      * get all user made palettes (aka all palettes excluding Saved Colors (id = 1)
      * @param cursor pointing to the set of palettes to be put into the arraylist
      * @return arraylist of palette objects for recycler display
@@ -468,11 +480,12 @@ public class ColorDatabase extends SQLiteOpenHelper {
                 }
             }
         }
+        cursor.close();
         return paletteList;
     }
 
     /**
-     * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS LIST (WIP)
+     * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS LIST (DONE)
      * updates the database ref string of the given MyColors list of a palette
      * @param id the id of the palette to be updated
      * @param colors the MyColors arraylist of the palette that needs to be updated in the database
@@ -542,12 +555,13 @@ public class ColorDatabase extends SQLiteOpenHelper {
                 + " WHERE ID = \'" + id + "\'";
 
         //get the cursor from the query
-        Cursor paletteData = db.rawQuery(selectQuery, null);
-        if(paletteData.moveToFirst()){
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()){
             //get the string result from the query
-            result = paletteData.getString(0);
+            result = cursor.getString(0);
         }
 
+        cursor.close();
         return result;
     }
 
