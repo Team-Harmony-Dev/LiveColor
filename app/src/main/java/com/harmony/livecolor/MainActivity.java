@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        SharedPreferences myPrefs;
+        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // dark mode check
         int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -97,11 +100,15 @@ public class MainActivity extends AppCompatActivity
         // handles customized accent
         customAccent(findViewById(R.id.container));
 
+        // setup notifications for COTD
+        NotificationUtils notificationUtils = new NotificationUtils();
+        notificationUtils.setRepeating(this);
+
+
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        SharedPreferences myPrefs;
-        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
@@ -122,6 +129,10 @@ public class MainActivity extends AppCompatActivity
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         colors.readColors();
+        final boolean READ_DB_INTO_CACHE = true;
+        if(READ_DB_INTO_CACHE) {
+            colors.readDatabaseIntoCache(db);
+        }
         //String testInit = colors.searchForName("#100000");
         //Log.d("V2S1 colorname", "init: "+testInit);
     }
