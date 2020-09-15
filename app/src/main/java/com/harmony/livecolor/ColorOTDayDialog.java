@@ -119,8 +119,7 @@ public class ColorOTDayDialog {
             //Generate random color
             if(specialDates.containsKey(shortHand)){
                 // random special day color
-                int rnd =  new Random().nextInt(specialDates.get(shortHand).length);
-                colorOfTheDay = (specialDates.get(shortHand))[rnd];
+                colorOfTheDay = generateSpecialColor();
             } else {
                 colorOfTheDay = generateRandomColor();
             }
