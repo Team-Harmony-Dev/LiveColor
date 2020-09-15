@@ -374,8 +374,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         Cursor cur = colorDatabase.getColorInfoByHex(hexValue);
         Log.d("I29", "#Rows: "+cur.getCount());
         if(cur.getCount() != 0){
+            cur.close();
             return true;
         }
+        cur.close();
         return false;
     }
 

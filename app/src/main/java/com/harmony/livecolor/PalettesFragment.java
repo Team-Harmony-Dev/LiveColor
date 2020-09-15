@@ -100,6 +100,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
      */
     public void initPalettes(Cursor cursor){
         //initialize ArrayList<MyPalette> here
+        //cursor from getPaletteDatabaseCursor is closed in getPaletteList
         paletteList = colorDB.getPaletteList(cursor);
 
     }
@@ -158,6 +159,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         //trim any whitespace
         query = query.trim();
         //default cursor to make list from, for incorrect HEX input
+        //cursor will be closed in getPaletteList called in initPalettes
         Cursor cursor = colorDB.getPaletteDatabaseCursor();
         //check whether starting with a # or not to determine whether to conduct a HEX or palette name query
         if(query.startsWith("#")) {
@@ -166,10 +168,12 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
                 makeToast("Invalid HEX entered. Should have no more than 6 digits.", context);
             } else if(query.length() > 1) {
                 //perform and retrieve a cursor for our query
+                //cursor will be closed in getPaletteList called in initPalettes
                 cursor = colorDB.searchPalettesByHex(query);
             }
         } else {
             //perform and retrieve a cursor for our palette name query
+            //cursor will be closed in getPaletteList called in initPalettes
             cursor = colorDB.searchPalettesByName(query);
         }
 
@@ -233,6 +237,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         super.onResume();
         Log.d("Lifecycles", "onResume: PalettesFragment resumed");
         //TODO: There *must* be a better way to refresh the lists than this (notifyDataSetChanged() isn't working)
+        //cursor will be closed in getPaletteList called in initPalettes
         initPalettes(colorDB.getPaletteDatabaseCursor());
         initRecycler();
     }
