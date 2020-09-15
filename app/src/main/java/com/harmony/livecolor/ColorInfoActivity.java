@@ -221,6 +221,21 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
 
     }
 
+    @Override
+    public void onResume() {
+        //Fill in bookmark if color was found in the db
+        if(ColorPickerFragment.findPixelInDatabase(colorValue, newColorDatabase)){
+            saveHappened();
+        } else {
+            isButtonClicked = false;
+            ImageButton saveColorB = (ImageButton) findViewById(R.id.saveButton);
+            saveColorB.setImageResource(R.drawable.ic_baseline_bookmark_border_light_grey_48);
+            saveColorB.setColorFilter(null);
+        }
+
+        super.onResume();
+    }
+
 
     /**
      * ALL CAPS METHOD DESCRIPTION

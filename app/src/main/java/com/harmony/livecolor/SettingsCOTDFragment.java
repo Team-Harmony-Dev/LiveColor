@@ -25,7 +25,8 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;
-import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.LongDef;
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ public class SettingsCOTDFragment extends  Fragment{
 
 
     ToggleButton toggleButtonCotd;
+    ImageButton imageButtonTodaysColor;
     Switch switchNotification;
 
     private WeakReference<Activity> mActivity;
@@ -93,6 +95,7 @@ public class SettingsCOTDFragment extends  Fragment{
         final ColorStateList[] colorStateList = customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
 
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
+        imageButtonTodaysColor = rootView.findViewById(R.id.imageButtonTodaysColor);
         switchNotification = rootView.findViewById(R.id.switchNotification);
 
         // set notification value
@@ -107,6 +110,13 @@ public class SettingsCOTDFragment extends  Fragment{
         toggleButtonCotd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 onCheckChangedCotd(buttonView, isChecked);
+            }
+        });
+
+        imageButtonTodaysColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickTodaysColor();
             }
         });
 
@@ -132,8 +142,6 @@ public class SettingsCOTDFragment extends  Fragment{
 
         return rootView;
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -229,6 +237,19 @@ public class SettingsCOTDFragment extends  Fragment{
     }
 
     /**
+     * VIEW TODAYS COLOR
+     * reopens the COTD dialog
+     *
+     * @author Paige
+     */
+    public void onClickTodaysColor() {
+        Log.d("SettingsCOTDFragment", "onClickTodaysColor: we're in");
+        ColorOTDayDialog cotdDialog = new ColorOTDayDialog(getContext(), true);
+        cotdDialog.showColorOTD();
+    }
+
+
+    /**
      * CUSTOM ACCENT HANDLER
      * changes colors of specific activity/fragment
      *
@@ -241,6 +262,7 @@ public class SettingsCOTDFragment extends  Fragment{
     public ColorStateList[] customAccent(View view){
         Switch switchN = view.findViewById(R.id.switchNotification);
         ToggleButton toggleButtonCotd = view.findViewById(R.id.toggleButtonCotd);
+        EditText editTextAccent = view.findViewById(R.id.editTextAccentHex);
 
         int[][] states = new int[][] {
 

@@ -173,6 +173,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
      */
     private void initPalettes() {
         //initialize ArrayList<MyPalette> here
+        //cursor from getPaletteDatabaseCursor is closed in getPaletteList
         paletteList = colorDB.getPaletteList(colorDB.getPaletteDatabaseCursor());
     }
 

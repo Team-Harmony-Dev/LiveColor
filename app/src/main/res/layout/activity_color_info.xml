@@ -119,12 +119,11 @@
             android:id="@+id/constraintLayoutColorIID"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
             android:background="@color/colorPrimaryLight"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineInnerMarginRight"
-            app:layout_constraintStart_toStartOf="@+id/guidelineInnerMarginLeft"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/space"
             tools:layout_conversion_absoluteHeight="346dp"
             tools:layout_conversion_absoluteWidth="382dp">
@@ -135,12 +134,12 @@
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyRGB"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyHEX" />
 
@@ -149,12 +148,12 @@
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyHEX"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/colorNameCIA" />
 
@@ -163,12 +162,12 @@
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:onClick="onClickCopyHSV"
                 android:padding="8dp"
-                android:src="@drawable/ic_twotone_file_copy_24"
+                android:src="@drawable/copy_clipboard_multi_outline_32"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyRGB" />
 
@@ -177,9 +176,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/lato_regular"
                 android:onClick="onClickColorHarmonies"
                 android:text="View Color Harmonies"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +192,7 @@
                 android:id="@+id/RGBText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="RGB: "
                 android:textSize="24sp"
@@ -206,7 +207,7 @@
                 android:id="@+id/colorNameCIA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/lato_bold"
                 android:text="Color Name"
                 android:textAlignment="center"
@@ -221,7 +222,7 @@
                 android:id="@+id/HexText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="HEX: "
                 android:textSize="24sp"
@@ -236,7 +237,7 @@
                 android:id="@+id/HSVText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/lato_regular"
                 android:text="HSV: "
                 android:textSize="24sp"
@@ -248,20 +249,6 @@
                 tools:layout_conversion_absoluteWidth="168dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineInnerMarginRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".96" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineInnerMarginLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".04" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -86,8 +86,8 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //So if it's super light/dark I'll just not generate them.
         float valueTooMonotonous = (float) 0.01;
 
-        //Check if it's in the range [0.01..0.99] inclusive
-        if(1 - valueTooMonotonous >= value && valueTooMonotonous <= value) {
+        //Check if it's in the range [0.01..0.99] inclusive, or if the value is not small and has saturation.
+        if(valueTooMonotonous <= value && ((1 - valueTooMonotonous >= value) || saturation >= 1)) {
             //Color & Complement
             float[][] testBasicColor = HarmonyGenerator.complementScheme(hue, saturation, value, 2);
             ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 2);

@@ -10,10 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -30,7 +27,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
-import java.util.Calendar;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
-           isEnabledCotd = myPrefs.getBoolean("dialogCotd", true);
+            isEnabledCotd = myPrefs.getBoolean("dialogCotd", true);
         }else{
             isEnabledCotd = true;
             myPrefs.edit().putBoolean("dialogCotd", true);
@@ -133,6 +129,10 @@ public class MainActivity extends AppCompatActivity
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         colors.readColors();
+        final boolean READ_DB_INTO_CACHE = true;
+        if(READ_DB_INTO_CACHE) {
+            colors.readDatabaseIntoCache(db);
+        }
         //String testInit = colors.searchForName("#100000");
         //Log.d("V2S1 colorname", "init: "+testInit);
     }
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
      * like changes to the theme
      *
      * @author Daniel
-     * efficacey of using prefs?
+     * efficency of using prefs?
      */
     private void onLoadFragment(){
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("Lifecycles", "onStart: MainActivity started");
 
         if(isEnabledCotd) {
-            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this);
+            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, false);
             cotdDialog.showColorOTD();
         }
         super.onStart();
@@ -247,10 +247,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         Log.d("Lifecycles", "onResume: MainActivity resumed");
         super.onResume();
-        // notifications?
-
-
-
     }
 
     @Override

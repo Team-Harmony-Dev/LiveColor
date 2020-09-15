@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -26,9 +27,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ColorNameGetterCSV extends android.app.Application {
 
     private InputStream inputStream;
-    private static ArrayList<String[]> colorNames;
+    //These two arrays are associated by index. TODO pair object?
+    private static ArrayList<String> colorNames;
+    private static ArrayList<int[]> colorRGB;
     //Hex -> Name
     private static Map<String, String> colorCache;
+    //Arbitrary. I don't want to eat too much memory but I'm not sure exactly how large is reasonable here.
+    private static final int MAX_CACHE_SIZE = 2048;
+    private static int currentCacheSize;
+    //TODO not sure about this. Arbitrary number. Could just be set to max cache size.
+    //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
     //If for some reason the csv changes format, you can change these and it all should still work.
@@ -52,8 +60,9 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @return ArrayList of [name, hex] string pairs.
      * @author https://stackoverflow.com/questions/38415680/how-to-parse-csv-file-into-an-array-in-android-studio#38415815
      */
-    private ArrayList<String[]> read(){
-        ArrayList<String[]> resultList = new ArrayList<String[]>();
+    private ArrayList<String> read(){
+        ArrayList<String> resultList = new ArrayList<String>();
+        this.colorRGB = new ArrayList<int[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String csvLine;
@@ -68,6 +77,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 /*
                 //API actually seems to give both. https://api.color.pizza/v1/100000 gives "Dark Matter" which is marked
                 //TODO should probably not store the "x" if we aren't using it for anything
+                //  Update: Done, csv is cleaned in Python.
 
                 //Ignore any names marked as not a good name
                 char badNameChar = 'x';
@@ -77,7 +87,29 @@ public class ColorNameGetterCSV extends android.app.Application {
                 */
                 //Each row should contain two elements: A name, and a hex value (including the #)
                 String[] row = csvLine.split(",");
-                resultList.add(row);
+
+                //By converting the hex to RGB here we can avoid doing it when finding the nearest neighbor distances,
+                //  which makes it (very roughly) 3x faster when searching for the name associated with a hex.
+                String hex = row[HEX_INDEX];
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+                for(int i = 1; i < hex.length(); i+=2){
+                    //Substring excludes the end index itself, so +2 instead of +1.
+                    String hexPiece = hex.substring(i, i+2);
+                    int color = Integer.parseInt(hexPiece,16);
+                    if(i == 1){
+                        red = color;
+                    } else if (i == 3) {
+                        green = color;
+                    } else if (i == 5) {
+                        blue = color;
+                    }
+                }
+                int[] rgb = {red, green, blue};
+                colorRGB.add(rgb);
+
+                resultList.add(row[NAME_INDEX]);
             }
         }
         catch (IOException ex) {
@@ -103,10 +135,64 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void readColors(){
         this.colorNames = this.read();
         this.haveAlreadyReadNames = true;
-        //TODO not sure about this. Arbitrary number.
-        final int INITIAL_CACHE_CAPACITY = 1024;
-        this.colorCache = new ConcurrentHashMap<String, String>(INITIAL_CACHE_CAPACITY);
-        //printArr();
+        this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
+        this.currentCacheSize = 0;
+    }
+
+    //#59. We want to read the database into the cache not only because it will make some likely queries faster,
+    //  but also because we can use the cache to effectively override some names. If the user is using old color names in
+    //   the db with a new color name csv file, they might be surprised to see their saved names change. This prevents that.
+    //If the database has more entries than the maximum cache size, the user might notice their older saved names are sometimes being replaced by new names. Not a huge deal I guess. 
+    public void readDatabaseIntoCache(ColorDatabase colorDB){
+        if(colorDB == null){
+            Log.e("I59 colorname", "Failed to read db into cache because given db was null");
+            return;
+        }
+        Cursor cur = null;
+        //If the database was ridiculously large the cursor could be too big to allocate.
+        try {
+            cur = colorDB.getColorDatabaseCursor();
+        } catch (Exception e){
+            Log.e("I59 colorname", "Failed to read db into cache because database query failed. "+e);
+            return;
+        }
+        final int DB_HEX_INDEX = cur.getColumnIndex("HEX");
+        final int DB_NAME_INDEX = cur.getColumnIndex("NAME");
+        if(DB_HEX_INDEX == -1 || DB_NAME_INDEX == -1){
+            Log.e("I59 colorname", "Failed to read db into cache because db columns could not be found");
+            return;
+        }
+        
+        //Slightly redundant, this happens in the function before we're given the cursor, but I think this is easier to read.
+        cur.moveToFirst();
+        //Loop through the database and add to cache.
+        while(!cur.isAfterLast()){
+            final String COLOR_HEX = cur.getString(DB_HEX_INDEX);
+            final String COLOR_NAME = cur.getString(DB_NAME_INDEX);
+            Log.d("I59 colorname", "Read from db "+COLOR_HEX+" -> "+COLOR_NAME);
+            addToCache(COLOR_HEX, COLOR_NAME);
+            cur.moveToNext();
+        }
+        cur.close();
+    }
+
+    /**
+     * Add an entry to the cache.
+     *
+     * @param hex The #XXXXXX string. (Key)
+     * @param name The corresponding name. (Value)
+     * @return Whether or not the entry is now in the cache. (If it ran out of space AND this pair was not already in there, false, otherwise true).
+     */
+    private static boolean addToCache(String hex, String name){
+        if(MAX_CACHE_SIZE > currentCacheSize){
+            //We're only adding a color to the cache if it's not already in there.
+            if(colorCache.get(hex) == null) {
+                colorCache.put(hex, name);
+                ++currentCacheSize;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -159,7 +245,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
 
         //Use the list of names, finds the nearest
-        //Naive approach with no caching to begin with, see how fast that is.
 
         //Expects #RRGGBB (includes the #, and has  no alpha)
         if(hex.length() != 7) {
@@ -189,28 +274,12 @@ public class ColorNameGetterCSV extends android.app.Application {
         //Now lets do the actual comparisons to tell which color is closest
         double shortestDistance = Double.MAX_VALUE;
         int indexOfBestMatch = -1;
+//        long totalTime = 0;
         for(int i = 0; i < this.colorNames.size(); ++i){
             //Lets get this index's rgb
-            int ired = 0;
-            int igreen = 0;
-            int iblue = 0;
-            //TODO could store rgb directly rather than doing this on each color each time.
-            hex = this.colorNames.get(i)[HEX_INDEX];
-            for(int x = 1; x < hex.length(); x+=2){
-                //Substring excludes the end index itself, so +2 instead of +1.
-                String hexPiece = hex.substring(x, x+2);
-                int color = Integer.parseInt(hexPiece,16);
-                if(x == 1){
-                    ired = color;
-                } else if (x == 3) {
-                    igreen = color;
-                } else if (x == 5) {
-                    iblue = color;
-                } else {
-                    Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
-                    return errorColorName;
-                }
-            }
+            int ired = this.colorRGB.get(i)[0];
+            int igreen = this.colorRGB.get(i)[1];
+            int iblue = this.colorRGB.get(i)[2];
 
             double distance = getDistanceBetween(ired, igreen, iblue, red, green, blue);
             if(distance < shortestDistance){
@@ -219,6 +288,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 //Log.d("V2S1 colorname", "Found better distance to "+hex+" ("+ired+", "+igreen+", "+iblue+"), now is "+shortestDistance);
             }
         }
+
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
             Log.d("V2S1 colorname", "Something weird happened when finding distance");
             return errorColorName;
@@ -226,7 +296,7 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
 
-        return this.colorNames.get(indexOfBestMatch)[NAME_INDEX];
+        return this.colorNames.get(indexOfBestMatch);
     }
 
     /**
@@ -241,9 +311,10 @@ public class ColorNameGetterCSV extends android.app.Application {
     public static String getName(String hex){
         InputStream inputStream = null;
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+
         String name = colors.searchForName(hex);
 
-        colorCache.put(hex, name);
+        addToCache(hex, name);
 
         return name;
     }
@@ -254,11 +325,9 @@ public class ColorNameGetterCSV extends android.app.Application {
      *     and sets the font size to either maximumFontSize or smaller to ensure that the
      *     TextView with the unpredictable-length name stays on a single line.
      *
-     * Important note: Relies on colors already having been read (happens in MainActivity.java)
+     * Important note: Relies on colors already having been read (read functions are called in MainActivity.java during app start)
      *
      * Known bugs: Rounding can result in the same name being given slightly different font size depending on what the TextView's font size was beforehand.
-     *
-     * Note: If you want multiple lines instead of one, multiply maximumViewWidthPercentOfScreen by number of lines.
      *
      * @param view The TextView to put the name in
      * @param hex A string of hex, including the #, excluding any transparency. Ex: #FFFFFF
@@ -344,18 +413,6 @@ public class ColorNameGetterCSV extends android.app.Application {
         } else {
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, maximumFontSize);
             //Log.d("V2S1 colorname resizeFont", "Was attempting resize on already fitting text?");
-        }
-    }
-
-    /**
-     * For debug. Prints all name and hex pairs to log.
-     */
-    public void printArr(){
-        //Note: Assumes each line has 2 String elements: Name, Hex
-        for(int i = 0; i < this.colorNames.size(); ++i){
-            String nameAndHex = this.colorNames.get(i)[NAME_INDEX] + ", "
-                    + this.colorNames.get(i)[HEX_INDEX];
-            Log.d("V2S1 colorname", "Color"+i+": "+nameAndHex);
         }
     }
 }

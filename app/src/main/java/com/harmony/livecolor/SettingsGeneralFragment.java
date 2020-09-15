@@ -41,14 +41,8 @@ public class SettingsGeneralFragment extends  Fragment{
 
     private SettingsGeneralFragment.OnFragmentInteractionListener mListener;
 
-    TextView textViewGetToKnow;
-    TextView textViewMeetTeam;
-    Switch switchDarkMode;
-    ToggleButton toggleButtonCotd;
-    EditText editTextAccent;
-    ImageButton imageButtonReset;
+    ImageButton imageButtonResetImage;
     RotateAnimation rotate;
-    private WeakReference<Activity> mActivity;
 
     public SettingsGeneralFragment() {
         // Required empty public constructor
@@ -92,6 +86,18 @@ public class SettingsGeneralFragment extends  Fragment{
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings_general, container, false);
 
+        rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(250);
+        rotate.setInterpolator(new LinearInterpolator());
+
+        imageButtonResetImage = rootView.findViewById(R.id.imageButtonImageReset);
+
+        imageButtonResetImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickResetImage(v);
+            }
+        });
 
         return rootView;
     }
@@ -150,7 +156,23 @@ public class SettingsGeneralFragment extends  Fragment{
         Log.d("Lifecycles", "onViewCreated: View Created for Settings Fragment");
     }
 
+    /**
+     * COLOR PICKER IMAGE RESET
+     * resets the image shown on the color picker page to the original image (the livecolor logo)
+     *
+     * @param view is only needed to animate the button when clicked
+     *
+     * @author Paige
+     */
+    public void onClickResetImage(View view) {
+        ImageButton reset = (ImageButton) view;
+        reset.startAnimation(rotate);
 
+        //clear shared pref of currently saved path
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
+        editor.putString("image", null);
+        editor.apply();
+    }
 
     /**
      * CUSTOM ACCENT HANDLER
