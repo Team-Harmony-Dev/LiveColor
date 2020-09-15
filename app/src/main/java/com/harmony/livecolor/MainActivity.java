@@ -104,36 +104,9 @@ public class MainActivity extends AppCompatActivity
         // handles customized accent
         customAccent(findViewById(R.id.container));
 
-    if(!myPrefs.getBoolean("firstTime", false)){
-
-        Log.d("DEBUG", "onCreate: ");
-        
-        String channelID = "COTD";
-        String channelName = "Color of The Day";
-        String channelDecription = "The color of the day";
-        int notificationID = 0;
-
+        // setup notifications for COTD
         NotificationUtils notificationUtils = new NotificationUtils();
-
-        notificationUtils.createNotificationChannel(this, channelID, channelName, channelDecription);
-
-
-        Intent intent = new Intent(this, NotificationPublisher.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.SECOND, 05);
-        calendar.set(Calendar.MINUTE, 34);
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        myPrefs.edit().putBoolean("firstTime", true).apply();
-    }
+        notificationUtils.setRepeating(this);
 
 
         ActionBar actionBar = getSupportActionBar();

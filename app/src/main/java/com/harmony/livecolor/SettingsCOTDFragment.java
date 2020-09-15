@@ -129,20 +129,6 @@ public class SettingsCOTDFragment extends  Fragment{
             }
         });
 
-//        buttonNotify.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view){
-//                NotificationUtils notificationUtils = new NotificationUtils();
-//                notificationUtils.createNotificationChannel(getContext(), "COTD");
-//                ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(getContext());
-//                Integer cotd = colorOTDayDialog.getColorOTD();
-//                Log.d("DEBUG", "cotd: " + cotd.toString());
-//                String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
-//                Log.d("DEBUG", "cotd: " + name);
-//                String msg = "The color of the day is " + name + "!!";
-//                notificationUtils.addColorNotification(getContext(),msg, "COTD", cotd);
-//            }
-//        });
 
         return rootView;
     }
@@ -237,6 +223,9 @@ public class SettingsCOTDFragment extends  Fragment{
     private void onCheckedChangedNotification(CompoundButton buttonView, boolean isChecked) {
         NotificationUtils.setNotificationEnabled(getContext(),isChecked);
         buttonView.setChecked(isChecked);
+        SharedPreferences preferences =
+                this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        preferences.edit().putBoolean("notificationCOTDEnabled", isChecked).apply();
     }
 
     /**

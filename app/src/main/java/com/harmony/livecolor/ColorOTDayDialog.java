@@ -49,6 +49,19 @@ public class ColorOTDayDialog {
 
     }
 
+
+    /**
+     * GET COTD DIALOG W/O ACTIVITY
+     * does not generate a full cotd dialog
+     * this is instead used for accessing cotd methods
+     * from a non static context, its honestly a bit hacky
+     * but this is whats used when calling for cotd outside of app
+     *
+     * @param id this is a junk var to change the signature of the constructor
+     * @param context context of call
+     *
+     * @author Daniel
+     */
     public ColorOTDayDialog(String id, Context context) {
         this.context = context;
         specialDates = loadSpecialDays(this.context);
@@ -75,8 +88,7 @@ public class ColorOTDayDialog {
         String shortHand = monthDay.format(todayDate);
         if(specialDates.containsKey(shortHand)){
             // random special day color
-            int rnd =  new Random().nextInt(specialDates.get(shortHand).length);
-            colorOfTheDay = (specialDates.get(shortHand))[rnd];
+            colorOfTheDay = generateSpecialColor();
         } else {
             colorOfTheDay = generateRandomColor();
         }
@@ -224,6 +236,32 @@ public class ColorOTDayDialog {
         Log.d("DEBUG", "generateRandomColor: values" + " R: " + randRed + " G: " + randGreen + " B: " + randBlue);
 
         return getIntFromColor(randRed, randGreen, randBlue);
+    }
+
+    /**
+     * PICK A RANDOM SPECIAL COTD CONSISTENTLY
+     * picks a "random" special color, based on the date
+     *
+     * @return specialDates(date)["random"]
+     *
+     * @author Daniel
+     */
+    public int generateSpecialColor(){
+
+        if(specialDates.isEmpty()){
+            specialDates = loadSpecialDays(this.context);
+        }
+
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
+        String shortHand = monthDay.format(todayDate);
+
+        DateFormat simpleDateFormat = new SimpleDateFormat("MMddyy");
+        int intDateFormat = Integer.parseInt(simpleDateFormat.format(new Date()));
+        Random random = new Random(intDateFormat);
+        int randSpec = random.nextInt(specialDates.get(shortHand).length);
+
+        return (specialDates.get(shortHand))[randSpec];
     }
     
 

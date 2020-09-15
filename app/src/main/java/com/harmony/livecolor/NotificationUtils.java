@@ -323,70 +323,82 @@ public class NotificationUtils {
         editor.putBoolean("notificationCOTD", isEnabled);
         editor.apply();
 
-        //                NotificationUtils notificationUtils = new NotificationUtils();
-//                notificationUtils.createNotificationChannel(getContext(), "COTD");
-//                ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(getContext());
-//                Integer cotd = colorOTDayDialog.getColorOTD();
-//                Log.d("DEBUG", "cotd: " + cotd.toString());
-//                String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
-//                Log.d("DEBUG", "cotd: " + name);
-//                String msg = "The color of the day is " + name + "!!";
-//                notificationUtils.addColorNotification(getContext(),msg, "COTD", cotd);
-//            }
-
-    }
-
-    public static void setRepeating(Context context){
-
-        String channelID = "COTD";
-        String channelName = "Color of The Day";
-        String channelDecription = "The color of the day";
-        int notificationID = 0;
-
-        NotificationUtils notificationUtils = new NotificationUtils();
-        notificationUtils.createNotificationChannel(context,channelID,channelName,channelDecription);
-        ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(context);
-        Integer cotd = colorOTDayDialog.getColorOTD();
-        Log.d("DEBUG", "cotd: " + cotd.toString());
-        String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
-        Log.d("DEBUG", "cotd: " + name);
-        String msg = "The color of the day is " + name + "!!";
-        Notification notification = notificationUtils.getCOTDNotification(context, msg, channelID, cotd);
-
-
-        Intent notificationIntent = new Intent( context, NotificationPublisher.class ) ;
-        //notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID , 1 ) ;
-        //notificationIntent.putExtra(NotificationPublisher.NOTIFICATION , notification );
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( context, 0 , notificationIntent , PendingIntent.FLAG_UPDATE_CURRENT ) ;
-
-        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.SECOND, 10);
-//        calendar.set(Calendar.MINUTE, 34);
-//        calendar.set(Calendar.HOUR, 12);
-//        calendar.set(Calendar.AM_PM, Calendar.PM);
-
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context. ALARM_SERVICE );
-        assert alarmManager != null;
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24 , pendingIntent);
-        Log.d("DEBUG", "setRepeating: ");
-
     }
 
 
+    /**
+     * SETUP REPEATING ALARM
+     * sets up the alarm to call on a new notifiaction at 123456 oclock
+     *
+     * will only do this once, unless shared pref is reset
+     *
+     * sets up channel
+     *          alarm manager
+     *
+     * for creating the "unique" notification look to NotificationPublisher
+     * for creating the notification itself look at getCOTFNotification()
+     *
+     *
+     * @param context of app
+     *
+     * @author  Daniel
+     */
+    public void setRepeating(Context context){
 
+        SharedPreferences preferences =
+                context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
-    private void scheduleNotification (Context context, Notification notification , long delay) {
-        Intent notificationIntent = new Intent( context, NotificationPublisher.class ) ;
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID , 1 ) ;
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION , notification) ;
-        PendingIntent pendingIntent = PendingIntent. getBroadcast ( context, 0 , notificationIntent , PendingIntent. FLAG_UPDATE_CURRENT ) ;
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context. ALARM_SERVICE ) ;
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager. ELAPSED_REALTIME_WAKEUP , delay , pendingIntent) ;
+        if(!preferences.getBoolean("firstTime", false)){
+
+            Log.d("DEBUG", "setRepeating: ");
+
+            String channelID = "COTD";
+            String channelName = "Color of The Day";
+            String channelDescription = "The color of the day";
+
+            NotificationUtils notificationUtils = new NotificationUtils();
+
+            notificationUtils.createNotificationChannel(context, channelID, channelName, channelDescription);
+
+            Intent intent = new Intent(context, NotificationPublisher.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+//            calendar.set(Calendar.SECOND, 56);
+            calendar.set(Calendar.MINUTE, 34);
+            calendar.set(Calendar.HOUR_OF_DAY, 12);
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            preferences.edit().putBoolean("firstTime", true).apply();
+        }
+
     }
 
+    /**
+     * GET UNIQUE ID FOR NOTIFICATIONS
+     * keeps track of notification id to keep it unique
+     *
+     * this was one of the big problems I overlooked and caused me quite a bit of grief
+     * there is a lot of cong and dance that goes into making notifications
+     * besides all the channels, permissions, and proper scheduling
+     * each individual notification needs a unique identifier
+     *
+     * @param context of app
+     *
+     * @return notificationID int
+     *
+     * @author Daniel
+     */
+    public int getUniqueNotificationID(Context context) {
 
-
-
-
+        SharedPreferences preferences =
+                context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        int notificationID = preferences.getInt("notificationCOTDID", 0);
+        preferences.edit().putInt("notificationCOTDID", notificationID+1).apply();
+        return notificationID;
+    }
 }

@@ -67,5 +67,4 @@ public class NotifyCotdService extends android.app.Service {
     }
 
 
-
 }
