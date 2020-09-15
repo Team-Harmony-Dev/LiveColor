@@ -419,7 +419,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
         //get string ref of color ids in given palette
         String colorIds = getPaletteColors(id).trim();
         //return empty list if palette is empty
-        if(colorIds.isEmpty()) {
+        if(colorIds.equals("")) {
             return colorList;
         }
         String[] splitIds = colorIds.split("\\s+");
