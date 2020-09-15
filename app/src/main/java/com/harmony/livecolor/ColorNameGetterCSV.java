@@ -142,25 +142,30 @@ public class ColorNameGetterCSV extends android.app.Application {
     //#59. We want to read the database into the cache not only because it will make some likely queries faster,
     //  but also because we can use the cache to effectively override some names. If the user is using old color names in
     //   the db with a new color name csv file, they might be surprised to see their saved names change. This prevents that.
+    //If the database has more entries than the maximum cache size, the user might notice their older saved names are sometimes being replaced by new names. Not a huge deal I guess. 
     public void readDatabaseIntoCache(ColorDatabase colorDB){
         if(colorDB == null){
             Log.e("I59 colorname", "Failed to read db into cache because given db was null");
             return;
         }
-        Cursor cur = colorDB.getColorDatabaseCursor();
+        Cursor cur = null;
+        //If the database was ridiculously large the cursor could be too big to allocate.
+        try {
+            cur = colorDB.getColorDatabaseCursor();
+        } catch (Exception e){
+            Log.e("I59 colorname", "Failed to read db into cache because database query failed. "+e);
+            return;
+        }
         final int DB_HEX_INDEX = cur.getColumnIndex("HEX");
         final int DB_NAME_INDEX = cur.getColumnIndex("NAME");
         if(DB_HEX_INDEX == -1 || DB_NAME_INDEX == -1){
             Log.e("I59 colorname", "Failed to read db into cache because db columns could not be found");
             return;
         }
-        //Loop through the database and add to cache.
-        //TODO deleted colors still stay in the db or something though, right? Ask about how exactly that works.
-        //TODO theoretically a large number of saved colors might take too much memory for the cursor to allocate? That'd be a ton of saved colors though.
-        //TODO also there is a limit to the cache size now, that's probably a more realistic limit to hit.
         
         //Slightly redundant, this happens in the function before we're given the cursor, but I think this is easier to read.
         cur.moveToFirst();
+        //Loop through the database and add to cache.
         while(!cur.isAfterLast()){
             final String COLOR_HEX = cur.getString(DB_HEX_INDEX);
             final String COLOR_NAME = cur.getString(DB_NAME_INDEX);
