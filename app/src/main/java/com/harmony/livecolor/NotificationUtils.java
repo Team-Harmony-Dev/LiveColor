@@ -348,7 +348,7 @@ public class NotificationUtils {
         SharedPreferences preferences =
                 context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
-        if(!preferences.getBoolean("firstTime", false)){
+//        if(!preferences.getBoolean("firstTime", false)){
 
             Log.d("DEBUG", "setRepeating: ");
 
@@ -373,8 +373,8 @@ public class NotificationUtils {
 
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
-            preferences.edit().putBoolean("firstTime", true).apply();
-        }
+//            preferences.edit().putBoolean("firstTime", true).apply();
+//        }
 
     }
 
