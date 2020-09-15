@@ -10,7 +10,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -27,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
+import java.util.Calendar;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -78,6 +82,9 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        SharedPreferences myPrefs;
+        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // dark mode check
         int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -97,11 +104,42 @@ public class MainActivity extends AppCompatActivity
         // handles customized accent
         customAccent(findViewById(R.id.container));
 
+    if(!myPrefs.getBoolean("firstTime", false)){
+
+        Log.d("DEBUG", "onCreate: ");
+        
+        String channelID = "COTD";
+        String channelName = "Color of The Day";
+        String channelDecription = "The color of the day";
+        int notificationID = 0;
+
+        NotificationUtils notificationUtils = new NotificationUtils();
+
+        notificationUtils.createNotificationChannel(this, channelID, channelName, channelDecription);
+
+
+        Intent intent = new Intent(this, NotificationPublisher.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 05);
+        calendar.set(Calendar.MINUTE, 34);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        myPrefs.edit().putBoolean("firstTime", true).apply();
+    }
+
+
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        SharedPreferences myPrefs;
-        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
@@ -236,6 +274,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         Log.d("Lifecycles", "onResume: MainActivity resumed");
         super.onResume();
+        // notifications?
 
 
 

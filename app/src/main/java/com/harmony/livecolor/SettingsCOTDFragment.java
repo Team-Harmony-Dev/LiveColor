@@ -43,7 +43,7 @@ public class SettingsCOTDFragment extends  Fragment{
 
 
     ToggleButton toggleButtonCotd;
-    Button buttonNotify;
+    Switch switchNotification;
 
     private WeakReference<Activity> mActivity;
 
@@ -90,12 +90,13 @@ public class SettingsCOTDFragment extends  Fragment{
         final View rootView = inflater.inflate(R.layout.fragment_settings_cotd, container, false);
 
         // handles customized accent
-        customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
+        final ColorStateList[] colorStateList = customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
 
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
+        switchNotification = rootView.findViewById(R.id.switchNotification);
 
-        buttonNotify = rootView.findViewById(R.id.buttonNotify);
-
+        // set notification value
+        switchNotification.setChecked(NotificationUtils.isNotificationEnabled(getContext()));
 
         // show proper Cotd val
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
@@ -105,28 +106,48 @@ public class SettingsCOTDFragment extends  Fragment{
 
         toggleButtonCotd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 onCheckChangedCotd(buttonView, isChecked);
             }
         });
 
-        buttonNotify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                NotificationUtils notificationUtils = new NotificationUtils();
-                notificationUtils.createNotificationChannel(getContext(), "COTD");
-                ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(getContext());
-                Integer cotd = colorOTDayDialog.getColorOTD();
-                Log.d("DEBUG", "cotd: " + cotd.toString());
-                String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
-                Log.d("DEBUG", "cotd: " + name);
-                String msg = "The color of the day is " + name + "!!";
-                notificationUtils.addColorNotification(getContext(),msg, "COTD", cotd);
+
+        // handles functionality and accent change
+        switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onCheckedChangedNotification(buttonView, isChecked);
+                Switch buttonViewSwitch = (Switch) buttonView;
+                if(isChecked){
+                    buttonViewSwitch.setThumbTintList(colorStateList[1]);
+                    buttonView.setBackgroundTintList(colorStateList[1]);
+                    buttonViewSwitch.setTrackTintList(colorStateList[1]);
+                }else{
+                    buttonViewSwitch.setThumbTintList(colorStateList[0]);
+                    buttonView.setBackgroundTintList(colorStateList[0]);
+                    buttonViewSwitch.setTrackTintList(colorStateList[0]);
+                }
+
             }
         });
 
+//        buttonNotify.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view){
+//                NotificationUtils notificationUtils = new NotificationUtils();
+//                notificationUtils.createNotificationChannel(getContext(), "COTD");
+//                ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(getContext());
+//                Integer cotd = colorOTDayDialog.getColorOTD();
+//                Log.d("DEBUG", "cotd: " + cotd.toString());
+//                String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
+//                Log.d("DEBUG", "cotd: " + name);
+//                String msg = "The color of the day is " + name + "!!";
+//                notificationUtils.addColorNotification(getContext(),msg, "COTD", cotd);
+//            }
+//        });
+
         return rootView;
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -203,32 +224,20 @@ public class SettingsCOTDFragment extends  Fragment{
         buttonView.setChecked(isChecked);
 
     }
+
     /**
-     * NOTIFICATION SETTER
-     * sets notification for COTD
-     * handles the when mostly,
-     * what handeled in NotificationUtils
+     * COTD NOTIFICATION TOGGLE
+     * toggle button for Cotd Notifications
      *
-     * @param view view of button
+     * @param buttonView view of switch
+     * @param isChecked value
      *
      * @author Daniel
-     * testing fuinctionality
      */
-    public void createNotification (View view) {
-        Intent myIntent = new Intent(view.getContext() , NotificationUtils.class );
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getService( this.getContext(), 0 , myIntent , 0 );
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 13);
-        calendar.set(Calendar.HOUR, 6);
-        calendar.set(Calendar.AM_PM, Calendar.PM);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP , calendar.getTimeInMillis() , 1000*60*60*24 , pendingIntent);
-
-        Log.d("DEBUG", "createNotification: ");
+    private void onCheckedChangedNotification(CompoundButton buttonView, boolean isChecked) {
+        NotificationUtils.setNotificationEnabled(getContext(),isChecked);
+        buttonView.setChecked(isChecked);
     }
-
 
     /**
      * CUSTOM ACCENT HANDLER
@@ -240,10 +249,9 @@ public class SettingsCOTDFragment extends  Fragment{
      * @author Daniel
      * takes a bit of elbow grease, and there maybe a better way to do this, but it works
      */
-    public void customAccent(View view){
-        Switch switchDM = view.findViewById(R.id.switchDarkMode);
+    public ColorStateList[] customAccent(View view){
+        Switch switchN = view.findViewById(R.id.switchNotification);
         ToggleButton toggleButtonCotd = view.findViewById(R.id.toggleButtonCotd);
-        EditText editTextAccent = view.findViewById(R.id.editTextAccentHex);
 
         int[][] states = new int[][] {
 
@@ -268,17 +276,30 @@ public class SettingsCOTDFragment extends  Fragment{
                 Color.parseColor(AccentUtils.getAccent(view.getContext()))
         };
 
+        int[] mixed = new int[] {
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary),
+                ContextCompat.getColor(view.getContext(), R.color.colorIconPrimary),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext())),
+                Color.parseColor(AccentUtils.getAccent(view.getContext()))
+        };
+
         ColorStateList  accentList = new ColorStateList(states, accent);
+        ColorStateList  mixedList = new ColorStateList(states, mixed);
 
-//      switchDM.setThumbTintList(accentList);
-//      switchDM.setBackgroundTintList(accentList);
-//      switchDM.setTrackTintList(accentList);
-//      editTextAccent.setTextColor(accentList);
-//      editTextAccent.setCompoundDrawableTintList(accentList);
-//      editTextAccent.setHintTextColor(accentList);
-//      editTextAccent.setForegroundTintList(accentList);
-//      editTextAccent.setBackgroundTintList(accentList);
+        switchN.setThumbTintList(accentList);
+        switchN.setBackgroundTintList(accentList);
+        switchN.setTrackTintList(accentList);
 
+        ColorStateList[] colorStateLists = new ColorStateList[2];
+
+        colorStateLists[1] = accentList;
+        colorStateLists[0] = mixedList;
+
+        return  colorStateLists;
     }
 
 }

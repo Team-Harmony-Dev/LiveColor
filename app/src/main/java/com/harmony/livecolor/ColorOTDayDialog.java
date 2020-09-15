@@ -49,6 +49,13 @@ public class ColorOTDayDialog {
 
     }
 
+    public ColorOTDayDialog(String id, Context context) {
+        this.context = context;
+        specialDates = loadSpecialDays(this.context);
+    }
+
+
+
 
     /**
      * GET THE COLOR OF THE DAY

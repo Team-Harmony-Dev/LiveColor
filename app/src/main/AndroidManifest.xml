@@ -45,8 +45,15 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:configChanges="uiMode"/>
+        <receiver android:name= ".NotificationPublisher" >
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <service
-            android:name = ".NotificationUtils"
+            android:name = ".NotifyCotdService"
             android:enabled = "true"
             android:exported = "true" >
         </service>
