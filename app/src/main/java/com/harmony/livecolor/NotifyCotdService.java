@@ -6,65 +6,102 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationManagerCompat;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-public class NotifyCotdService extends android.app.Service {
-
+public class NotifyCotdService extends JobIntentService {
+    /**
+     * Unique job ID for this service.
+     */
+    static final int JOB_ID = 1010;
     private final String channelID = "COTD";
-    private final String channelName = "Color of The Day";
-    private final String channelDecription = "The color of the day";
-    private final int notificationID = 0;
 
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
+    /**
+     * Convenience method for enqueuing work in to this service.
+     */
+    static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, NotifyCotdService.class, JOB_ID, work);
+    }
 
-    public void onCreate(){
-        Log.d("DEBUG", "onCreate: start");
+    @Override
+    protected void onHandleWork(Intent intent) {
+        // We have received work to do.  The system or framework is already
+        // holding a wake lock for us at this point, so we can just go.
+        cotdNotifyTask();
+        Log.d("DEBUG", "NotifyCotdService: Executing work: " + intent);
+    }
 
-        NotificationUtils notificationUtils = new NotificationUtils();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("DEBUG", "NotifyCotdService: Work Completed" );
+    }
 
+    final Handler mHandler = new Handler();
 
-//        if(NotificationUtils.isNotificationEnabled(this)){
-            Log.d("DEBUG", "onCreate: enabled");
-            NotificationUtils.createNotificationChannel(this, channelID, channelName, channelDecription);
-            ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog(this);
+    // Helper for showing tests
+    void toast(final CharSequence text) {
+        mHandler.post(new Runnable() {
+            @Override public void run() {
+                Toast.makeText(NotifyCotdService.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * HANDLES ALL THINGS REGARDING THE *TASK* OF NOTIFYING
+     * builds and fires the notification from the service/jobintentservice level
+     *
+     * @author Daniel
+     */
+    private void cotdNotifyTask(){
+
+        SharedPreferences preferences =
+                getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
+        if(preferences.getBoolean("notificationCOTDEnabled", true)){
+
+            NotificationUtils notificationUtils = new NotificationUtils();
+
+            int notificationID = notificationUtils.getUniqueNotificationID(this);
+
+            ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog("id",this);
             Integer cotd = colorOTDayDialog.getColorOTD();
             Log.d("DEBUG", "cotd: " + cotd.toString());
             String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
             Log.d("DEBUG", "cotd: " + name);
-            String message = "The color of the day is " + name + "!!";
+            String msg = "The color of the day is " + name + "!!";
+            Notification notification = notificationUtils.getCOTDNotification(this, msg, channelID, cotd);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-            Notification notification = notificationUtils.getCOTDNotification(this, message, channelID, cotd);
-
-
-            NotificationManager mNM = (NotificationManager)this.getSystemService(NOTIFICATION_SERVICE);
-
-            mNM.notify( notificationID, notification);
-
-
-//        }
-        Log.d("DEBUG", "onCreate: end");
+            notificationManager.notify( notificationID, notification);
+        }
     }
 
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
 
 }

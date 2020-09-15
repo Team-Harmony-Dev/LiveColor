@@ -367,7 +367,7 @@ public class NotificationUtils {
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
-//            calendar.set(Calendar.SECOND, 56);
+            calendar.set(Calendar.SECOND, 56);
             calendar.set(Calendar.MINUTE, 34);
             calendar.set(Calendar.HOUR_OF_DAY, 12);
 
@@ -397,8 +397,8 @@ public class NotificationUtils {
 
         SharedPreferences preferences =
                 context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        int notificationID = preferences.getInt("notificationCOTDID", 0);
-        preferences.edit().putInt("notificationCOTDID", notificationID+1).apply();
+        int notificationID = preferences.getInt("notificationCOTDID", 0) + 1;
+        preferences.edit().putInt("notificationCOTDID", notificationID).apply();
         return notificationID;
     }
 }
