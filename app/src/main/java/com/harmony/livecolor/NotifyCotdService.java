@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.util.Calendar;
 
 import androidx.annotation.Nullable;
@@ -92,6 +93,11 @@ public class NotifyCotdService extends JobIntentService {
             ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog("id",this);
             Integer cotd = colorOTDayDialog.getColorOTD();
             Log.d("DEBUG", "cotd: " + cotd.toString());
+            //Read names
+            InputStream inputStream = getResources().openRawResource(R.raw.colornames);
+            ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
+            colors.readColors();
+            //Get name for our hex
             String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
             Log.d("DEBUG", "cotd: " + name);
             String msg = "The color of the day is " + name + "!!";
