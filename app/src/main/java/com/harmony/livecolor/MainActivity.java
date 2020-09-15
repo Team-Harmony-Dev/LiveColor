@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        SharedPreferences myPrefs;
+        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // dark mode check
         int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -97,11 +100,15 @@ public class MainActivity extends AppCompatActivity
         // handles customized accent
         customAccent(findViewById(R.id.container));
 
+        // setup notifications for COTD
+        NotificationUtils notificationUtils = new NotificationUtils();
+        notificationUtils.setRepeating(this);
+
+
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        SharedPreferences myPrefs;
-        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
