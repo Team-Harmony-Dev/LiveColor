@@ -53,13 +53,13 @@ public class NotifyCotdService extends JobIntentService {
         // We have received work to do.  The system or framework is already
         // holding a wake lock for us at this point, so we can just go.
         cotdNotifyTask();
-        Log.d("DEBUG", "NotifyCotdService: Executing work: " + intent);
+        Log.d("NOTIFY", "NotifyCotdService: Executing work: " + intent);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("DEBUG", "NotifyCotdService: Work Completed" );
+        Log.d("NOTIFY", "NotifyCotdService: Work Completed" );
     }
 
     final Handler mHandler = new Handler();
@@ -92,14 +92,14 @@ public class NotifyCotdService extends JobIntentService {
 
             ColorOTDayDialog colorOTDayDialog = new ColorOTDayDialog("id",this);
             Integer cotd = colorOTDayDialog.getColorOTD();
-            Log.d("DEBUG", "cotd: " + cotd.toString());
+
             //Read names
             InputStream inputStream = getResources().openRawResource(R.raw.colornames);
             ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
             colors.readColors();
             //Get name for our hex
             String name = ColorNameGetterCSV.getName(""+UsefulFunctions.colorIntToHex(cotd));
-            Log.d("DEBUG", "cotd: " + name);
+
             String msg = "The color of the day is " + name + "!!";
             Notification notification = notificationUtils.getCOTDNotification(this, msg, channelID, cotd);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
