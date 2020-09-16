@@ -17,7 +17,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -155,53 +158,6 @@ public class NotificationUtils {
     }
 
     /**
-     * ADD BASE COTD NOTIFICATION
-     * for immediate cotd notification
-     *
-     * @param context context of app
-     * @param message message to be displayed
-     * @param channelID channel of notification
-     * @param color of the day
-     *
-     * @author Daniel
-     *
-     */
-    public Notification getCOTDNotification(Context context, String message, String channelID, int color) {
-
-        Bitmap image = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888); // doesnt really need to be this big
-        image.eraseColor(color);
-        int icon = R.drawable.livecolor_logo_vectorized;
-        String appname = context.getResources().getString(R.string.app_name);
-
-
-        Notification notification;
-
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class), 0);
-
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
-        notification = builder
-                .setContentIntent(contentIntent)
-                .setSmallIcon(icon)
-                .setLargeIcon(image)
-                .setTicker(appname)
-                .setWhen(0)
-                .setAutoCancel(true)
-                .setContentTitle(appname)
-                .setContentText(message)
-                .setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(image)
-                        .bigLargeIcon(null))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setColor(color)
-                .setColorized(true)
-                .build();
-
-        return notification;
-    }
-
-    /**
      * CREATE NOTIFICATION CHANNEL
      * as the title suggests, makes a notification channel to use later
      *
@@ -228,6 +184,7 @@ public class NotificationUtils {
         }
 
     }
+
     /**
      * CHECK NOTIFICATION CHANNEL
      * as the title suggests, checks for a notification channel
@@ -250,7 +207,6 @@ public class NotificationUtils {
             return NotificationManagerCompat.from(context).areNotificationsEnabled();
         }
     }
-
     /**
      * DELETE NOTIFICATION CHANNEL
      * as the title suggests, deletes a notification channel
@@ -267,6 +223,7 @@ public class NotificationUtils {
             notificationManager.deleteNotificationChannel(channelID) ;
 
     }
+
 
 //    /**
 //     * NOTIFICATION SETTER
@@ -293,7 +250,6 @@ public class NotificationUtils {
 //
 //        Log.d("DEBUG", "createNotification: ");
 //    }
-
     /**
      * NOTIFICATION CHECK
      *
@@ -350,7 +306,7 @@ public class NotificationUtils {
 
 //        if(!preferences.getBoolean("firstTime", false)){
 
-            Log.d("DEBUG", "setRepeating: ");
+            Log.d("NOTIFY", "setRepeating: ");
 
             String channelID = "COTD";
             String channelName = "Color of The Day";
@@ -361,7 +317,8 @@ public class NotificationUtils {
             notificationUtils.createNotificationChannel(context, channelID, channelName, channelDescription);
 
             Intent intent = new Intent(context, NotificationPublisher.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+            PendingIntent pendingIntent =
+                    PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
@@ -371,11 +328,61 @@ public class NotificationUtils {
             calendar.set(Calendar.MINUTE, 34);
             calendar.set(Calendar.HOUR_OF_DAY, 12);
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
 //            preferences.edit().putBoolean("firstTime", true).apply();
 //        }
 
+    }
+
+    /**
+     * ADD BASE COTD NOTIFICATION
+     * for immediate cotd notification
+     *
+     * @param context context of app
+     * @param message message to be displayed
+     * @param channelID channel of notification
+     * @param color of the day
+     *
+     * @author Daniel
+     *
+     */
+    public Notification getCOTDNotification(Context context, String message, String channelID, int color) {
+
+        Bitmap image = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888); // doesnt really need to be this big
+        image.eraseColor(color);
+        int icon = R.drawable.livecolor_logo_vectorized;
+        String appname = context.getResources().getString(R.string.app_name);
+
+
+        Notification notification;
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("fromNotification", true);
+
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
+        notification = builder
+                .setContentIntent(contentIntent)
+                .setSmallIcon(icon)
+                .setLargeIcon(image)
+                .setTicker(appname)
+                .setWhen(0)
+                .setAutoCancel(true)
+                .setContentTitle(appname)
+                .setContentText(message)
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(image)
+                        .bigLargeIcon(null))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setColor(color)
+                .setColorized(true)
+                .build();
+
+        return notification;
     }
 
     /**
@@ -387,6 +394,8 @@ public class NotificationUtils {
      * besides all the channels, permissions, and proper scheduling
      * each individual notification needs a unique identifier
      *
+     * might be better to tie this to the date to avoid multiple notifications in a single day
+     *
      * @param context of app
      *
      * @return notificationID int
@@ -395,10 +404,14 @@ public class NotificationUtils {
      */
     public int getUniqueNotificationID(Context context) {
 
-        SharedPreferences preferences =
-                context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        int notificationID = preferences.getInt("notificationCOTDID", 0) + 1;
-        preferences.edit().putInt("notificationCOTDID", notificationID).apply();
+//        SharedPreferences preferences =
+//                context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+//
+        DateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd");
+        int intDateFormat = Integer.parseInt(simpleDateFormat.format(new Date()));
+
+        int notificationID = intDateFormat;
+//        preferences.edit().putInt("notificationCOTDID", notificationID).apply();
         return notificationID;
     }
 }
