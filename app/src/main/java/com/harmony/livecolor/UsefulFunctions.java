@@ -93,6 +93,8 @@ public class UsefulFunctions {
         View view = toast.getView();
 
         view.setBackgroundResource(R.color.colorDark);
+        int padding = 32;
+        view.setPadding(padding,padding,padding,padding);
         TextView text = view.findViewById(android.R.id.message);
         text.setTextColor(Color.WHITE);
 

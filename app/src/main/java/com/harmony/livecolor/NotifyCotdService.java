@@ -27,6 +27,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class NotifyCotdService extends JobIntentService {
     /**
@@ -68,7 +69,8 @@ public class NotifyCotdService extends JobIntentService {
     void toast(final CharSequence text) {
         mHandler.post(new Runnable() {
             @Override public void run() {
-                Toast.makeText(NotifyCotdService.this, text, Toast.LENGTH_SHORT).show();
+                makeToast(text.toString(),NotifyCotdService.this);
+                //Toast.makeText(NotifyCotdService.this, text, Toast.LENGTH_SHORT).show();
             }
         });
     }
