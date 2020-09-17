@@ -257,6 +257,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekRed.setProgress(m_Text);
+                            resetBookmark();
                             fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
@@ -300,6 +301,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekGreen.setProgress(m_Text);
+                            resetBookmark();
                             fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
@@ -343,6 +345,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                             m_Text = Integer.parseInt(input.getText().toString());
                             Log.d("I34", "m_Text="+m_Text);
                             seekBlue.setProgress(m_Text);
+                            resetBookmark();
                             fillInBookmarkIfColorIsSaved();
                         } catch (NumberFormatException e) {
                             Log.d("I34", "Input was empty");
