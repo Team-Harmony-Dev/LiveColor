@@ -415,8 +415,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                         //3. Pixel is fully transparent. Exactly equal to background.
                         //  But the background might be the same color as some pixel actually in the image.
                         //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
-                        //Any not completely transparent color should be fine.
-                        final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
+                        //Any not completely transparent color should be fine, but the largest difference (black and white) is maybe best for colors with high transparency?
+                        final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(255, 255, 255);
                         Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
                         int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
                         if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
