@@ -50,6 +50,7 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * Interface for callback for filling in save button iff
@@ -652,8 +653,15 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         // https://stackoverflow.com/a/7741300
         final int TRANSPARENT = 0xFF000000;
+        int colorTransparency = colorNew & TRANSPARENT;
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
+        Log.d("I24", "ct="+String.format("#%06X",colorTransparency));
+        final boolean NOTIFY_USER_IF_TRANSPARENCY_STRIPPED = true;
+        //TODO if we want this to be a feature, don't do this on background click.
+        if(NOTIFY_USER_IF_TRANSPARENCY_STRIPPED && colorTransparency != TRANSPARENT){
+            makeToast("Transparency stripped", getContext());
+        }
 
         // save color value (int) to Shared Prefs.
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
