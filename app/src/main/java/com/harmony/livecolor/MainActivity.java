@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     //Name on the main picker page
     static TextView colorNameView;
     boolean isEnabledCotd;
+    boolean cameFromNotification =  false;
 
 
     @Override
@@ -103,6 +104,14 @@ public class MainActivity extends AppCompatActivity
         // setup notifications for COTD
         NotificationUtils notificationUtils = new NotificationUtils();
         notificationUtils.setRepeating(this);
+
+        // handle app opening from notification
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            cameFromNotification = b.getBoolean("fromNotification");
+        }else{
+            cameFromNotification = false;
+        }
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -226,9 +235,10 @@ public class MainActivity extends AppCompatActivity
         Log.d("Lifecycles", "onStart: MainActivity started");
 
         if(isEnabledCotd) {
-            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, false);
+            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, cameFromNotification);
             cotdDialog.showColorOTD();
         }
+        cameFromNotification = false;
         super.onStart();
     }
 
@@ -331,6 +341,23 @@ public class MainActivity extends AppCompatActivity
 
         ColorStateList myList = new ColorStateList(states, colors);
         nav.setItemIconTintList(myList);
+    }
+
+
+    /**
+     * BACK PRESS WITH NESTED FRAGMENTS
+     * currently only really used for settings
+     *
+     * @author Daniel
+     *
+     */
+    @Override
+    public void onBackPressed(){
+        if(getFragmentManager().getBackStackEntryCount() > 0){
+            getFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
     }
 
 }

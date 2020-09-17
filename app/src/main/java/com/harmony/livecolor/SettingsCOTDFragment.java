@@ -47,6 +47,7 @@ public class SettingsCOTDFragment extends  Fragment{
     ToggleButton toggleButtonCotd;
     ImageButton imageButtonTodaysColor;
     Switch switchNotification;
+    ImageButton imageButtonBack;
 
     private WeakReference<Activity> mActivity;
 
@@ -98,6 +99,7 @@ public class SettingsCOTDFragment extends  Fragment{
         toggleButtonCotd = rootView.findViewById(R.id.toggleButtonCotd);
         imageButtonTodaysColor = rootView.findViewById(R.id.imageButtonTodaysColor);
         switchNotification = rootView.findViewById(R.id.switchNotification);
+        imageButtonBack = rootView.findViewById(R.id.backButton);
 
         // set notification value
         switchNotification.setChecked(NotificationUtils.isNotificationEnabled(getContext()));
@@ -137,6 +139,13 @@ public class SettingsCOTDFragment extends  Fragment{
                     buttonViewSwitch.setTrackTintList(colorStateList[0]);
                 }
 
+            }
+        });
+
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

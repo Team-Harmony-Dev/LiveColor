@@ -18,6 +18,7 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         intent = new Intent(context, NotifyCotdService.class);
         NotifyCotdService.enqueueWork(context,intent);
+        Log.d("NOTIFY", "NotificationPublisher: Broadcast Received" );
 
     }
 

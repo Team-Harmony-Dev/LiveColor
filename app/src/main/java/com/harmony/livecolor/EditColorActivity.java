@@ -56,6 +56,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
     private boolean isButtonClicked = false;
     private boolean isButtonClickedNew = false;
     ImageButton saveNC;
+    ImageButton imageButtonReset;
     ToggleButton simpleToggleButton;
     Boolean ToggleButtonState;
     private int m_Text = 0;
@@ -99,18 +100,19 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        String colorString = preferences.getString("colorString","Default");
 
         // handles customized accent
         customAccent(findViewById(R.id.constraintLayoutEditActivity));
 
         saveNC = findViewById(R.id.saveNewColor);
+        imageButtonReset = findViewById(R.id.resetColor);
 
         simpleToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         ToggleButtonState = simpleToggleButton.isChecked();
 
-        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        String colorString = preferences.getString("colorString","Default");
+
 
         colorValue = Integer.parseInt(colorString);
         if (intent.getExtras() != null) {
@@ -159,18 +161,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
         simpleToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // The toggle is enabled: HSV mode
-                    int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
-                    updateSeekbarsHSV(newHSVValues[0],newHSVValues[1],newHSVValues[2]); // Set the seekbars to their new values
-                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
-
-                } else {
-                    // The toggle is disabled: RGB mode
-                    int[] newRGBValues = convertHSVtoRGB(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); //Convert teh HSV values to RGB values for the seekbars
-                    updateSeekbarsRGB(newRGBValues[0], newRGBValues[1], newRGBValues[2]); // Set the seekbars to their new values
-                    updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
-                }
+                    toggleEditMode(buttonView, isChecked);
             }
         });
 
@@ -382,9 +373,36 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         }
     }
 
+    @Override
     public void onResume() {
         fillInBookmarkIfColorIsSaved();
+
+
+        // both resets are necessary for the color to avoid taking values from elsewhere and using them incorrectly
+        // like trying to use hsv values as rgb or vice versa
+        onClickReset(imageButtonReset);
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        boolean savedHSVMode = preferences.getBoolean("editModeHSV", false);
+        Log.d("EDIT", "onResume: savedHSVMode: " + savedHSVMode);
+        if (savedHSVMode) {
+            simpleToggleButton.setChecked(true);
+            toggleEditMode(simpleToggleButton, true);
+            ToggleButtonState = true;
+            onClickReset(imageButtonReset);
+        }
+
         super.onResume();
+    }
+
+    @Override
+    public void onPause(){
+
+        SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        preferences.edit().putBoolean("editModeHSV", ToggleButtonState).apply();
+        boolean savedHSVMode = preferences.getBoolean("editModeHSV", false);
+        Log.d("EDIT", "onPause: savedHSVMode: " + savedHSVMode);
+        Log.d("EDIT", "onPause: ToggleButtonState: " + ToggleButtonState);
+        super.onPause();
     }
 
     /**
@@ -661,6 +679,30 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         } else {
             thisView.setText(EMPTY_STRING);
         }
+    }
+
+    /**
+     *
+     *
+     *
+     *
+     * @param view view of button
+     * @param isChecked value of toggle
+     */
+    public void toggleEditMode(View view, boolean isChecked){
+        if (isChecked) {
+            // The toggle is enabled: HSV mode
+            int[] newHSVValues = convertRGBtoHSV(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Convert the RGB values into the HSV values for the seekbars
+            updateSeekbarsHSV(newHSVValues[0],newHSVValues[1],newHSVValues[2]); // Set the seekbars to their new values
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
+
+        } else {
+            // The toggle is disabled: RGB mode
+            int[] newRGBValues = convertHSVtoRGB(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); //Convert teh HSV values to RGB values for the seekbars
+            updateSeekbarsRGB(newRGBValues[0], newRGBValues[1], newRGBValues[2]); // Set the seekbars to their new values
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()); // Update the text to reflect the new values
+        }
+
     }
 
 
