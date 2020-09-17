@@ -657,7 +657,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
         Log.d("I24", "ct="+String.format("#%06X",colorTransparency));
-        final boolean NOTIFY_USER_IF_TRANSPARENCY_STRIPPED = true;
+        final boolean NOTIFY_USER_IF_TRANSPARENCY_STRIPPED = false;
         //TODO if we want this to be a feature, don't do this on background click.
         if(NOTIFY_USER_IF_TRANSPARENCY_STRIPPED && colorTransparency != TRANSPARENT){
             makeToast("Transparency stripped", getContext());
