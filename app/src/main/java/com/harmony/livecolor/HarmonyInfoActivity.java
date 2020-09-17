@@ -115,7 +115,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
 
-        if(1 - valueTooMonotonous >= value && valueTooMonotonous <= value) {
+        if(valueTooMonotonous <= value && ((1 - valueTooMonotonous >= value) || saturation >= 1)) {
             //TODO (refactor) I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
             float[][] testTriadic = HarmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
             ArrayList<MyColor> testTriadicMyColors = HarmonyGenerator.colorsToMyColors(testTriadic, 3);
