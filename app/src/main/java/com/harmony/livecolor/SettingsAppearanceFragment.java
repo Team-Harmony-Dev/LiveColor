@@ -45,6 +45,7 @@ public class SettingsAppearanceFragment extends  Fragment{
     Switch switchDarkMode;
     EditText editTextAccent;
     ImageButton imageButtonReset;
+    ImageButton imageButtonBack;
     RotateAnimation rotate;
     private WeakReference<Activity> mActivity;
 
@@ -97,6 +98,7 @@ public class SettingsAppearanceFragment extends  Fragment{
         switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
         editTextAccent = rootView.findViewById(R.id.editTextAccentHex);
         imageButtonReset = rootView.findViewById(R.id.imageButtonAccentReset);
+        imageButtonBack = rootView.findViewById(R.id.backButton);
 
 
         // show proper darkmode val
@@ -175,6 +177,13 @@ public class SettingsAppearanceFragment extends  Fragment{
             @Override
             public void onClick(View view){
                     onClickReset(view);
+            }
+        });
+
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

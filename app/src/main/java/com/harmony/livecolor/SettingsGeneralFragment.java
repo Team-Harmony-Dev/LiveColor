@@ -43,6 +43,7 @@ public class SettingsGeneralFragment extends  Fragment{
 
     ImageButton imageButtonResetImage;
     RotateAnimation rotate;
+    ImageButton imageButtonBack;
 
     public SettingsGeneralFragment() {
         // Required empty public constructor
@@ -91,7 +92,9 @@ public class SettingsGeneralFragment extends  Fragment{
         rotate.setInterpolator(new LinearInterpolator());
 
         imageButtonResetImage = rootView.findViewById(R.id.imageButtonImageReset);
-
+        imageButtonBack = rootView.findViewById(R.id.backButton);
+        
+        
         imageButtonResetImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +102,17 @@ public class SettingsGeneralFragment extends  Fragment{
             }
         });
 
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+
         return rootView;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
