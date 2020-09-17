@@ -50,6 +50,7 @@ import static android.graphics.Color.RGBToHSV;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * Interface for callback for filling in save button iff
@@ -415,8 +416,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                         //3. Pixel is fully transparent. Exactly equal to background.
                         //  But the background might be the same color as some pixel actually in the image.
                         //  So by testing with two background colors that the pixel is exactly equal to the background both times, we can tell if this pixel is from the background.
-                        //Any not completely transparent color should be fine.
-                        final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(100, 100, 100);
+                        //Any not completely transparent color should be fine, but the largest difference (black and white) is maybe best for colors with high transparency?
+                        final int ARBITRARY_NON_BACKGROUND_COLOR = Color.rgb(255, 255, 255);
                         Bitmap view_bitmap2 = getBitmapFromViewWithBackground(touchView, ARBITRARY_NON_BACKGROUND_COLOR, background);
                         int pixel2 = view_bitmap2.getPixel((int) event.getX(), (int) event.getY());
                         if (pixel2 == ARBITRARY_NON_BACKGROUND_COLOR) {
@@ -652,8 +653,15 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         ImageView colorDisplay = getActivity().findViewById(R.id.pickedColorDisplayView);
         // https://stackoverflow.com/a/7741300
         final int TRANSPARENT = 0xFF000000;
+        int colorTransparency = colorNew & TRANSPARENT;
         colorNew = colorNew | TRANSPARENT;
         colorDisplay.setBackgroundColor(colorNew);
+        Log.d("I24", "ct="+String.format("#%06X",colorTransparency));
+        final boolean NOTIFY_USER_IF_TRANSPARENCY_STRIPPED = false;
+        //TODO if we want this to be a feature, don't do this on background click.
+        if(NOTIFY_USER_IF_TRANSPARENCY_STRIPPED && colorTransparency != TRANSPARENT){
+            makeToast("Transparency stripped", getContext());
+        }
 
         // save color value (int) to Shared Prefs.
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();

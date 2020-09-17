@@ -39,6 +39,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
+    //This is returned by searchForName if something goes wrong
+    final static String ERROR_COLOR_NAME = "Error";
     //If for some reason the csv changes format, you can change these and it all should still work.
     private static final int NAME_INDEX = 0;
     private static final int HEX_INDEX = 1;
@@ -226,13 +228,10 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @author Dustin
      */
     protected String searchForName(String hex){
-        //This is returned if something goes wrong
-        final String errorColorName = "Error";
-
         if(!haveAlreadyReadNames) {
             if(this.inputStream == null){
-                Log.w("V2S1 colorname", "Attempted to get a name before reading");
-                return errorColorName;
+                Log.e("V2S1 colorname", "Attempted to get a name before reading");
+                return ERROR_COLOR_NAME;
             } else {
                 this.readColors();
             }
@@ -248,8 +247,8 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Expects #RRGGBB (includes the #, and has  no alpha)
         if(hex.length() != 7) {
-            Log.w("V2S1 colorname", "Hex " + hex + " not valid");
-            return errorColorName;
+            Log.e("V2S1 colorname", "Hex " + hex + " not valid, expected #RRGGBB");
+            return ERROR_COLOR_NAME;
         }
         int red = 0;
         int green = 0;
@@ -266,7 +265,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 blue = color;
             } else {
                 Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
-                return errorColorName;
+                return ERROR_COLOR_NAME;
             }
         }
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
@@ -290,8 +289,8 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
 
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
-            Log.d("V2S1 colorname", "Something weird happened when finding distance");
-            return errorColorName;
+            Log.d("V2S1 colorname I76", "Something weird happened when finding distance");
+            return ERROR_COLOR_NAME;
         }
 
         //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
@@ -314,7 +313,14 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         String name = colors.searchForName(hex);
 
-        addToCache(hex, name);
+        //If they called this without the proper read, the cache might not be initialized.
+        //If the name we found was actually Error, then don't cache that.
+        //TODO test
+        if(colorCache != null && ! name.equals(ERROR_COLOR_NAME)) {
+            addToCache(hex, name);
+        } else {
+            Log.e("V2S1 colorname", "getName was unable to add to cache because cache was null. Called before initialized?");
+        }
 
         return name;
     }
