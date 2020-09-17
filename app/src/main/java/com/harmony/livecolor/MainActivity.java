@@ -343,4 +343,21 @@ public class MainActivity extends AppCompatActivity
         nav.setItemIconTintList(myList);
     }
 
+
+    /**
+     * BACK PRESS WITH NESTED FRAGMENTS
+     * currently only really used for settings
+     *
+     * @author Daniel
+     *
+     */
+    @Override
+    public void onBackPressed(){
+        if(getFragmentManager().getBackStackEntryCount() > 0){
+            getFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
 }
