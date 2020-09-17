@@ -39,6 +39,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
+    //This is returned by searchForName if something goes wrong
+    final static String ERROR_COLOR_NAME = "Error";
     //If for some reason the csv changes format, you can change these and it all should still work.
     private static final int NAME_INDEX = 0;
     private static final int HEX_INDEX = 1;
@@ -226,9 +228,6 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @author Dustin
      */
     protected String searchForName(String hex){
-        //This is returned if something goes wrong
-        final String ERROR_COLOR_NAME = "Error";
-
         if(!haveAlreadyReadNames) {
             if(this.inputStream == null){
                 Log.e("V2S1 colorname", "Attempted to get a name before reading");
@@ -315,7 +314,9 @@ public class ColorNameGetterCSV extends android.app.Application {
         String name = colors.searchForName(hex);
 
         //If they called this without the proper read, the cache might not be initialized.
-        if(colorCache != null) {
+        //If the name we found was actually Error, then don't cache that.
+        //TODO test
+        if(colorCache != null && ! name.equals(ERROR_COLOR_NAME)) {
             addToCache(hex, name);
         } else {
             Log.e("V2S1 colorname", "getName was unable to add to cache because cache was null. Called before initialized?");
