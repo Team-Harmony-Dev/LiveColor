@@ -103,11 +103,23 @@ public class SettingsCOTDFragment extends  Fragment{
 
         // set notification value
         switchNotification.setChecked(NotificationUtils.isNotificationEnabled(getContext()));
-
+        // and colors to match
+        if(NotificationUtils.isNotificationEnabled(getContext())){
+            switchNotification.setThumbTintList(colorStateList[1]);
+            switchNotification.setBackgroundTintList(colorStateList[1]);
+            switchNotification.setTrackTintList(colorStateList[1]);
+        }else{
+            switchNotification.setThumbTintList(colorStateList[0]);
+            switchNotification.setBackgroundTintList(colorStateList[0]);
+            switchNotification.setTrackTintList(colorStateList[0]);
+        }
         // show proper Cotd val
         SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isCotdEnabled = preferences.getBoolean("dialogCotd",true);
         toggleButtonCotd.setChecked(isCotdEnabled);
+
+
+
 
 
         toggleButtonCotd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
