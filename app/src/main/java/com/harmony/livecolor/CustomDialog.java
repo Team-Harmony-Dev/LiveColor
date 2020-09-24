@@ -155,7 +155,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                     makeToast("Color has been saved to Saved Colors", context);
                 } else {
                     alertDialogSave.dismiss();
-                    makeToast("Color is a duplicate", context);
+                    makeToast("This color already exists in Saved Colors", context);
                 }
 
                 //Tell the listener that it's saved, so it can fill in the save button.
