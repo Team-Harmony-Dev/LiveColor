@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class SettingsGeneralFragment extends  Fragment{
     ImageButton imageButtonResetImage;
     RotateAnimation rotate;
     ImageButton imageButtonBack;
+    EditText editZoom;
 
     public SettingsGeneralFragment() {
         // Required empty public constructor
@@ -93,6 +95,7 @@ public class SettingsGeneralFragment extends  Fragment{
 
         imageButtonResetImage = rootView.findViewById(R.id.imageButtonImageReset);
         imageButtonBack = rootView.findViewById(R.id.backButton);
+        imageButtonBack = rootView.findViewById(R.id.backButton);
         
         
         imageButtonResetImage.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +112,8 @@ public class SettingsGeneralFragment extends  Fragment{
             }
         });
 
+        editZoom = rootView.findViewById(R.id.editZoom);
+        setupMaxZoom();
 
         return rootView;
     }
@@ -184,6 +189,28 @@ public class SettingsGeneralFragment extends  Fragment{
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
         editor.putString("image", null);
         editor.apply();
+    }
+
+    //https://stackoverflow.com/a/6832095
+    private void setupMaxZoom(){
+        if(editZoom == null){
+            Log.w("I100", "EditZoom was null");
+            return;
+        }
+        editZoom.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    Log.d("I100", "Enter key pressed while entering zoom number");
+                    //TODO use shared preferences to store this number, and load it in ColorPickerFragment
+                    //TODO pressing enter should close the input
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     /**
