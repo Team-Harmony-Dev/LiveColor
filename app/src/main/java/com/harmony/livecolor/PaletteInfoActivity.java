@@ -88,7 +88,7 @@ public class PaletteInfoActivity extends AppCompatActivity {
 
     public void initColors(){
         //Color arraylist is initialized here. Gets arraylist of colors from palette object
-        colorList = palette.getColors();
+        colorList = db.getColorList(palette.getId(),false);
     }
 
     //initializes the recycler view with the given color information
