@@ -21,7 +21,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -384,16 +384,7 @@ public class ColorInfoActivity extends AppCompatActivity implements SaveListener
         }
         clipboard.setPrimaryClip(clip);
 
-        Toast toast = Toast.makeText(cont,
-                type + " values copied to clipboard!",
-                Toast.LENGTH_SHORT);
-        View view = toast.getView();
-
-        view.setBackgroundResource(R.color.colorDark);
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(Color.WHITE);
-
-        toast.show();
+        makeToast(type + " values copied to clipboard!", cont);
     }
 
 

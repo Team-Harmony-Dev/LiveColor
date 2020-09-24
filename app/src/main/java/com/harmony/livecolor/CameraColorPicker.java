@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static android.app.Activity.RESULT_OK;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class CameraColorPicker extends AppCompatActivity {
 
@@ -89,7 +90,7 @@ public class CameraColorPicker extends AppCompatActivity {
                     openCamera();
                 }
                 else {
-                    Toast.makeText(this, "Permission denied...", Toast.LENGTH_SHORT).show();
+                    makeToast("Permission denied...", this);
                 }
             }
         }

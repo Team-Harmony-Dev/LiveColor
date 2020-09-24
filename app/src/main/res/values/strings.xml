@@ -43,5 +43,7 @@
     <string name="github"><u>GitHub</u></string>
     <string name="accent_choice_prompt">Light Mode Accent</string>
     <string name="accent_choice">#86357C</string>
+    <string name="zoom_choice_prompt">Maximum Zoom</string>
+    <string name="zoom_choice">100</string>
 
 </resources>

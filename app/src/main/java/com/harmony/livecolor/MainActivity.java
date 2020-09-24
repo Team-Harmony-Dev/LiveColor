@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     //Name on the main picker page
     static TextView colorNameView;
     boolean isEnabledCotd;
+    boolean cameFromNotification =  false;
 
 
     @Override
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.main_navi);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        SharedPreferences myPrefs;
+        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // dark mode check
         int currentNightMode =  getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -97,11 +101,23 @@ public class MainActivity extends AppCompatActivity
         // handles customized accent
         customAccent(findViewById(R.id.container));
 
+        // setup notifications for COTD
+        NotificationUtils notificationUtils = new NotificationUtils();
+        notificationUtils.setRepeating(this);
+
+        // handle app opening from notification
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            cameFromNotification = b.getBoolean("fromNotification");
+        }else{
+            cameFromNotification = false;
+        }
+
+
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        SharedPreferences myPrefs;
-        myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
 
         // is cotd enabled?
         if(myPrefs.contains("dialogCotd")){
@@ -122,6 +138,10 @@ public class MainActivity extends AppCompatActivity
         InputStream inputStream = getResources().openRawResource(R.raw.colornames);
         ColorNameGetterCSV colors = new ColorNameGetterCSV(inputStream);
         colors.readColors();
+        final boolean READ_DB_INTO_CACHE = true;
+        if(READ_DB_INTO_CACHE) {
+            colors.readDatabaseIntoCache(db);
+        }
         //String testInit = colors.searchForName("#100000");
         //Log.d("V2S1 colorname", "init: "+testInit);
     }
@@ -215,9 +235,10 @@ public class MainActivity extends AppCompatActivity
         Log.d("Lifecycles", "onStart: MainActivity started");
 
         if(isEnabledCotd) {
-            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, false);
+            ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, cameFromNotification);
             cotdDialog.showColorOTD();
         }
+        cameFromNotification = false;
         super.onStart();
     }
 
@@ -320,6 +341,23 @@ public class MainActivity extends AppCompatActivity
 
         ColorStateList myList = new ColorStateList(states, colors);
         nav.setItemIconTintList(myList);
+    }
+
+
+    /**
+     * BACK PRESS WITH NESTED FRAGMENTS
+     * currently only really used for settings
+     *
+     * @author Daniel
+     *
+     */
+    @Override
+    public void onBackPressed(){
+        if(getFragmentManager().getBackStackEntryCount() > 0){
+            getFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
     }
 
 }

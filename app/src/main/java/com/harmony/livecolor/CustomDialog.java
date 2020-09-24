@@ -285,10 +285,17 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             }
         });
 
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
 
         alertDialogName = builder.create();
         alertDialogName.show();
         alertDialogName.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor(AccentUtils.getAccent(context)));
+        alertDialogName.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor(AccentUtils.getAccent(context)));
     }
 
     /**

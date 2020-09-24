@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -31,8 +32,15 @@ public class ColorNameGetterCSV extends android.app.Application {
     private static ArrayList<int[]> colorRGB;
     //Hex -> Name
     private static Map<String, String> colorCache;
+    //Arbitrary. I don't want to eat too much memory but I'm not sure exactly how large is reasonable here.
+    private static final int MAX_CACHE_SIZE = 2048;
+    private static int currentCacheSize;
+    //TODO not sure about this. Arbitrary number. Could just be set to max cache size.
+    //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
+    //This is returned by searchForName if something goes wrong
+    final static String ERROR_COLOR_NAME = "Error";
     //If for some reason the csv changes format, you can change these and it all should still work.
     private static final int NAME_INDEX = 0;
     private static final int HEX_INDEX = 1;
@@ -129,10 +137,64 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void readColors(){
         this.colorNames = this.read();
         this.haveAlreadyReadNames = true;
-        //TODO not sure about this. Arbitrary number.
-        final int INITIAL_CACHE_CAPACITY = 1024;
-        this.colorCache = new ConcurrentHashMap<String, String>(INITIAL_CACHE_CAPACITY);
-        //printArr();
+        this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
+        this.currentCacheSize = 0;
+    }
+
+    //#59. We want to read the database into the cache not only because it will make some likely queries faster,
+    //  but also because we can use the cache to effectively override some names. If the user is using old color names in
+    //   the db with a new color name csv file, they might be surprised to see their saved names change. This prevents that.
+    //If the database has more entries than the maximum cache size, the user might notice their older saved names are sometimes being replaced by new names. Not a huge deal I guess. 
+    public void readDatabaseIntoCache(ColorDatabase colorDB){
+        if(colorDB == null){
+            Log.e("I59 colorname", "Failed to read db into cache because given db was null");
+            return;
+        }
+        Cursor cur = null;
+        //If the database was ridiculously large the cursor could be too big to allocate.
+        try {
+            cur = colorDB.getColorDatabaseCursor();
+        } catch (Exception e){
+            Log.e("I59 colorname", "Failed to read db into cache because database query failed. "+e);
+            return;
+        }
+        final int DB_HEX_INDEX = cur.getColumnIndex("HEX");
+        final int DB_NAME_INDEX = cur.getColumnIndex("NAME");
+        if(DB_HEX_INDEX == -1 || DB_NAME_INDEX == -1){
+            Log.e("I59 colorname", "Failed to read db into cache because db columns could not be found");
+            return;
+        }
+        
+        //Slightly redundant, this happens in the function before we're given the cursor, but I think this is easier to read.
+        cur.moveToFirst();
+        //Loop through the database and add to cache.
+        while(!cur.isAfterLast()){
+            final String COLOR_HEX = cur.getString(DB_HEX_INDEX);
+            final String COLOR_NAME = cur.getString(DB_NAME_INDEX);
+            Log.d("I59 colorname", "Read from db "+COLOR_HEX+" -> "+COLOR_NAME);
+            addToCache(COLOR_HEX, COLOR_NAME);
+            cur.moveToNext();
+        }
+        cur.close();
+    }
+
+    /**
+     * Add an entry to the cache.
+     *
+     * @param hex The #XXXXXX string. (Key)
+     * @param name The corresponding name. (Value)
+     * @return Whether or not the entry is now in the cache. (If it ran out of space AND this pair was not already in there, false, otherwise true).
+     */
+    private static boolean addToCache(String hex, String name){
+        if(MAX_CACHE_SIZE > currentCacheSize){
+            //We're only adding a color to the cache if it's not already in there.
+            if(colorCache.get(hex) == null) {
+                colorCache.put(hex, name);
+                ++currentCacheSize;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -166,13 +228,10 @@ public class ColorNameGetterCSV extends android.app.Application {
      * @author Dustin
      */
     protected String searchForName(String hex){
-        //This is returned if something goes wrong
-        final String errorColorName = "Error";
-
         if(!haveAlreadyReadNames) {
             if(this.inputStream == null){
-                Log.w("V2S1 colorname", "Attempted to get a name before reading");
-                return errorColorName;
+                Log.e("V2S1 colorname", "Attempted to get a name before reading");
+                return ERROR_COLOR_NAME;
             } else {
                 this.readColors();
             }
@@ -188,8 +247,8 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         //Expects #RRGGBB (includes the #, and has  no alpha)
         if(hex.length() != 7) {
-            Log.w("V2S1 colorname", "Hex " + hex + " not valid");
-            return errorColorName;
+            Log.e("V2S1 colorname", "Hex " + hex + " not valid, expected #RRGGBB");
+            return ERROR_COLOR_NAME;
         }
         int red = 0;
         int green = 0;
@@ -206,7 +265,7 @@ public class ColorNameGetterCSV extends android.app.Application {
                 blue = color;
             } else {
                 Log.d("V2S1 colorname", "Something weird happened when converting "+hex+"to rgb");
-                return errorColorName;
+                return ERROR_COLOR_NAME;
             }
         }
         //Log.d("V2S1 colorname", "Looking for name for color "+hex+" ("+red+" "+green+" "+blue+")");
@@ -230,8 +289,8 @@ public class ColorNameGetterCSV extends android.app.Application {
         }
 
         if(indexOfBestMatch < 0 || indexOfBestMatch > this.colorNames.size()){
-            Log.d("V2S1 colorname", "Something weird happened when finding distance");
-            return errorColorName;
+            Log.d("V2S1 colorname I76", "Something weird happened when finding distance");
+            return ERROR_COLOR_NAME;
         }
 
         //Log.d("V2S1 colorname", "Found name. Distance squared is "+shortestDistance);
@@ -254,8 +313,14 @@ public class ColorNameGetterCSV extends android.app.Application {
 
         String name = colors.searchForName(hex);
 
-        //TODO theoretically it might be able to run out of memory if the app is open a long time. Check size of hashmap here, and only add if it's not over some size?
-        colorCache.put(hex, name);
+        //If they called this without the proper read, the cache might not be initialized.
+        //If the name we found was actually Error, then don't cache that.
+        //TODO test
+        if(colorCache != null && ! name.equals(ERROR_COLOR_NAME)) {
+            addToCache(hex, name);
+        } else {
+            Log.e("V2S1 colorname", "getName was unable to add to cache because cache was null. Called before initialized?");
+        }
 
         return name;
     }
