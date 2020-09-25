@@ -279,12 +279,16 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         pickingImage.setOnTouchListener(handleTouch);
 
         //Sets the maximum zoom for the touchview
-        //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
-        final float DEFAULT_MAX_ZOOM_MULT = 100;
+        //TODO this should probably be in a function, needs to be re-checked in onResume.
+        final int DEFAULT_MAX_ZOOM_MULT = 100;
         com.ortiz.touchview.TouchImageView touchView = rootView.findViewById(R.id.pickingImage);
         if(touchView != null) {
-            touchView.setMaxZoom(DEFAULT_MAX_ZOOM_MULT);
-            Log.d("I100", "TouchView max zoom set");
+            //Read setting, or use default if it fails.
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            int maxZoom = prefs.getInt("maxZoom", DEFAULT_MAX_ZOOM_MULT);
+            //TODO technically this can take a float. Allow user to set floats?
+            touchView.setMaxZoom(maxZoom);
+            Log.d("I100", "TouchView max zoom set to "+maxZoom);
         } else {
             Log.d("I100", "TouchView was null");
         }
