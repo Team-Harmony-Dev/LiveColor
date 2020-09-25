@@ -487,6 +487,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     /**
      * UPDATE PALETTE DATABASE AND EXISTING COLORS IN PALETTE USING MYCOLORS LIST (DONE)
      * updates the database ref string of the given MyColors list of a palette
+     * 1used for deletion from/reinsertion into palette
      * @param id the id of the palette to be updated
      * @param colors the MyColors arraylist of the palette that needs to be updated in the database
      * @param isReversed determines whether the ref string should be updated in reverse order or not
