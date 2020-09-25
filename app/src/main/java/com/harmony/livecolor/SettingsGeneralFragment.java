@@ -202,10 +202,18 @@ public class SettingsGeneralFragment extends  Fragment{
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    Log.d("I100", "Enter key pressed while entering zoom number");
-                    //TODO use shared preferences to store this number, and load it in ColorPickerFragment
+                    // Perform action on key press:
+
+                    //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
+                    //TODO if you go back without pressing enter should it save?
+                    SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    String input = editZoom.getText().toString();
+                    editor.putInt("maxZoom", Integer.parseInt(input));
+                    editor.apply();
+                    Log.d("I100", "Enter key pressed while entering zoom number. "+input);
                     //TODO pressing enter should close the input
+                    //https://stackoverflow.com/questions/1109022/how-do-you-close-hide-the-android-soft-keyboard-using-java
                     return true;
                 }
                 return false;
