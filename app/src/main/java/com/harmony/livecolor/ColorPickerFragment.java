@@ -277,6 +277,18 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         }
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
+
+        //Sets the maximum zoom for the touchview
+        //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
+        final float DEFAULT_MAX_ZOOM_MULT = 100;
+        com.ortiz.touchview.TouchImageView touchView = rootView.findViewById(R.id.pickingImage);
+        if(touchView != null) {
+            touchView.setMaxZoom(DEFAULT_MAX_ZOOM_MULT);
+            Log.d("I100", "TouchView max zoom set");
+        } else {
+            Log.d("I100", "TouchView was null");
+        }
+
         return rootView;
     }
 
@@ -431,10 +443,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                 }
             }
-
-            //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
-            final float MAX_ZOOM_MULT = 100;
-            touchView.setMaxZoom(MAX_ZOOM_MULT);
 
 
 
