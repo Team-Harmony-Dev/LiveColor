@@ -206,10 +206,16 @@ public class SettingsGeneralFragment extends  Fragment{
 
                     //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
                     //TODO if you go back without pressing enter should it save?
+                    //TODO load and prefill with previous zoom level when bringing up settings
                     SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
-                    String input = editZoom.getText().toString();
-                    editor.putInt("maxZoom", Integer.parseInt(input));
+                    int input = 1;
+                    try {
+                        input = Integer.parseInt(editZoom.getText().toString());
+                    } catch (NumberFormatException e) {
+                        Log.d("I100", "Input was empty");
+                    }
+                    editor.putInt("maxZoom", input);
                     editor.apply();
                     Log.d("I100", "Enter key pressed while entering zoom number. "+input);
                     //TODO pressing enter should close the input
