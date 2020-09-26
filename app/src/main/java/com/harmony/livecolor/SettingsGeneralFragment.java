@@ -38,6 +38,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.harmony.livecolor.ColorPickerFragment.DEFAULT_MAX_ZOOM_MULT;
 import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class SettingsGeneralFragment extends  Fragment{
@@ -199,6 +200,14 @@ public class SettingsGeneralFragment extends  Fragment{
             Log.w("I100", "EditZoom was null");
             return;
         }
+        //Loads and adds hint to textbox with previous zoom level
+        SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+        int maxZoom = prefs.getInt("maxZoom", DEFAULT_MAX_ZOOM_MULT);
+        editZoom.setHint(""+maxZoom);
+
+        //TODO some keyboards might not work right with this method? Test better.
+        //TODO if you go back without pressing enter should it save? Maybe. Probably not. If we have keyboard issues with the listener then we can.
+        //Set up listener for pressing Enter (saves the setting).
         editZoom.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -207,9 +216,6 @@ public class SettingsGeneralFragment extends  Fragment{
                     // Perform action on key press:
 
                     //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
-                    //TODO if you go back without pressing enter should it save?
-                    //TODO load and prefill with previous zoom level when bringing up settings
-                    //TODO some keyboards might not work right with this method? Test better.
                     SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     final int MINIMUM_ZOOM_LEVEL = 1;

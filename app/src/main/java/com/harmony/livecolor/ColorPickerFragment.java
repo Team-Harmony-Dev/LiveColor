@@ -86,6 +86,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private static final int CAMERA_OR_GALLERY = 0;
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int IMAGE_CAPTURE_CODE = 1001;
+    public static final int DEFAULT_MAX_ZOOM_MULT = 15;
     //Text displayed as color name if you click on the background
     private static final String BACKGROUND_COLOR_TEXT = "Background";
     private final static double MAX_TEXTVIEW_WIDTH_PERCENT = 0.60;
@@ -279,8 +280,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         pickingImage.setOnTouchListener(handleTouch);
 
         //Sets the maximum zoom for the touchview
-        //TODO this should probably be in a function, needs to be re-checked in onResume.
-        final int DEFAULT_MAX_ZOOM_MULT = 100;
         com.ortiz.touchview.TouchImageView touchView = rootView.findViewById(R.id.pickingImage);
         if(touchView != null) {
             //Read setting, or use default if it fails.
