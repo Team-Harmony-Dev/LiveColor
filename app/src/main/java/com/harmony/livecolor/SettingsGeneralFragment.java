@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -218,8 +219,14 @@ public class SettingsGeneralFragment extends  Fragment{
                     editor.putInt("maxZoom", input);
                     editor.apply();
                     Log.d("I100", "Enter key pressed while entering zoom number. "+input);
-                    //TODO pressing enter should close the input
-                    //https://stackoverflow.com/questions/1109022/how-do-you-close-hide-the-android-soft-keyboard-using-java
+                    //Pressing enter hides the keyboard.
+                    //https://stackoverflow.com/a/17789187/14337230
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    //Gets rid of the blinking cursor showing you're editing the field.
+                    v.clearFocus();
+                    //TODO maybe a toast to tell the user the setting was changed?
+
                     return true;
                 }
                 return false;
