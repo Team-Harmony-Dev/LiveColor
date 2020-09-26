@@ -38,6 +38,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class SettingsGeneralFragment extends  Fragment{
 
@@ -208,24 +209,32 @@ public class SettingsGeneralFragment extends  Fragment{
                     //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
                     //TODO if you go back without pressing enter should it save?
                     //TODO load and prefill with previous zoom level when bringing up settings
+                    //TODO some keyboards might not work right with this method? Test better.
                     SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
-                    int input = 1;
+                    final int MINIMUM_ZOOM_LEVEL = 1;
+                    int input;
                     try {
                         input = Integer.parseInt(editZoom.getText().toString());
+                        if(input < MINIMUM_ZOOM_LEVEL){
+                            input = MINIMUM_ZOOM_LEVEL;
+                        }
+                        Log.d("I100", "Enter key pressed while entering zoom number "+input);
+                        editor.putInt("maxZoom", input);
+                        editor.apply();
                     } catch (NumberFormatException e) {
                         Log.d("I100", "Input was empty");
+                        //We save nothing, no change.
                     }
-                    editor.putInt("maxZoom", input);
-                    editor.apply();
-                    Log.d("I100", "Enter key pressed while entering zoom number. "+input);
                     //Pressing enter hides the keyboard.
                     //https://stackoverflow.com/a/17789187/14337230
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    //Gets rid of the blinking cursor showing you're editing the field.
+                    //Gets rid of the blinking cursor showing you're editing the field, and maybe does other stuff? Doesn't seem to work great. Unneeded? TODO
                     v.clearFocus();
-                    //TODO maybe a toast to tell the user the setting was changed?
+
+                    //Notify the user
+                    makeToast("Setting saved", getContext());
 
                     return true;
                 }
