@@ -215,13 +215,13 @@ public class SettingsGeneralFragment extends  Fragment{
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press:
 
-                    //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
-                    SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    final int MINIMUM_ZOOM_LEVEL = 1;
-                    int input;
+                    //Try to process the number in the EditText.
                     try {
-                        input = Integer.parseInt(editZoom.getText().toString());
+                        //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
+                        SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        final int MINIMUM_ZOOM_LEVEL = 1;
+                        int input = Integer.parseInt(editZoom.getText().toString());
                         if(input < MINIMUM_ZOOM_LEVEL){
                             input = MINIMUM_ZOOM_LEVEL;
                         }
