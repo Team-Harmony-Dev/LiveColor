@@ -207,7 +207,6 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * @return Number of colors in the palette
      * @author Dustin
      */
-    //TODO Current toast claims color already exists, fix that.
     public int numColorsInPalette(String paletteId){
         db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
