@@ -36,7 +36,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public static final String PAL2 = "NAME"; //PALETTE NAME
     public static final String PAL3 = "REF"; //String containing all IDs of colors in palette, separated by spaces
 
-    public final static int MAX_COLORS_PER_PALETTE = 3;//TODO make this much larger after testing
+    public final static int MAX_COLORS_PER_PALETTE = 2048;
 
     final String TAG_COLOR = "ColorDatabase";
     final String TAG_PALETTE = "PaletteDatabase";
