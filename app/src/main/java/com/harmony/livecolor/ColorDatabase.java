@@ -196,6 +196,23 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
     }
 
+    //Based on doesPaletteHaveColor
+    //TODO comment
+    //TODO test
+    public int numColorsInPalette(String paletteId){
+        db = this.getWritableDatabase();
+        String selectQuery = "SELECT Count(*) FROM " + PALETTE_TABLE_NAME
+                + " WHERE ID = \'" + paletteId + "\'";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
+        int numColors = 0;
+        if(paletteData != null){
+            numColors = paletteData.getCount();
+        }
+        Log.d("I102", "palette had "+numColors+" colors");
+        return numColors;
+    }
+
     /**
      * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
      * add a color existing in the color database to an existing palette if not already in the palette
@@ -207,7 +224,9 @@ public class ColorDatabase extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         Log.d(TAG_PALETTE, "addPaletteInfoData: id of color added to new palette = " + colorId);
         //check if the color is already in the palette, if not
-        if(!doesPaletteHaveColor(paletteId,colorId)) {
+        //Also only adds if it's below this limit
+        final int MAX_COLORS_PER_PALETTE = 3;//TODO make this much larger after testing
+        if(!doesPaletteHaveColor(paletteId,colorId) && numColorsInPalette(paletteId) <= MAX_COLORS_PER_PALETTE) {
             //update the palette ref string to include the new color id
             String paletteColors = getPaletteColors(paletteId);
             Log.d(TAG_PALETTE, "addColorToPalette: paletteColors before = " + paletteColors);
