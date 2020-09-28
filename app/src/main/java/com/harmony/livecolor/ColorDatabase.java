@@ -207,7 +207,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
      * @return Number of colors in the palette
      * @author Dustin
      */
-    //TODO undo save bookmark if it didn't go? Eh. Minor issue. Could just make a toast? Current toast claims color already exists, fix that.
+    //TODO Current toast claims color already exists, fix that.
     public int numColorsInPalette(String paletteId){
         db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
