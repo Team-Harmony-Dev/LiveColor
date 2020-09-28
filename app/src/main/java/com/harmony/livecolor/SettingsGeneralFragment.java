@@ -14,12 +14,14 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,6 +38,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.harmony.livecolor.ColorPickerFragment.DEFAULT_MAX_ZOOM_MULT;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class SettingsGeneralFragment extends  Fragment{
 
@@ -44,6 +48,7 @@ public class SettingsGeneralFragment extends  Fragment{
     ImageButton imageButtonResetImage;
     RotateAnimation rotate;
     ImageButton imageButtonBack;
+    EditText editZoom;
 
     public SettingsGeneralFragment() {
         // Required empty public constructor
@@ -93,6 +98,7 @@ public class SettingsGeneralFragment extends  Fragment{
 
         imageButtonResetImage = rootView.findViewById(R.id.imageButtonImageReset);
         imageButtonBack = rootView.findViewById(R.id.backButton);
+        imageButtonBack = rootView.findViewById(R.id.backButton);
         
         
         imageButtonResetImage.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +115,8 @@ public class SettingsGeneralFragment extends  Fragment{
             }
         });
 
+        editZoom = rootView.findViewById(R.id.editZoom);
+        setupMaxZoom();
 
         return rootView;
     }
@@ -184,6 +192,61 @@ public class SettingsGeneralFragment extends  Fragment{
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
         editor.putString("image", null);
         editor.apply();
+    }
+
+    //https://stackoverflow.com/a/6832095
+    private void setupMaxZoom(){
+        if(editZoom == null){
+            Log.w("I100", "EditZoom was null");
+            return;
+        }
+        //Loads and adds hint to textbox with previous zoom level
+        SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+        int maxZoom = prefs.getInt("maxZoom", DEFAULT_MAX_ZOOM_MULT);
+        editZoom.setHint(""+maxZoom);
+
+        //TODO some keyboards might not work right with this method? Test better.
+        //TODO if you go back without pressing enter should it save? Maybe. Probably not. If we have keyboard issues with the listener then we can.
+        //Set up listener for pressing Enter (saves the setting).
+        editZoom.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press:
+
+                    //Try to process the number in the EditText.
+                    try {
+                        //Uses shared preferences to store this number, and it will be loaded in ColorPickerFragment
+                        SharedPreferences preferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        final int MINIMUM_ZOOM_LEVEL = 1;
+                        int input = Integer.parseInt(editZoom.getText().toString());
+                        if(input < MINIMUM_ZOOM_LEVEL){
+                            input = MINIMUM_ZOOM_LEVEL;
+                        }
+                        Log.d("I100", "Enter key pressed while entering zoom number "+input);
+                        editor.putInt("maxZoom", input);
+                        editor.apply();
+                    } catch (NumberFormatException e) {
+                        Log.d("I100", "Input was empty");
+                        //We save nothing, no change.
+                    }
+                    //Pressing enter hides the keyboard.
+                    //https://stackoverflow.com/a/17789187/14337230
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    //Gets rid of the blinking cursor showing you're editing the field, and maybe does other stuff? Doesn't seem to work great. Unneeded? TODO
+                    v.clearFocus();
+
+                    //Notify the user
+                    makeToast("Setting saved", getContext());
+
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     /**
