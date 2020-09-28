@@ -198,16 +198,23 @@ public class ColorDatabase extends SQLiteOpenHelper {
 
     //Based on doesPaletteHaveColor
     //TODO comment
-    //TODO test
+    //TODO test more
+    //TODO undo save bookmark if it didn't go? Eh. Minor issue. Could just make a toast? Current toast claims color already exists, fix that.
     public int numColorsInPalette(String paletteId){
         db = this.getWritableDatabase();
-        String selectQuery = "SELECT Count(*) FROM " + PALETTE_TABLE_NAME
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
                 + " WHERE ID = \'" + paletteId + "\'";
         Cursor paletteData = db.rawQuery(selectQuery, null);
         Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
         int numColors = 0;
         if(paletteData != null){
-            numColors = paletteData.getCount();
+            //TODO is this anywhere else? Or can I do it by column name?
+            final int COLOR_ID_INDEX = 2;
+            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
+            //Split on whitespace
+            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
+            numColors = colorIDs.trim().split("\\s+").length;
+            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
         }
         Log.d("I102", "palette had "+numColors+" colors");
         return numColors;
