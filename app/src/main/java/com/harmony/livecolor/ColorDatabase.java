@@ -234,33 +234,6 @@ public class ColorDatabase extends SQLiteOpenHelper {
     //Based on doesPaletteHaveColor
 
     /**
-     * Simply gets the number of colors in a given palette.
-     *
-     * @param paletteId
-     * @return Number of colors in the palette
-     * @author Dustin
-     */
-    public int numColorsInPalette(String paletteId){
-        db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
-                + " WHERE ID = \'" + paletteId + "\'";
-        Cursor paletteData = db.rawQuery(selectQuery, null);
-        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
-        int numColors = 0;
-        if(paletteData != null){
-            //TODO is this anywhere else? Or can I do it by column name?
-            final int COLOR_ID_INDEX = 2;
-            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
-            //Split on whitespace
-            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
-            numColors = colorIDs.trim().split("\\s+").length;
-            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
-        }
-        Log.d("I102", "palette had "+numColors+" colors");
-        return numColors;
-    }
-
-    /**
      * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
      * add a color existing in the color database to an existing palette if not already in the palette
      * @param paletteId id of the palette to be added to
@@ -718,5 +691,32 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
 
         return ref;
+    }
+
+    /**
+     * Simply gets the number of colors in a given palette.
+     *
+     * @param paletteId
+     * @return Number of colors in the palette
+     * @author Dustin
+     */
+    public int numColorsInPalette(String paletteId){
+        db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE ID = \'" + paletteId + "\'";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
+        int numColors = 0;
+        if(paletteData != null){
+            //TODO is this anywhere else? Or can I do it by column name?
+            final int COLOR_ID_INDEX = 2;
+            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
+            //Split on whitespace
+            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
+            numColors = colorIDs.trim().split("\\s+").length;
+            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
+        }
+        Log.d("I102", "palette had "+numColors+" colors");
+        return numColors;
     }
 }
