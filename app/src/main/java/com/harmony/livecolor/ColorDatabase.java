@@ -143,8 +143,41 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * ADD GIVEN MYPALETTE OBJECT TO DATABASE AS A NEW PALETTE (WIP)
-     * add the given MyPalette data to the database as a *new* palette. Currently for undoing palette deletion
+     * ADD GIVEN MYPALETTE OBJECT TO DATABASE AS A *NEW* PALETTE (WIP)
+     * add the given MyPalette data to the database as a *new* palette. Would be used for adding a harmony palette to the database
+     * will add colors to the color database if they do not already exist there
+     * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
+     * @return true if successful, false otherwise
+     */
+    public boolean addFullPalette(MyPalette palette) {
+        db = this.getWritableDatabase();
+        //add empty palette to the database
+        ContentValues paletteCVs = new ContentValues();
+        //paletteCVs.put(PAL1, palette.getId());
+        paletteCVs.put(PAL2, palette.getName());
+        paletteCVs.put(PAL3, " ");
+
+        Log.d(TAG_PALETTE, "addFullPalette: adding new palette " + palette.getId() + palette.getName());
+        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
+        Log.d(TAG_PALETTE, "addFullPalette: id of new palette = " + insertResult);
+
+        //returns the id of the newly added item if successful
+        if (insertResult == -1) {
+            return false;
+        } else {
+            Log.d(TAG_PALETTE, "addFullPalette: insertResult = " + insertResult);
+            for(MyColor color : palette.getColors()) {
+                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
+                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
+            }
+            return true;
+        }
+    }
+
+    /**
+     * ADD GIVEN PREVIOUSLY EXISTING PALETTE TO PALETTE DATABASE (WIP)
+     * add the given MyPalette data to the palette database, all color ids in tact. Currently for undoing palette deletion
+     * will add any color not existing in the color database to said database by its original id
      * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
      * @return true if successful, false otherwise
      */
@@ -166,8 +199,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
         } else {
             Log.d(TAG_PALETTE, "addPreExistingPalette: insertResult = " + insertResult);
             for(MyColor color : palette.getColors()) {
-                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
-                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
+                //TODO: add a check for same id but different hex if needed?
+                addColorToPalette(Long.toString(insertResult),color.getId());
             }
             return true;
         }
@@ -199,33 +232,6 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     //Based on doesPaletteHaveColor
-
-    /**
-     * Simply gets the number of colors in a given palette.
-     *
-     * @param paletteId
-     * @return Number of colors in the palette
-     * @author Dustin
-     */
-    public int numColorsInPalette(String paletteId){
-        db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
-                + " WHERE ID = \'" + paletteId + "\'";
-        Cursor paletteData = db.rawQuery(selectQuery, null);
-        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
-        int numColors = 0;
-        if(paletteData != null){
-            //TODO is this anywhere else? Or can I do it by column name?
-            final int COLOR_ID_INDEX = 2;
-            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
-            //Split on whitespace
-            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
-            numColors = colorIDs.trim().split("\\s+").length;
-            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
-        }
-        Log.d("I102", "palette had "+numColors+" colors");
-        return numColors;
-    }
 
     /**
      * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
@@ -284,6 +290,58 @@ public class ColorDatabase extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * DELETE A COLOR FROM THE COLOR DATABASE BY ID
+     * @param colorId the id of the color to be deleted
+     * @return boolean indicating whether the deletion was successful or not
+     */
+    public boolean deleteColor(String colorId) {
+        db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM " + COLOR_TABLE_NAME
+                + " WHERE ID = \'" + colorId + "\'";
+        try {
+            db.execSQL(deleteQuery);
+            Log.d(TAG_COLOR, "deleteColor: color id " + colorId + " has been deleted");
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * CHECKS IF A COLOR WITH A PREEXISTING ID STILL RESIDES IN THE COLOR DATABASE, AND RE-ADDS IT IF NOT
+     * to re-add a color to the color database with its original id, in the case of undoing a deletion
+     * @param color the MyColor object of the color to be readded
+     * @return boolean indicating whether the color needed to be readded or not
+     */
+    public boolean addPreExistingColor(MyColor color) {
+        //Check if the color was actually deleted or not, if not, return false
+        Cursor cursor = getColorInfoById(color.getId());
+        if(cursor != null && cursor.getCount()>0){
+            long id = cursor.getLong(0);
+            Log.d(TAG_COLOR, "addPreExistingColor: id of existing color = " + id);
+            cursor.close();
+            return false;
+        }
+
+        db = this.getWritableDatabase();
+        //else, add the color back to color database under its original id
+        ContentValues colorInfoContentValues = new ContentValues();
+        colorInfoContentValues.put(COL1, color.getId());
+        colorInfoContentValues.put(COL2, color.getName());
+        colorInfoContentValues.put(COL3, color.getHex());
+        colorInfoContentValues.put(COL4, color.getRgb());
+        colorInfoContentValues.put(COL5, color.getHsv());
+
+        long insertResult = db.insert(COLOR_TABLE_NAME, null, colorInfoContentValues);
+        Log.d(TAG_COLOR, "addPreExistingColor: id of inserted color = " + insertResult);
+
+        return true;
     }
 
     /**
@@ -435,6 +493,18 @@ public class ColorDatabase extends SQLiteOpenHelper {
         } else {
             return colorData;
         }
+    }
+
+    /**
+     * CHECK TO SEE IF A COLOR EXISTS IN ANY PALETTES (use for deletion)
+     * @param colorId of the color to be searched for
+     * @return boolean indicating whether it was found anywhere or not
+     */
+    public boolean isColorInUse(String colorId) {
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE REF LIKE \'% " + colorId + " %\' ";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        return paletteData.moveToFirst();
     }
 
     /**
@@ -621,5 +691,32 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
 
         return ref;
+    }
+
+    /**
+     * Simply gets the number of colors in a given palette.
+     *
+     * @param paletteId
+     * @return Number of colors in the palette
+     * @author Dustin
+     */
+    public int numColorsInPalette(String paletteId){
+        db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE ID = \'" + paletteId + "\'";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
+        int numColors = 0;
+        if(paletteData != null){
+            //TODO is this anywhere else? Or can I do it by column name?
+            final int COLOR_ID_INDEX = 2;
+            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
+            //Split on whitespace
+            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
+            numColors = colorIDs.trim().split("\\s+").length;
+            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
+        }
+        Log.d("I102", "palette had "+numColors+" colors");
+        return numColors;
     }
 }

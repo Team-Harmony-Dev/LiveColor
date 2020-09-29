@@ -199,6 +199,7 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
     }
 
     MyPalette deletedPalette = null;
+    ArrayList<MyColor> deletedColors = new ArrayList();
     String deleteMsg = "Deleted ";
 
     /**
@@ -214,17 +215,36 @@ public class PalettesFragment extends Fragment implements SearchView.OnQueryText
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             //we can use a switch to handle different cases for different swipe directions if desired
             final int position = viewHolder.getAdapterPosition();
+            //save deleted palette in case deletion is undone
             deletedPalette = paletteList.get(position);
+            //remove from list and update palette database with new info
             paletteList.remove(position);
             colorDB.deletePalette(deletedPalette.getId());
+            //iterate through palette, check whether the color is still in use or not, and remove from the color database if no longer used
+            //add to list of deleted colors for when undoing is needed
+            deletedColors.clear(); //clear previously saved colors
+            for(MyColor color : deletedPalette.getColors()) {
+                if(!colorDB.isColorInUse(color.getId())) {
+                    colorDB.deleteColor(color.getId());
+                    deletedColors.add(color);
+                }
+            }
+            //notify the recycler
             adapter.notifyItemRemoved(position);
             adapter.notifyItemRangeChanged(position,paletteList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedPalette.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            //add the deleted palette back to the list
                             paletteList.add(position, deletedPalette);
+                            //update the palette database with the new info
                             colorDB.addPreExistingPalette(deletedPalette);
+                            //re-add any colors deleted from the color database resulting from the palette deletion
+                            for(MyColor color : deletedColors) {
+                                colorDB.addPreExistingColor(color);
+                            }
+                            //notify the recycler
                             adapter.notifyItemInserted(position);
                             adapter.notifyItemRangeChanged(position,paletteList.size());
                         }

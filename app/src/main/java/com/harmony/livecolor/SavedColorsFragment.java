@@ -225,11 +225,17 @@ public class SavedColorsFragment extends Fragment {
             //we can use a switch to handle different cases for different swipe directions if desired
             final int position = viewHolder.getAdapterPosition();
             Log.d("SavedColorsFragment", "onSwiped: deleting " + position);
+            //save deleted color in case deletion is undone
             deletedColor = colorList.get(position);
             Log.d("SavedColorsFragment", "onSwiped: Color is " + deletedColor.getName());
+            //remove from list and update palette database with new info
             colorList.remove(position);
             db.updateRefString("1", colorList, true);
-
+            //check whether the color is still in use or not, and remove from the color database if no longer used
+            if(!db.isColorInUse(deletedColor.getId())) {
+                db.deleteColor(deletedColor.getId());
+            }
+            //notify the recycler
             adapter.notifyItemRemoved(position);
             adapter.notifyItemRangeChanged(position,colorList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
@@ -237,8 +243,13 @@ public class SavedColorsFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Log.d("SavedColorsFragment", "onClick: Adding deleted color " + deletedColor.getName() + " to position " + position);
+                            //add the deleted color back to the list
                             colorList.add(position, deletedColor);
+                            //update the palette database with the new info
                             db.updateRefString("1", colorList, true);
+                            //check that the color needs to be re-added to the color database, and do so if needed
+                            db.addPreExistingColor(deletedColor);
+                            //notify the recycler
                             adapter.notifyItemInserted(position);
                             adapter.notifyItemRangeChanged(position,colorList.size());
                         }
