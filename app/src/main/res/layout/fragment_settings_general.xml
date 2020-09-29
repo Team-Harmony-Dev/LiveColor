@@ -118,7 +118,6 @@
             android:inputType="number"
             android:ems="10"
             android:fontFamily="@font/lato_regular"
-            android:hint="@string/zoom_choice"
             android:maxLength="5"
             android:textSize="20sp"
             android:theme="@style/PhoAppTheme"

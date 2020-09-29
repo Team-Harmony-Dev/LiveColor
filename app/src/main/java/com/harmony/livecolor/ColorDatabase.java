@@ -36,6 +36,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
     public static final String PAL2 = "NAME"; //PALETTE NAME
     public static final String PAL3 = "REF"; //String containing all IDs of colors in palette, separated by spaces
 
+    public final static int MAX_COLORS_PER_PALETTE = 2048;
+
     final String TAG_COLOR = "ColorDatabase";
     final String TAG_PALETTE = "PaletteDatabase";
 
@@ -229,6 +231,35 @@ public class ColorDatabase extends SQLiteOpenHelper {
         }
     }
 
+    //Based on doesPaletteHaveColor
+
+    /**
+     * Simply gets the number of colors in a given palette.
+     *
+     * @param paletteId
+     * @return Number of colors in the palette
+     * @author Dustin
+     */
+    public int numColorsInPalette(String paletteId){
+        db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE ID = \'" + paletteId + "\'";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        Log.d(TAG_PALETTE,"numColorsInPalette: Results = " + paletteData + " " + (paletteData.moveToFirst()));
+        int numColors = 0;
+        if(paletteData != null){
+            //TODO is this anywhere else? Or can I do it by column name?
+            final int COLOR_ID_INDEX = 2;
+            String colorIDs = paletteData.getString(COLOR_ID_INDEX);
+            //Split on whitespace
+            //https://stackoverflow.com/questions/7899525/how-to-split-a-string-by-space
+            numColors = colorIDs.trim().split("\\s+").length;
+            Log.d("I102", "pd had "+paletteData.getString(COLOR_ID_INDEX));
+        }
+        Log.d("I102", "palette had "+numColors+" colors");
+        return numColors;
+    }
+
     /**
      * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
      * add a color existing in the color database to an existing palette if not already in the palette
@@ -238,29 +269,32 @@ public class ColorDatabase extends SQLiteOpenHelper {
      */
     public boolean addColorToPalette(String paletteId, String colorId) {
         db = this.getWritableDatabase();
-        Log.d(TAG_PALETTE, "addPaletteInfoData: id of color added to new palette = " + colorId);
-        //check if the color is already in the palette, if not
-        if(!doesPaletteHaveColor(paletteId,colorId)) {
-            //update the palette ref string to include the new color id
-            String paletteColors = getPaletteColors(paletteId);
-            Log.d(TAG_PALETTE, "addColorToPalette: paletteColors before = " + paletteColors);
-            //each color should ALWAYS have a space before it for searching
-            String newPaletteColors = paletteColors.concat(colorId + " ");
-            String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
-                    + " SET REF = \'" + newPaletteColors + "\'"
-                    + " WHERE ID = \'" + paletteId + "\'";
-            try {
-                db.execSQL(updateQuery);
-                Log.d(TAG_PALETTE, "addColorToPalette: paletteColors after = " + paletteColors);
-                return true;
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+        Log.d(TAG_PALETTE, "addPaletteInfoData: id of color adding to new palette = " + colorId);
+        //Check if the color is already in the palette or if the palette is full
+        if(doesPaletteHaveColor(paletteId,colorId)){
+            Log.d(TAG_PALETTE, "addPaletteInfoData: color already existed");
+            return false;
+        } else if (numColorsInPalette(paletteId) >= MAX_COLORS_PER_PALETTE){
+            Log.d(TAG_PALETTE, "addPaletteInfoData: palette full");
+            return false;
         }
-        Log.d(TAG_PALETTE, "addPaletteInfoData: color already existed");
-        return false;
+        //update the palette ref string to include the new color id
+        String paletteColors = getPaletteColors(paletteId);
+        Log.d(TAG_PALETTE, "addColorToPalette: paletteColors before = " + paletteColors);
+        //each color should ALWAYS have a space before it for searching
+        String newPaletteColors = paletteColors.concat(colorId + " ");
+        String updateQuery = "UPDATE " + PALETTE_TABLE_NAME
+                + " SET REF = \'" + newPaletteColors + "\'"
+                + " WHERE ID = \'" + paletteId + "\'";
+        try {
+            db.execSQL(updateQuery);
+            Log.d(TAG_PALETTE, "addColorToPalette: paletteColors after = " + paletteColors);
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

@@ -86,6 +86,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
     private static final int CAMERA_OR_GALLERY = 0;
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int IMAGE_CAPTURE_CODE = 1001;
+    public static final int DEFAULT_MAX_ZOOM_MULT = 15;
     //Text displayed as color name if you click on the background
     private static final String BACKGROUND_COLOR_TEXT = "Background";
     private final static double MAX_TEXTVIEW_WIDTH_PERCENT = 0.60;
@@ -277,6 +278,20 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
         }
         //Adds a listener to get the x and y coordinates of taps and update the display
         pickingImage.setOnTouchListener(handleTouch);
+
+        //Sets the maximum zoom for the touchview
+        com.ortiz.touchview.TouchImageView touchView = rootView.findViewById(R.id.pickingImage);
+        if(touchView != null) {
+            //Read setting, or use default if it fails.
+            SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
+            int maxZoom = prefs.getInt("maxZoom", DEFAULT_MAX_ZOOM_MULT);
+            //TODO technically this can take a float. Allow user to set floats?
+            touchView.setMaxZoom(maxZoom);
+            Log.d("I100", "TouchView max zoom set to "+maxZoom);
+        } else {
+            Log.d("I100", "TouchView was null");
+        }
+
         return rootView;
     }
 
@@ -431,10 +446,6 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     Log.d("DEBUG S2US2 pinchzoom", "Bitmap was non-null, but had error: " + e);
                 }
             }
-
-            //TODO this should probably only be set once, or detect something about the image (resolution?) and work based on that when the image is loaded.
-            final float MAX_ZOOM_MULT = 100;
-            touchView.setMaxZoom(MAX_ZOOM_MULT);
 
 
 
