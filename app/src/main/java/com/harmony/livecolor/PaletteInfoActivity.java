@@ -130,17 +130,29 @@ public class PaletteInfoActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             //we can use a switch to handle different cases for different swipe directions if desired
             final int position = viewHolder.getAdapterPosition();
+            //save deleted color in case deletion is undone
             deletedColor = colorList.get(position);
+            //remove from list and update palette database with new info
             colorList.remove(position);
             db.updateRefString(palette.getId(), colorList, false);
+            //check whether the color is still in use or not, and remove from the color database if no longer used
+            if(!db.isColorInUse(deletedColor.getId())) {
+                db.deleteColor(deletedColor.getId());
+            }
+            //notify the recycler
             adapter.notifyItemRemoved(position);
             adapter.notifyItemRangeChanged(position,colorList.size());
             Snackbar.make(recyclerView, deleteMsg + deletedColor.getName(), Snackbar.LENGTH_LONG)
                     .setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            //add the deleted color back to the list
                             colorList.add(position, deletedColor);
+                            //update the palette database with the new info
                             db.updateRefString(palette.getId(), colorList, false);
+                            //check that the color needs to be re-added to the color database, and do so if needed
+                            db.addPreExistingColor(deletedColor);
+                            //notify the recycler
                             adapter.notifyItemInserted(position);
                         }
                     }).show();

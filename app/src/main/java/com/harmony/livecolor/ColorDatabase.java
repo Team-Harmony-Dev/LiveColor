@@ -253,6 +253,58 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * DELETE A COLOR FROM THE COLOR DATABASE BY ID
+     * @param colorId the id of the color to be deleted
+     * @return boolean indicating whether the deletion was successful or not
+     */
+    public boolean deleteColor(String colorId) {
+        db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM " + COLOR_TABLE_NAME
+                + " WHERE ID = \'" + colorId + "\'";
+        try {
+            db.execSQL(deleteQuery);
+            Log.d(TAG_COLOR, "deleteColor: color id " + colorId + " has been deleted");
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * CHECKS IF A COLOR WITH A PREEXISTING ID STILL RESIDES IN THE COLOR DATABASE, AND RE-ADDS IT IF NOT
+     * to re-add a color to the color database with its original id, in the case of undoing a deletion
+     * @param color the MyColor object of the color to be readded
+     * @return boolean indicating whether the color needed to be readded or not
+     */
+    public boolean addPreExistingColor(MyColor color) {
+        //Check if the color was actually deleted or not, if not, return false
+        Cursor cursor = getColorInfoById(color.getId());
+        if(cursor != null && cursor.getCount()>0){
+            long id = cursor.getLong(0);
+            Log.d(TAG_COLOR, "addPreExistingColor: id of existing color = " + id);
+            cursor.close();
+            return false;
+        }
+
+        db = this.getWritableDatabase();
+        //else, add the color back to color database under its original id
+        ContentValues colorInfoContentValues = new ContentValues();
+        colorInfoContentValues.put(COL1, color.getId());
+        colorInfoContentValues.put(COL2, color.getName());
+        colorInfoContentValues.put(COL3, color.getHex());
+        colorInfoContentValues.put(COL4, color.getRgb());
+        colorInfoContentValues.put(COL5, color.getHsv());
+
+        long insertResult = db.insert(COLOR_TABLE_NAME, null, colorInfoContentValues);
+        Log.d(TAG_COLOR, "addPreExistingColor: id of inserted color = " + insertResult);
+
+        return true;
+    }
+
+    /**
      * CURSOR METHODS:
      */
 
@@ -401,6 +453,18 @@ public class ColorDatabase extends SQLiteOpenHelper {
         } else {
             return colorData;
         }
+    }
+
+    /**
+     * CHECK TO SEE IF A COLOR EXISTS IN ANY PALETTES (use for deletion)
+     * @param colorId of the color to be searched for
+     * @return boolean indicating whether it was found anywhere or not
+     */
+    public boolean isColorInUse(String colorId) {
+        String selectQuery = "SELECT * FROM " + PALETTE_TABLE_NAME
+                + " WHERE REF LIKE \'% " + colorId + " %\' ";
+        Cursor paletteData = db.rawQuery(selectQuery, null);
+        return paletteData.moveToFirst();
     }
 
     /**
