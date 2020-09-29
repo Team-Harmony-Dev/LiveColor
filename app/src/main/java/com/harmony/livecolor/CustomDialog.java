@@ -340,12 +340,21 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         if(colorDB.addColorToPalette(palette.getId(),Long.toString(colorId))) {
             alertDialogSave.dismiss();
             makeToast("Color has been saved to \"" + palette.getName() + "\"", context);
+            //Tell the listener that it's saved, so it can fill in the save button.
+            notifySaveCompleted();
         } else {
             alertDialogSave.dismiss();
-            makeToast("This color already exists in \"" + palette.getName() + "\"", context);
+            //Two reasons that function might return false:
+            //1. Palette already has the color
+            //2. Palette is full
+            if(colorDB.doesPaletteHaveColor(palette.getId(), Long.toString(colorId))){
+                makeToast("This color already exists in \"" + palette.getName() + "\"", context);
+            } else if (colorDB.numColorsInPalette(palette.getId()) >= ColorDatabase.MAX_COLORS_PER_PALETTE) {
+                makeToast("This palette is full", context);
+            } else {
+                makeToast("Unknown error", context);
+                Log.w("CustomDialog", "Unknown error while saving to existing palette");
+            }
         }
-
-        //Tell the listener that it's saved, so it can fill in the save button.
-        notifySaveCompleted();
     }
 }

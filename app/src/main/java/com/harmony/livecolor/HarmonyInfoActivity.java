@@ -72,8 +72,11 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         //So if it's super light/dark I'll just not generate them.
         float valueTooMonotonous = (float) 0.01;
 
+        boolean valueIsNotBlackSoGenerateHueChanges = valueTooMonotonous <= value;
+        boolean valueIsNotWhiteSoGenerateHueChanges = ((1 - valueTooMonotonous >= value) || saturation >= 0.01);
+
         //Check if it's in the range [0.01..0.99] inclusive, or if the value is not small and has saturation.
-        if(valueTooMonotonous <= value && ((1 - valueTooMonotonous >= value) || saturation >= 1)) {
+        if(valueIsNotBlackSoGenerateHueChanges && valueIsNotWhiteSoGenerateHueChanges) {
             //Color & Complement
             float[][] testBasicColor = HarmonyGenerator.complementScheme(hue, saturation, value, 2);
             ArrayList<MyColor> testBasicColorMyColors = HarmonyGenerator.colorsToMyColors(testBasicColor, 2);
@@ -101,7 +104,7 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         MyPalette testMonochromaticPalette = new MyPalette("2", "Monochromatic", testMonochromaticMyColors);
         paletteList.add(testMonochromaticPalette);
 
-        if(1 - valueTooMonotonous >= value && valueTooMonotonous <= value) {
+        if(valueIsNotBlackSoGenerateHueChanges && valueIsNotWhiteSoGenerateHueChanges) {
             //TODO (refactor) I may have misunderstood triadic. I can just use the evenly spaced for that. This is Split-Complementary.
             float[][] testTriadic = HarmonyGenerator.triadicScheme(hue, saturation, value, 20, 3);
             ArrayList<MyColor> testTriadicMyColors = HarmonyGenerator.colorsToMyColors(testTriadic, 3);
