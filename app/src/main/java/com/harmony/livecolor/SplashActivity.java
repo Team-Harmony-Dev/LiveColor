@@ -1,13 +1,13 @@
 package com.harmony.livecolor;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
-import android.util.Log;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
+
 
 public class SplashActivity extends AppCompatActivity {
 
