@@ -175,7 +175,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * ADD GIVEN PREVIOUSLY EXISTING PALETTE TO PALETTE DATABASE (WIP)
+     * ADD GIVEN PREVIOUSLY EXISTING PALETTE TO PALETTE DATABASE (TESTING)
      * add the given MyPalette data to the palette database, all color ids in tact. Currently for undoing palette deletion
      * will add any color not existing in the color database to said database by its original id
      * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
@@ -205,33 +205,6 @@ public class ColorDatabase extends SQLiteOpenHelper {
             return true;
         }
     }
-
-    //TODO: Might be used for harmony saving, but could probably be replaced with the above depending on implementation
-    public boolean addPalette(MyPalette palette) {
-        db = this.getWritableDatabase();
-        //add empty palette to the database
-        ContentValues paletteCVs = new ContentValues();
-        paletteCVs.put(PAL2, palette.getName());
-        paletteCVs.put(PAL3, " ");
-
-        Log.d(TAG_PALETTE, "addPalette: adding new palette " + palette.getId() + palette.getName());
-        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
-        Log.d(TAG_PALETTE, "addPalette: id of new palette = " + insertResult);
-
-        //returns the id of the newly added item if successful
-        if (insertResult == -1) {
-            return false;
-        } else {
-            Log.d(TAG_PALETTE, "addPalette: insertResult = " + insertResult);
-            for(MyColor color : palette.getColors()) {
-                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
-                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
-            }
-            return true;
-        }
-    }
-
-    //Based on doesPaletteHaveColor
 
     /**
      * CALL FOR ADDING COLOR TO PALETTE (CHECKS IF COLOR ALREADY EXISTS IN PALETTE) (DONE)
@@ -271,7 +244,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * FOR DELETING A PALETTE FROM THE DATABASE (WIP)
+     * FOR DELETING A PALETTE FROM THE DATABASE (DONE)
      * deletes a palette from the database given the palette's unique id
      * @param paletteId the id of the palette to be deleted from the database
      * @return true if deletion was a success, false otherwise
@@ -293,7 +266,7 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * DELETE A COLOR FROM THE COLOR DATABASE BY ID
+     * DELETE A COLOR FROM THE COLOR DATABASE BY ID (DONE)
      * @param colorId the id of the color to be deleted
      * @return boolean indicating whether the deletion was successful or not
      */

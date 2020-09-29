@@ -33,7 +33,7 @@ public class HarmonyPaletteInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palette_info);
+        setContentView(R.layout.activity_harmony_palette_info);
 
         //removes action bar
         ActionBar actionBar = getSupportActionBar();
@@ -70,18 +70,19 @@ public class HarmonyPaletteInfoActivity extends AppCompatActivity {
     }
 
     /**
-     *  EDIT BUTTON
-     *  placeholder edit button
+     *  SAVE BUTTON
+     *  placeholder save button
      * @param view view of button
      *
      *
      * @author Daniel
      * part of the refactor
      *
+     * once edit button, changed to save button by Paige
      */
-    public void onClickEditButton(View view){
-        Log.d("DEBUG","edit button pressed in palette info activity");
-        CustomDialog setNameDialog = new CustomDialog(HarmonyPaletteInfoActivity.this,palette.getId());
+    public void onClickSaveButton(View view){
+        Log.d("DEBUG","save button pressed in palette info activity");
+        CustomDialog setNameDialog = new CustomDialog(HarmonyPaletteInfoActivity.this,palette);
         setNameDialog.showSetNameDialog();
     }
 
