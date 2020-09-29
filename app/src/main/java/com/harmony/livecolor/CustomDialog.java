@@ -46,7 +46,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
     EditText newPaletteName;
 
     String name, hex, rgb, hsv, id, newName;
+    MyPalette palette;
     boolean newColor;
+    boolean harmony;
 
     ArrayList<MyPalette> paletteList;
 
@@ -71,6 +73,7 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         this.newName = "";
 
         newColor = true;
+        harmony = false;
     }
 
     /**
@@ -92,7 +95,26 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         this.newName = "";
 
         newColor = false;
+        harmony = false;
     }
+
+    /**
+     * Constructor for Custom Dialog
+     * For a harmony palette
+     * @param context must be an Activity context, is the activity that the dialog is displaying on
+     */
+    public CustomDialog(Context context, MyPalette palette){
+        this.context = context;
+        activity = (Activity) context;
+
+        colorDB = new ColorDatabase(activity);
+
+        this.palette = palette;
+
+        newColor = false;
+        harmony = true;
+    }
+
 
     /**
      * Adds a listener that will be notified when a save finishes (and not when the dialog is cancelled).
@@ -245,7 +267,6 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         builder.setView(setNameDialogView);
 
         //Positive Confirm Button Click Listener that adds the input palette name to the database
-        //TODO: UPDATE TO USE THE APPROPRIATE HELPER METHODS INSTEAD
         builder.setPositiveButton("Save Palette", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -253,7 +274,14 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
                 newName = newPaletteName.getText().toString();
 
                 //if you are creating a new name for a palette
-                if(newColor) {
+                if(harmony) {
+                    Log.d("CustomDialog", "setName is for harmony palette");
+                    palette.setName(newName);
+                    colorDB.addFullPalette(palette);
+                    dialog.dismiss();
+                    makeToast("New palette \"" + newName + "\" created!", context);
+                }
+                else if(newColor) {
                     Log.d("CustomDialog", "setName is for new palette");
                     //adds the color to the database
                     long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);

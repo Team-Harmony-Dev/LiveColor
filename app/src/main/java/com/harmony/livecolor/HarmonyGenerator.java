@@ -3,6 +3,7 @@ package com.harmony.livecolor;
 import android.util.Log;
 
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;
@@ -13,6 +14,9 @@ import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
  * @author Dustin
  */
 public class HarmonyGenerator {
+
+    private static DecimalFormat df = new DecimalFormat("0.000");
+
     //Each color[] should be the hsv like what is returned by the rest of the functions in this file.
     public static ArrayList<MyColor> colorsToMyColors(float[][] colors, int numberOfColors){
         ArrayList<MyColor> myColorArrayList = new ArrayList<>();
@@ -41,7 +45,7 @@ public class HarmonyGenerator {
         float value = color[2];
         int[] rgb = convertHSVtoRGB((int) hue, (int) (saturation * 100), (int) (value * 100));
         //https://stackoverflow.com/a/3607942
-        String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
+        String hex = String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]).toUpperCase();
         return hex;
     }
 
@@ -66,7 +70,9 @@ public class HarmonyGenerator {
         RGBToHSV(rgb[0],rgb[1],rgb[2],hsvArray);
         //TODO decide on a format for the string.
         // We aren't actually using this anyway currently since palettes aren't finished.
-        return "TODO harmonyGenerator.hsvToStringHsv()";
+        Log.d("HarmonyGenerator", "hsvToStringHsv unformatted: " + hue + " " + saturation + " " + value);
+        Log.d("HarmonyGenerator", "hsvToStringHsv formatted: " + Math.round(hue) + " " + df.format(saturation) + " " + df.format(value));
+        return "(" + Math.round(hue) + ", " + df.format(saturation) + ", " + df.format(value) + ")";
     }
 
     //Complement is just the opposite hue

@@ -55,20 +55,6 @@ public class HarmonyInfoActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     *  EDIT BUTTON
-     *  placeholder edit button
-     * @param view view of button
-     *
-     *
-     * @author Daniel
-     * part of the refactor
-     *
-     */
-    public void onClickEditButton(View view){
-        Log.d("DEBUG","edit button pressed in harmony activity");
-    }
-
     public void initPalettes(){
         paletteList = new ArrayList<>();
 
