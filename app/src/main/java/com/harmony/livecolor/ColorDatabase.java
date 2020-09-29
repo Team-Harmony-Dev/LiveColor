@@ -141,8 +141,41 @@ public class ColorDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * ADD GIVEN MYPALETTE OBJECT TO DATABASE AS A NEW PALETTE (WIP)
-     * add the given MyPalette data to the database as a *new* palette. Currently for undoing palette deletion
+     * ADD GIVEN MYPALETTE OBJECT TO DATABASE AS A *NEW* PALETTE (WIP)
+     * add the given MyPalette data to the database as a *new* palette. Would be used for adding a harmony palette to the database
+     * will add colors to the color database if they do not already exist there
+     * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
+     * @return true if successful, false otherwise
+     */
+    public boolean addFullPalette(MyPalette palette) {
+        db = this.getWritableDatabase();
+        //add empty palette to the database
+        ContentValues paletteCVs = new ContentValues();
+        //paletteCVs.put(PAL1, palette.getId());
+        paletteCVs.put(PAL2, palette.getName());
+        paletteCVs.put(PAL3, " ");
+
+        Log.d(TAG_PALETTE, "addFullPalette: adding new palette " + palette.getId() + palette.getName());
+        long insertResult = db.insert(PALETTE_TABLE_NAME, null, paletteCVs);
+        Log.d(TAG_PALETTE, "addFullPalette: id of new palette = " + insertResult);
+
+        //returns the id of the newly added item if successful
+        if (insertResult == -1) {
+            return false;
+        } else {
+            Log.d(TAG_PALETTE, "addFullPalette: insertResult = " + insertResult);
+            for(MyColor color : palette.getColors()) {
+                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
+                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
+            }
+            return true;
+        }
+    }
+
+    /**
+     * ADD GIVEN PREVIOUSLY EXISTING PALETTE TO PALETTE DATABASE (WIP)
+     * add the given MyPalette data to the palette database, all color ids in tact. Currently for undoing palette deletion
+     * will add any color not existing in the color database to said database by its original id
      * @param palette MyPalette object of the palette to be added to the database, this palette should not already exist in the database
      * @return true if successful, false otherwise
      */
@@ -164,8 +197,8 @@ public class ColorDatabase extends SQLiteOpenHelper {
         } else {
             Log.d(TAG_PALETTE, "addPreExistingPalette: insertResult = " + insertResult);
             for(MyColor color : palette.getColors()) {
-                Long colorId = addColorInfoData(color.getName(),color.getHex(),color.getRgb(),color.getHsv());
-                addColorToPalette(Long.toString(insertResult),Long.toString(colorId));
+                //TODO: add a check for same id but different hex if needed?
+                addColorToPalette(Long.toString(insertResult),color.getId());
             }
             return true;
         }
