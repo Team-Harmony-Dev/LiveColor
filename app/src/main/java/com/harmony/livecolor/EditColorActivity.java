@@ -380,7 +380,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
 
         // both resets are necessary for the color to avoid taking values from elsewhere and using them incorrectly
         // like trying to use hsv values as rgb or vice versa
-        onClickReset(imageButtonReset);
+        onClickQuietReset(imageButtonReset);
         SharedPreferences preferences = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         boolean savedHSVMode = preferences.getBoolean("editModeHSV", false);
         Log.d("EDIT", "onResume: savedHSVMode: " + savedHSVMode);
@@ -388,7 +388,7 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
             simpleToggleButton.setChecked(true);
             toggleEditMode(simpleToggleButton, true);
             ToggleButtonState = true;
-            onClickReset(imageButtonReset);
+            onClickQuietReset(imageButtonReset);
         }
 
         super.onResume();
@@ -433,6 +433,40 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
         ImageButton reset = (ImageButton) view;
         ToggleButtonState = simpleToggleButton.isChecked();
         reset.startAnimation(rotate);
+        if(!ToggleButtonState){
+            updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        } else {
+            int[] newHSVValues = convertRGBtoHSV(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+            updateSeekbarsHSV(newHSVValues[0], newHSVValues[1], newHSVValues[2]);
+            updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        }
+
+        updateColorNewInput(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+        TextView colorNameN = findViewById(R.id.colorNN);
+        colorNameN.setText(EMPTY_STRING);
+        //For if they hit reset while on the original color, keep the bookmark colored. (only reset if the color changed)
+        if(seekRed.getProgress() != oldRed || seekGreen.getProgress() != oldGreen || seekBlue.getProgress() != oldBlue){
+            resetBookmark();
+        }
+    }
+
+    /**
+     * RESET COLOR QUIETLY
+     * clear new color according to toggle, rotate reset button
+     * @param view view of button
+     *
+     * @author Gabby, Daniel
+     * changed as part of the onCreate inner to outer method refactor
+     */
+    public void onClickQuietReset(View view) {
+        int oldRed = seekRed.getProgress();
+        int oldGreen = seekGreen.getProgress();
+        int oldBlue = seekBlue.getProgress();
+
+        ImageButton reset = (ImageButton) view;
+        ToggleButtonState = simpleToggleButton.isChecked();
+
         if(!ToggleButtonState){
             updateSeekbarsRGB(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
             updateText(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
