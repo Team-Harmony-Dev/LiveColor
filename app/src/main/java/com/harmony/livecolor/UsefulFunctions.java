@@ -1,6 +1,7 @@
 package com.harmony.livecolor;
 
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,10 +94,11 @@ public class UsefulFunctions {
         View view = toast.getView();
 
         view.setBackgroundResource(R.color.colorDark);
-        int padding = 32;
+        int padding = 40;
         view.setPadding(padding,padding,padding,padding);
         TextView text = view.findViewById(android.R.id.message);
         text.setTextColor(Color.WHITE);
+        text.setGravity(Gravity.CENTER);
 
         toast.show();
     }

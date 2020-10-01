@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
@@ -84,6 +85,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     private OnFragmentInteractionListener mListener;
     private static final int CAMERA_OR_GALLERY = 0;
+    private static final int REQUEST_CAMERA = 2;
+    private static final int REQUEST_GALLERY = 3;
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int IMAGE_CAPTURE_CODE = 1001;
     public static final int DEFAULT_MAX_ZOOM_MULT = 15;
@@ -178,24 +181,27 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.camera:
-                                ContentValues values = new ContentValues();
-                                values.put(MediaStore.Images.Media.TITLE, "New Picture");
-                                values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
-                                imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                                //check if the permission has already been granted or not, if already granted, open camera
+                                if (ActivityCompat.checkSelfPermission(getActivity(),
+                                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                    //called like so, in order for onRequestPermissionResults to be called in this fragment instead of MainActivity
+                                    requestPermissions(new String[]{Manifest.permission.CAMERA,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            REQUEST_CAMERA);
+                                } else {
+                                    openCamera();
                                 }
-                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
                                 return true;
                             case R.id.gallery:
-                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_OR_GALLERY);
+                                if (ActivityCompat.checkSelfPermission(getActivity(),
+                                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    //called like so, in order for onRequestPermissionResults to be called in this fragment instead of MainActivity
+                                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            REQUEST_GALLERY);
+                                } else {
+                                    openGallery();
                                 }
-                                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                galleryIntent.setType("image/*");
-                                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
                                 return true;
                             default:
                                 return false;
@@ -724,6 +730,43 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
         addButton.setBackgroundColor(Color.parseColor(AccentUtils.getAccent(view.getContext())));
         addButton.setSupportBackgroundTintList(myList);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+                if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                } else {
+                    makeToast("Please enable both Camera and Storage\npermissions in order to use this feature.", getActivity().getApplicationContext());
+                }
+                break;
+            case REQUEST_GALLERY:
+                if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    openGallery();
+                } else {
+                    makeToast("Please enable Storage\npermissions in order to use this feature", getActivity().getApplicationContext());
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+        imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+    }
+
+    public void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
     }
 }
 
