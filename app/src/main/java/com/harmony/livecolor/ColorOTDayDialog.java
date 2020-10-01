@@ -97,6 +97,17 @@ public class ColorOTDayDialog {
         return  colorOfTheDay;
     }
 
+
+    /**
+     * ????NEEDS BETTER DESCRIPTOR????
+     * GENERATES AND SHOWS COTD DIALOG
+     *
+     * this does everything necessary to get the cotd dialog up and running
+     *
+     *
+     *
+     * @author Gabby?
+     */
     public void showColorOTD() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
         colorOTDView = activity.getLayoutInflater().inflate(R.layout.dialog_color_day,null);
@@ -123,6 +134,100 @@ public class ColorOTDayDialog {
                 colorOfTheDay = generateSpecialColor();
             } else {
                 colorOfTheDay = generateRandomColor();
+            }
+            ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
+            colorView.setBackgroundColor(colorOfTheDay);
+
+            //Be able to fetch color name on first load? Works after first "start"
+            final TextView colorName = colorOTDView.findViewById(R.id.colorOTDNameView);
+            Log.d("V2S2 bugfix cotd", "------------------------------------------------------size before="+colorName.getTextSize());
+            //70% is arbitraryish.
+            ColorNameGetterCSV.getAndFitName(colorName, "#"+ColorPickerFragment.colorToHex(colorOfTheDay), 0.70, 30);
+            Log.d("V2S2 bugfix cotd", "size after set="+colorName.getTextSize());
+
+            //Set onClick for back button
+            final ImageButton backButton = colorOTDView.findViewById(R.id.backCOTD);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialogSave.cancel();
+                }
+            });
+
+            //Set onClick for save color of the day button
+            final ImageButton saveCOTD = colorOTDView.findViewById(R.id.saveCOTD);
+            saveCOTD.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("V2S2 bugfix cotd", "size on click="+colorName.getTextSize());
+                    final String colorNameStr = (String) colorName.getText();
+
+                    int RV = Color.red(colorOfTheDay);
+                    int GV = Color.green(colorOfTheDay);
+                    int BV = Color.blue(colorOfTheDay);
+
+                    //update the RGB value displayed
+                    String RGB = String.format("(%1$d, %2$d, %3$d)",RV,GV,BV);
+
+                    float[] hsvArray = new float[3];
+                    RGBToHSV(RV,GV,BV,hsvArray);
+                    int hue = Math.round(hsvArray[0]);
+                    String HSV = String.format("(%1$d, %2$.3f, %3$.3f)",hue,hsvArray[1],hsvArray[2]);
+
+                    //Color name won't save properly until updated color name fetching is added
+                    CustomDialog pickerDialog = new CustomDialog(activity,colorNameStr,UsefulFunctions.colorIntToHex(colorOfTheDay),RGB,HSV);
+                    pickerDialog.showSaveDialog();
+
+                    alertDialogSave.cancel();
+                }
+            });
+
+            builder.setView(colorOTDView);
+            alertDialogSave = builder.create();
+
+            alertDialogSave.show();
+            //makeShine();
+            Log.d("V2S2 bugfix cotd", "size after show="+colorName.getTextSize());
+        }
+    }
+
+    /**
+     *
+     * GENERATES AND SHOWS SPECIFIC COTD DIALOG
+     *
+     * this does everything necessary to get the cotd dialog up and running, FOR THE REQUESTED DATE
+     * BASED OFF OF GABBY'S? WORK ABOVE
+     *
+     * @author Gabby?, Daniel
+     */
+    public void showSpecificColorOTD(Long date) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        colorOTDView = activity.getLayoutInflater().inflate(R.layout.dialog_color_day,null);
+
+        //Get/Set the current date
+        Date theDate = new Date(date);
+        TextView dateView = (TextView) colorOTDView.findViewById(R.id.textView);
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("MMMM dd yyyy");
+        SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
+        Log.d("COTD", "showSpecificColorOTD: ");
+
+        strDt = simpleDate.format(theDate);
+        dateView.setText(strDt);
+
+        // If it is a new day - create and show the dialog!
+        if(newDay() || reshow){
+            //Store the date in shared preferences
+            editor.putString("Date", strDt);
+            editor.commit();
+
+            String shortHand = monthDay.format(theDate);
+
+            //Generate random color
+            if(specialDates.containsKey(shortHand)){
+                // random special day color
+                colorOfTheDay = generateSpecialColor(date);
+            } else {
+                colorOfTheDay = generateRandomColor(date);
             }
             ImageView colorView = colorOTDView.findViewById(R.id.colorOTDView);
             colorView.setBackgroundColor(colorOfTheDay);
@@ -258,6 +363,94 @@ public class ColorOTDayDialog {
 
         DateFormat simpleDateFormat = new SimpleDateFormat("MMddyy");
         int intDateFormat = Integer.parseInt(simpleDateFormat.format(new Date()));
+        Random random = new Random(intDateFormat);
+        int randSpec = random.nextInt(specialDates.get(shortHand).length);
+
+        return (specialDates.get(shortHand))[randSpec];
+    }
+
+    /**
+     * GENERATE A RANDOM COTD ~ from a date
+     * generates a random RGB color, based on the date
+     * each color channel is seeded and generated individually as follows
+     * R: MMDDYY
+     * G: YYMMDD
+     * B: DDYYMM
+     * a simple rotation on the american dat format in one number
+     *
+     * shame and guilt
+     *
+     * @param date in millis
+     *
+     * @return getIntFromColor( R, G, B)
+     *
+     * @author Daniel, Gabby
+     */
+    public int generateRandomColor(Long date){
+        DateFormat dfRed = new SimpleDateFormat("MMddyy");
+        DateFormat dfGreen = new SimpleDateFormat("yyMMdd");
+        DateFormat dfBlue = new SimpleDateFormat("ddyyMM");
+
+
+        int nowRed = Integer.parseInt(dfRed.format(new Date(date)));
+        int nowGreen = Integer.parseInt(dfGreen.format(new Date(date)));
+        int nowBlue = Integer.parseInt(dfBlue.format(new Date(date)));
+
+        Log.d("DEBUG", "generateRandomColor: seeds" + " R: " + nowRed + " G: " + nowGreen + " B: " + nowBlue);
+
+
+
+        Random randRedGen;
+        Random randGreenGen;
+        Random randBlueGen;
+
+        // rotation to keep things fresh each day
+        if (nowGreen % 3 == 0){
+            randRedGen = new Random(nowRed);
+            randGreenGen = new Random(nowGreen);
+            randBlueGen = new Random(nowBlue);
+        } else if (nowGreen % 3 == 1){
+            randRedGen = new Random(nowBlue);
+            randGreenGen = new Random(nowRed);
+            randBlueGen = new Random(nowGreen);
+
+        } else {
+            randRedGen = new Random(nowGreen);
+            randGreenGen = new Random(nowBlue);
+            randBlueGen = new Random(nowRed);
+        }
+
+        int randRed = randRedGen.nextInt(256);
+        int randGreen = randGreenGen.nextInt(256);
+        int randBlue = randBlueGen.nextInt(256);
+
+        Log.d("DEBUG", "generateRandomColor: values" + " R: " + randRed + " G: " + randGreen + " B: " + randBlue);
+
+        return getIntFromColor(randRed, randGreen, randBlue);
+    }
+
+    /**
+     * PICK A RANDOM SPECIAL COTD CONSISTENTLY ~ from a date
+     * picks a "random" special color, based on the date
+     *
+     * @param date in millis
+     *
+     * @return specialDates(date)["random"]
+     *
+     * @author Daniel
+     */
+    public int generateSpecialColor(Long date){
+
+        if(specialDates.isEmpty()){
+            specialDates = loadSpecialDays(this.context);
+        }
+
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat monthDay =  new SimpleDateFormat("MM/dd");
+        String shortHand = monthDay.format(todayDate);
+
+        DateFormat simpleDateFormat = new SimpleDateFormat("MMddyy");
+        int intDateFormat = Integer.parseInt(simpleDateFormat.format(new Date(date)));
         Random random = new Random(intDateFormat);
         int randSpec = random.nextInt(specialDates.get(shortHand).length);
 
