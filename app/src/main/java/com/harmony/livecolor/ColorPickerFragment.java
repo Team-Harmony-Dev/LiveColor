@@ -185,7 +185,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                                 if (ActivityCompat.checkSelfPermission(getActivity(),
                                         Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                                     //called like so, in order for onRequestPermissionResults to be called in this fragment instead of MainActivity
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
+                                    requestPermissions(new String[]{Manifest.permission.CAMERA,
                                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                             REQUEST_CAMERA);
                                 } else {
@@ -196,7 +196,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                                 if (ActivityCompat.checkSelfPermission(getActivity(),
                                         Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                     //called like so, in order for onRequestPermissionResults to be called in this fragment instead of MainActivity
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                             REQUEST_GALLERY);
                                 } else {
