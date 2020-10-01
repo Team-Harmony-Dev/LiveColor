@@ -332,6 +332,11 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
      */
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
+        //By checking this here we should avoid putting the color in the database.
+        if (colorDB.numColorsInPalette(palette.getId()) >= ColorDatabase.MAX_COLORS_PER_PALETTE) {
+            makeToast("This palette is full", context);
+            return;
+        }
         //fetch new or existing color id for given color
         long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
         Log.d("CustomDialog", "onListFragmentInteraction: color returned as " + colorId);
@@ -346,11 +351,9 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             alertDialogSave.dismiss();
             //Two reasons that function might return false:
             //1. Palette already has the color
-            //2. Palette is full
+            //2. Palette is full (addressed above)
             if(colorDB.doesPaletteHaveColor(palette.getId(), Long.toString(colorId))){
                 makeToast("This color already exists in \"" + palette.getName() + "\"", context);
-            } else if (colorDB.numColorsInPalette(palette.getId()) >= ColorDatabase.MAX_COLORS_PER_PALETTE) {
-                makeToast("This palette is full", context);
             } else {
                 makeToast("Unknown error", context);
                 Log.w("CustomDialog", "Unknown error while saving to existing palette");
