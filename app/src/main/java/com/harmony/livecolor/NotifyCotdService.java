@@ -106,6 +106,8 @@ public class NotifyCotdService extends JobIntentService {
             Notification notification = notificationUtils.getCOTDNotification(this, msg, channelID, cotd);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
+            notificationManager.cancelAll(); // remove previous notifications
+
             notificationManager.notify( notificationID, notification);
         }
     }

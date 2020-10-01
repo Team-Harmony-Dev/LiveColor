@@ -359,6 +359,7 @@ public class NotificationUtils {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("fromNotification", true);
+        intent.putExtra("dateNotification", Calendar.getInstance().getTimeInMillis());
 
         PendingIntent contentIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

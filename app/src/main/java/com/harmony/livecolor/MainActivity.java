@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
+import java.util.Date;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     static TextView colorNameView;
     boolean isEnabledCotd;
     boolean cameFromNotification =  false;
+    Long date;
 
 
     @Override
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
             cameFromNotification = b.getBoolean("fromNotification");
+            date = b.getLong("dateNotification");
         }else{
             cameFromNotification = false;
         }
@@ -236,7 +239,13 @@ public class MainActivity extends AppCompatActivity
 
         if(isEnabledCotd) {
             ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, cameFromNotification);
-            cotdDialog.showColorOTD();
+            Log.d("COTD", "onStart: cameFromNotification: " + cameFromNotification);
+            if(cameFromNotification){
+                cotdDialog.showSpecificColorOTD(date);
+            }else{
+                cotdDialog.showColorOTD();
+            }
+
         }
         cameFromNotification = false;
         super.onStart();
