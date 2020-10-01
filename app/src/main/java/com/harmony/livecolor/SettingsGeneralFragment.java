@@ -228,6 +228,8 @@ public class SettingsGeneralFragment extends  Fragment{
                         Log.d("I100", "Enter key pressed while entering zoom number "+input);
                         editor.putInt("maxZoom", input);
                         editor.apply();
+                        //Notify the user
+                        makeToast("Setting saved", getContext());
                     } catch (NumberFormatException e) {
                         Log.d("I100", "Input was empty");
                         //We save nothing, no change.
@@ -239,8 +241,6 @@ public class SettingsGeneralFragment extends  Fragment{
                     //Gets rid of the blinking cursor showing you're editing the field, and maybe does other stuff? Doesn't seem to work great. Unneeded? TODO
                     v.clearFocus();
 
-                    //Notify the user
-                    makeToast("Setting saved", getContext());
 
                     return true;
                 }
