@@ -34,7 +34,7 @@
             android:id="@+id/saveIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/unsaved" />
+            app:srcCompat="@drawable/ic_action_name" />
 
         <TextView
             android:id="@+id/savedColorsText"
