@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
+import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 /**
  * CustomDialog class
@@ -37,61 +39,105 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
     Activity activity;
 
     ColorDatabase colorDB;
-    //TODO: add palette database
 
     AlertDialog alertDialogSave, alertDialogName;
     AlertDialog.Builder builder;
     View saveDialogView, setNameDialogView;
     EditText newPaletteName;
 
-    String name, hex, rgb, hsv;
+    String name, hex, rgb, hsv, id, newName;
+    MyPalette palette;
     boolean newColor;
+    boolean harmony;
 
     ArrayList<MyPalette> paletteList;
+
+    SaveListener listener;
 
     /**
      * Constructor for Custom Dialog
      * For when a new color needs to be saved to the database
      * @param context must be an Activity context
      */
-    public CustomDialog(Context context,String name, String hex, String rgb, String hsv){
+    public CustomDialog(Context context, String name, String hex, String rgb, String hsv){
         this.context = context;
         activity = (Activity) context;
 
         colorDB = new ColorDatabase(activity);
-        //TODO: initialize PaletteDatabase
 
         this.name = name;
         this.hex = hex;
         this.rgb = rgb;
         this.hsv = hsv;
+        this.id = "";
+        this.newName = "";
 
         newColor = true;
+        harmony = false;
     }
 
     /**
      * Constructor for Custom Dialog
      * For when a palette only needs to be renamed
-     * @param context must be an Activity context
+     * @param context must be an Activity context, is the activity that the dialog is displaying on
      */
-    public CustomDialog(Context context){
+    public CustomDialog(Context context, String id){
         this.context = context;
         activity = (Activity) context;
 
         colorDB = new ColorDatabase(activity);
-        //TODO: initialize PaletteDatabase
 
+        this.id = id;
         this.name = "";
         this.hex = "";
         this.rgb = "";
         this.hsv = "";
+        this.newName = "";
 
         newColor = false;
+        harmony = false;
+    }
+
+    /**
+     * Constructor for Custom Dialog
+     * For a harmony palette
+     * @param context must be an Activity context, is the activity that the dialog is displaying on
+     */
+    public CustomDialog(Context context, MyPalette palette){
+        this.context = context;
+        activity = (Activity) context;
+
+        colorDB = new ColorDatabase(activity);
+
+        this.palette = palette;
+
+        newColor = false;
+        harmony = true;
+    }
+
+
+    /**
+     * Adds a listener that will be notified when a save finishes (and not when the dialog is cancelled).
+     * You need to use this before getting any callbacks.
+     *
+     * @param newListener Generally you just pass this "this". Where to callback to or whatever. TODO
+     */
+    public void addListener(SaveListener newListener) {
+        listener = newListener;
+    }
+
+    /**
+     * Calls the callback function, if it was given any. They can fill in the save button.
+     */
+    private void notifySaveCompleted(){
+        if(listener != null) {
+            listener.saveHappened();
+        }
     }
 
     /**
      * showSaveDialog
-     * Creates and displays the inital dialog for saving a color.
+     * Creates and displays the initial dialog for saving a color.
      */
     public void showSaveDialog(){
         builder = new AlertDialog.Builder(context);
@@ -111,75 +157,52 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
             public void onClick(View v) {
                 alertDialogSave.dismiss();
                 showSetNameDialog();
+
+                //Tell the listener that it's saved, so it can fill in the save button.
+                //notifySaveCompleted();
             }
         });
+
+
 
         savedColorsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add database addition specifically to saved colors palette
-                long j = colorDB.addColorInfoData(name, hex, rgb, hsv);
-                alertDialogSave.dismiss();
-                if (j > -1) {
-                    Toast.makeText(context,
-                            "Color has been saved to Saved Colors",
-                            Toast.LENGTH_SHORT).show();
+                //fetch new or existing color id for given color
+                long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
+                Log.d("Saved Colors", "onClick: color returned as " + colorId);
+                //save color to Saved Colors palette (id = 1)
+                if(colorDB.addColorToPalette("1",Long.toString(colorId))) {
+                    alertDialogSave.dismiss();
+                    makeToast("Color has been saved to Saved Colors", context);
+                } else {
+                    alertDialogSave.dismiss();
+                    makeToast("This color already exists in Saved Colors", context);
                 }
-                if (j == -1) {
-                    Toast.makeText(context, "Color is a duplicate",
-                            Toast.LENGTH_SHORT).show();
-                }
+
+                //Tell the listener that it's saved, so it can fill in the save button.
+                notifySaveCompleted();
             }
         });
-
-        //TODO: add recycler functionality and set up appropriate listener
-        // and add palette database part
 
         alertDialogSave = builder.create();
         alertDialogSave.show();
     }
 
+    /**
+     * initialize palette list from database for recycler
+     * for displaying existing palettes that can be saved to
+     */
     private void initPalettes() {
         //initialize ArrayList<MyPalette> here
-        paletteList = new ArrayList<>();
-        //will access palettes from database and put into MyPalette objects
-        //TODO: Andrew's database code/method call will go here
-        //Temporary Palettes atm:
-        MyColor magenta = new MyColor("1","Hot Pink", "#FF00FF", "(255, 0, 255)","(5:001, 255, 255)");
-        MyColor yellow = new MyColor("2","Highlighter", "#FFFF00", "(255, 255, 0)","(1:001, 255, 255)");
-        MyColor cyan = new MyColor("3","Hot Cyan", "#00FFFF", "(0, 255, 255)","(3:001, 255, 255)");
-        //test 3 colors
-        ArrayList<MyColor> colorList1 = new ArrayList<>();
-        colorList1.add(magenta);
-        colorList1.add(yellow);
-        colorList1.add(cyan);
-        paletteList.add(new MyPalette("2","Three Colors",colorList1));
-        //test 6 colors
-        ArrayList<MyColor> colorList2 = new ArrayList<>();
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        colorList2.add(magenta);
-        colorList2.add(yellow);
-        colorList2.add(cyan);
-        paletteList.add(new MyPalette("3","Six Colors",colorList2));
-        //test 10+ colors
-        ArrayList<MyColor> colorList3 = new ArrayList<>();
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        colorList3.add(magenta);
-        colorList3.add(yellow);
-        colorList3.add(cyan);
-        paletteList.add(new MyPalette("3","Ten+ Colors",colorList3));
+        //cursor from getPaletteDatabaseCursor is closed in getPaletteList
+        paletteList = colorDB.getPaletteList(colorDB.getPaletteDatabaseCursor());
     }
 
+    /**
+     * initialize recycler with the palette info
+     * for displaying existing palettes that can be saved to
+     */
     private void initRecycler() {
         //get the RecyclerView from the view
         RecyclerView recyclerView = saveDialogView.findViewById(R.id.dialogRecycler);
@@ -208,38 +231,133 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         setNameDialogView = activity.getLayoutInflater().inflate(R.layout.dialog_rename_palette,null);
         newPaletteName = setNameDialogView.findViewById(R.id.newPaletteName);
 
+        int[][] states = new int[][] {
+
+                new int[] {-android.R.attr.state_enabled}, // disabled
+                new int[] {-android.R.attr.state_checked}, // unchecked
+                new int[] {-android.R.attr.state_selected}, // unselected
+                new int[] { android.R.attr.state_active}, // active
+                new int[] { android.R.attr.state_pressed}, // pressed
+                new int[] { android.R.attr.state_checked},  // checked
+                new int[] { android.R.attr.state_selected}, // selected
+                new int[] { android.R.attr.state_enabled} // enabled
+        };
+
+        int[] accent = new int[] {
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context)),
+                Color.parseColor(AccentUtils.getAccent(context))
+        };
+
+        ColorStateList accentList = new ColorStateList(states, accent);
+
+
+        newPaletteName.setTextColor(accentList);
+        newPaletteName.setCompoundDrawableTintList(accentList);
+        newPaletteName.setHintTextColor(accentList);
+        newPaletteName.setForegroundTintList(accentList);
+        newPaletteName.setBackgroundTintList(accentList);
+//        newPaletteName.setTextCursorDrawable(R.id.color_cursor);
+
         builder.setView(setNameDialogView);
 
         //Positive Confirm Button Click Listener that adds the input palette name to the database
-        //TODO: implement palette database part
         builder.setPositiveButton("Save Palette", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(newColor) {
-                    colorDB.addColorInfoData(name, hex, rgb, hsv);
-                    //create new palette database item with the above color
-                    //TODO: addColorInfoData returns id for easy adding into palette
-                    // otherwise handle addColorInfoData within addPaletteInfoData
+                //gets the input name from edittext field
+                newName = newPaletteName.getText().toString();
+
+                //if you are creating a new name for a palette
+                if(harmony) {
+                    Log.d("CustomDialog", "setName is for harmony palette");
+                    palette.setName(newName);
+                    colorDB.addFullPalette(palette);
+                    dialog.dismiss();
+                    makeToast("New palette \"" + newName + "\" created!", context);
                 }
-                dialog.dismiss();
-                String newName = newPaletteName.getText().toString();
-                Toast.makeText(context,
-                        "New palette \"" + newName + "\" created!",
-                        Toast.LENGTH_SHORT).show();
+                else if(newColor) {
+                    Log.d("CustomDialog", "setName is for new palette");
+                    //adds the color to the database
+                    long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
+                    //gets newest added color and adds it to the palette
+                    colorDB.addNewPalette(newName, Long.toString(colorId));
+
+                    dialog.dismiss();
+                    makeToast("New palette \"" + newName + "\" created!", context);
+
+                    //Tell the listener that it's saved, so it can fill in the save button.
+                    notifySaveCompleted();
+                } //if you are renaming an existing palette
+                else {
+                    Log.d("CustomDialog", "setName is for existing palette");
+                    boolean nameChanged = colorDB.changePaletteName(id,newName);
+                    dialog.dismiss();
+                    if(nameChanged) {
+                        //obtain the new palette name to update the current activity with said name
+                        TextView tvPaletteName = activity.findViewById(R.id.paletteName);
+                        tvPaletteName.setText(newName);
+                        //send confirmation message
+                        makeToast("Set palette name to \"" + newName + "\"", context);
+                    }
+                    else {
+                        //send error message
+                        makeToast("Changing palette name failed", context);
+                    }
+                }
             }
         });
 
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+
         alertDialogName = builder.create();
         alertDialogName.show();
+        alertDialogName.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor(AccentUtils.getAccent(context)));
+        alertDialogName.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor(AccentUtils.getAccent(context)));
     }
 
+    /**
+     * listener from the recycler, saves a color to the selected palette
+     * @param palette contains the data for the selected palette
+     */
     @Override
     public void onListFragmentInteraction(MyPalette palette) {
-        colorDB.addColorInfoData(name, hex, rgb, hsv);
-        //TODO: implement palette database part
-        alertDialogSave.dismiss();
-        Toast.makeText(context,
-                "Saved color to \"" + palette.getName() + "\"",
-                Toast.LENGTH_SHORT).show();
+        //By checking this here we should avoid putting the color in the database.
+        if (colorDB.numColorsInPalette(palette.getId()) >= ColorDatabase.MAX_COLORS_PER_PALETTE) {
+            makeToast("This palette is full", context);
+            return;
+        }
+        //fetch new or existing color id for given color
+        long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
+        Log.d("CustomDialog", "onListFragmentInteraction: color returned as " + colorId);
+        //save color to existing palette by id
+        Log.d("CustomDialog", "onListFragmentInteraction: saving " + colorId + " to palette " + palette.getId());
+        if(colorDB.addColorToPalette(palette.getId(),Long.toString(colorId))) {
+            alertDialogSave.dismiss();
+            makeToast("Color has been saved to \"" + palette.getName() + "\"", context);
+            //Tell the listener that it's saved, so it can fill in the save button.
+            notifySaveCompleted();
+        } else {
+            alertDialogSave.dismiss();
+            //Two reasons that function might return false:
+            //1. Palette already has the color
+            //2. Palette is full (addressed above)
+            if(colorDB.doesPaletteHaveColor(palette.getId(), Long.toString(colorId))){
+                makeToast("This color already exists in \"" + palette.getName() + "\"", context);
+            } else {
+                makeToast("Unknown error", context);
+                Log.w("CustomDialog", "Unknown error while saving to existing palette");
+            }
+        }
     }
 }

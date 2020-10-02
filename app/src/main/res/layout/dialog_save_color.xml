@@ -17,7 +17,7 @@
         android:textSize="24sp" />
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/dividerSaveTo"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
@@ -34,7 +34,7 @@
             android:id="@+id/saveIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_action_name" />
+            app:srcCompat="@drawable/unsaved" />
 
         <TextView
             android:id="@+id/savedColorsText"
@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider3"
+        android:id="@+id/dividerSavedColors"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
@@ -65,7 +65,7 @@
             android:id="@+id/plusIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_new_palette" />
+            app:srcCompat="@drawable/ic_baseline_add_24" />
 
         <TextView
             android:id="@+id/newPaletteText"
@@ -79,7 +79,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/dividerNewPalette"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
@@ -97,7 +97,7 @@
             android:id="@+id/paletteIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_palette" />
+            app:srcCompat="@drawable/ic_baseline_palette_24" />
 
         <TextView
             android:id="@+id/myPaletteText"
@@ -111,7 +111,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider4"
+        android:id="@+id/dividerMyPalettes"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"

@@ -27,6 +27,7 @@ import java.net.URL;
 // Some code based on a CSE 118 example. (nanorouz, Lecture 11)
 // Relies on ColorPickerFragment.colorToHex()
 //Note: currently haven't tested doing multiple calls at the same time. Some static stuff should but might not support that.
+
 public class ColorNameGetter extends AsyncTask<Integer, Void, String> {
 
     //Font size is in sp.

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,12 +30,14 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
     private ArrayList<MyPalette> myPalettes;
     private OnListFragmentInteractionListener listener;
     private Context context;
+    private boolean isHarmony;
 
-    public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener) {
+    public MyPalettesRecyclerViewAdapter(Context context, ArrayList<MyPalette> myPalettes, OnListFragmentInteractionListener listener, boolean isHarmony) {
         Log.d("S3US2", "PaletteColorsRecyclerViewAdapter: Constructed");
         this.context = context;
         this.myPalettes = myPalettes;
         this.listener = listener;
+        this.isHarmony = isHarmony;
     }
 
     @Override
@@ -49,6 +52,7 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         holder.paletteName.setText(myPalettes.get(position).getName());
 
         ArrayList<MyColor> paletteColors = myPalettes.get(position).getColors();
+        //code for displaying maximum of 10 colors in the palette preview:
         //loop through first up-to 10 colors in palette
         for(int i = 0; i < 10; i++){
             //break if null aka end of palette
@@ -114,14 +118,18 @@ public class MyPalettesRecyclerViewAdapter extends RecyclerView.Adapter<MyPalett
         }
     }
 
-    //TODO: uncomment method when PaletteInfoActivity is complete
-    // separate method for the onClickListener in order to pass the position from onBVH in
+    //TODO: UPDATE TO WORK WITH PALETTE FORMAT
     View.OnClickListener getPaletteClickListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //create intent for PaletteInfo
-                Intent intent = new Intent(context,PaletteInfoActivity.class);
+                //create intent for PaletteInfo depending on whether palette is a harmony or not
+                Intent intent;
+                if(isHarmony){
+                    intent = new Intent(context,HarmonyPaletteInfoActivity.class);
+                } else {
+                    intent = new Intent(context,PaletteInfoActivity.class);
+                }
                 //use putExtra Serializable to pass in desired color with intent
                 intent.putExtra("PALETTE",myPalettes.get(position));
                 //start new activity with this intent
