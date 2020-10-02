@@ -1,191 +1,370 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutEditActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/AppTheme"
     android:weightSum="10"
     tools:context=".EditColorActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <Space
+        android:id="@+id/spacerBottom"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="0.6"
-        android:orientation="horizontal">
+        android:paddingVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineBottomSpace" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutToolbarInnerColorEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="32dp">
+
+            <ImageButton
+                android:id="@+id/backBut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:onClick="onClickBack"
+                android:paddingHorizontal="16dp"
+                android:scaleType="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/ic_baseline_keyboard_light_grey_backspace_48" />
+
+            <ToggleButton
+                android:id="@+id/toggleButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:paddingHorizontal="16dp"
+                android:text="Current Mode"
+                android:textOff="RGB"
+                android:textOn="HSV"
+                android:theme="@style/PhoAppTheme"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutBottomButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottomSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutContent">
 
         <ImageButton
-            android:id="@+id/backBut"
+            android:id="@+id/resetColor"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.15"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:onClick="onClickReset"
             android:padding="1dp"
+            android:paddingBottom="16dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/back_arrow" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewResetColor"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/textViewResetColor"
+            app:layout_constraintTop_toBottomOf="@+id/textViewResetColor"
+            app:srcCompat="@drawable/reset" />
 
-        <Space
+        <ImageButton
+            android:id="@+id/saveNewColor"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.45" />
-
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.34"
-            android:text="Current Mode"
-            android:textOff="RGB"
-            android:textOn="HSV" />
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/colorShow"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2.25"
-        android:background="#03A9F4" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:weightSum="10">
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="horizontal">
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:onClick="onClickSaveNew"
+            android:padding="1dp"
+            android:paddingBottom="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSaveNew"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintStart_toStartOf="@+id/textViewSaveNew"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSaveNew"
+            app:srcCompat="@drawable/unsaved" />
 
-            <Button
-                android:id="@+id/resetColor"
-                style="@style/Widget.AppCompat.Button"
+        <TextView
+            android:id="@+id/textViewSaveNew"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato_regular"
+            android:text="Save New Color"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textViewResetColor"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewResetColor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato_regular"
+            android:text="Reset Color"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/textViewSaveNew"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarEdit">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutSideBySide"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/guidelineSideBySide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread">
+
+            <ImageView
+                android:id="@+id/colorShow"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:adjustViewBounds="true"
-                android:drawableBottom="@drawable/reset"
-                android:fontFamily="@font/lato_light"
-                android:scaleType="fitCenter"
-                android:text="Reset"
-                android:textSize="8sp" />
+                android:layout_height="0dp"
+                android:background="#03A9F4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/colorNewShow"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/colorNewShow"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#9C27B0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/colorShow"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ConstraintLayoutSliders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:weightSum="10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayoutNames">
+
+            <SeekBar
+                android:id="@+id/seekBarRed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:max="255"
+                android:progress="50"
+                android:thumb="@drawable/edit_filled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textRorH" />
+
+            <SeekBar
+                android:id="@+id/seekBarGreen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:max="255"
+                android:progress="50"
+                android:thumb="@drawable/edit_filled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textGorS" />
+
+            <SeekBar
+                android:id="@+id/seekBarBlue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:max="255"
+                android:progress="50"
+                android:thumb="@drawable/edit_filled"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textBorV" />
+
+            <TextView
+                android:id="@+id/textRorH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:editable="true"
+                android:fontFamily="@font/lato_bold"
+                android:gravity="center_vertical"
+                android:text="Red: "
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textGorS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:cursorVisible="false"
+                android:fontFamily="@font/lato_bold"
+                android:gravity="center_vertical"
+                android:text="Green: "
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBarRed" />
+
+            <TextView
+                android:id="@+id/textBorV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:cursorVisible="false"
+                android:fontFamily="@font/lato_bold"
+                android:gravity="center_vertical"
+                android:text="Blue: "
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBarGreen" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutNames"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            app:layout_constraintBottom_toTopOf="@+id/ConstraintLayoutSliders"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guidelineSideBySide">
 
             <TextView
                 android:id="@+id/colorN"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0.8"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato_bold"
-                android:gravity="center|right"
+                android:lineSpacingMultiplier="0.9"
                 android:text="Color Name"
-                android:textSize="30sp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textRorH"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/lato_bold"
-            android:text="Red: "
-            android:textAlignment="textStart"
-            android:textSize="24sp" />
-
-        <SeekBar
-            android:id="@+id/seekBarRed"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:max="255"
-            android:progress="50"
-            android:thumb="@drawable/edit_filled" />
-
-        <TextView
-            android:id="@+id/textGorS"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/lato_bold"
-            android:text="Green: "
-            android:textSize="24sp" />
-
-        <SeekBar
-            android:id="@+id/seekBarGreen"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:max="255"
-            android:progress="50"
-            android:thumb="@drawable/edit_filled" />
-
-        <TextView
-            android:id="@+id/textBorV"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/lato_bold"
-            android:text="Blue: "
-            android:textAlignment="viewStart"
-            android:textSize="24sp" />
-
-        <SeekBar
-            android:id="@+id/seekBarBlue"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:max="255"
-            android:progress="50"
-            android:thumb="@drawable/edit_filled" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="2"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/saveNewColor"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_action_name" />
+                android:textAlignment="viewStart"
+                android:textSize="30sp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/colorNN"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/colorNN"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0.8"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lato_bold"
-                android:gravity="center|right"
-                android:text="Color Name New"
-                android:textSize="30sp" />
+                android:lineSpacingMultiplier="0.9"
+                android:text="Color Name Newy"
+                android:textAlignment="textEnd"
+                android:textSize="30sp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/colorN"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineSideBySide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            app:layout_constraintGuide_percent=".4"
+            tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/colorNewShow"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2.25"
-        android:background="#9C27B0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottomSpace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottomBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".87" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

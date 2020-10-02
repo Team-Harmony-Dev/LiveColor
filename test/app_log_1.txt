@@ -1,0 +1,241 @@
+  bash arg: -p
+  bash arg: com.harmony.livecolor
+  bash arg: -v
+  bash arg: 1000
+:Monkey: seed=1601340352300 count=1000
+:AllowPackage: com.harmony.livecolor
+:IncludeCategory: android.intent.category.LAUNCHER
+:IncludeCategory: android.intent.category.MONKEY
+// Event percentages:
+//   0: 15.0%
+//   1: 10.0%
+//   2: 2.0%
+//   3: 15.0%
+//   4: -0.0%
+//   5: -0.0%
+//   6: 25.0%
+//   7: 15.0%
+//   8: 2.0%
+//   9: 2.0%
+//   10: 1.0%
+//   11: 13.0%
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Touch (ACTION_DOWN): 0:(1065.0,70.0)
+:Sending Touch (ACTION_UP): 0:(1053.7737,62.521233)
+    // Rejecting start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.android.chrome/com.google.android.apps.chrome.Main } in package com.android.chrome
+:Sending Touch (ACTION_DOWN): 0:(675.0,91.0)
+:Sending Touch (ACTION_UP): 0:(643.3325,51.923645)
+:Sending Touch (ACTION_DOWN): 0:(739.0,1348.0)
+:Sending Touch (ACTION_UP): 0:(749.73346,1352.9758)
+:Sending Touch (ACTION_DOWN): 0:(931.0,920.0)
+:Sending Touch (ACTION_UP): 0:(975.41815,978.86725)
+:Sending Touch (ACTION_DOWN): 0:(194.0,1165.0)
+:Sending Touch (ACTION_UP): 0:(198.64134,1164.9136)
+:Sending Touch (ACTION_DOWN): 0:(1399.0,1892.0)
+:Sending Touch (ACTION_UP): 0:(1416.4761,1886.6489)
+:Sending Touch (ACTION_DOWN): 0:(762.0,2163.0)
+:Sending Touch (ACTION_UP): 0:(762.95917,2157.896)
+:Sending Touch (ACTION_DOWN): 0:(438.0,1141.0)
+:Sending Touch (ACTION_UP): 0:(433.92087,1137.8489)
+:Sending Trackball (ACTION_MOVE): 0:(4.0,-4.0)
+:Sending Touch (ACTION_DOWN): 0:(8.0,635.0)
+:Sending Touch (ACTION_UP): 0:(8.023109,615.88934)
+:Sending Trackball (ACTION_MOVE): 0:(-4.0,-2.0)
+    //[calendar_time:2020-09-27 10:01:22.310  system_uptime:1387883]
+    // Sending event #100
+:Sending Trackball (ACTION_MOVE): 0:(3.0,-2.0)
+:Sending Touch (ACTION_DOWN): 0:(33.0,2097.0)
+:Sending Touch (ACTION_UP): 0:(33.827736,2094.8064)
+:Sending Trackball (ACTION_MOVE): 0:(0.0,-4.0)
+:Sending Touch (ACTION_DOWN): 0:(422.0,127.0)
+:Sending Touch (ACTION_UP): 0:(428.29053,128.08315)
+:Sending Trackball (ACTION_MOVE): 0:(4.0,-3.0)
+:Sending Trackball (ACTION_MOVE): 0:(2.0,0.0)
+:Sending Touch (ACTION_DOWN): 0:(488.0,254.0)
+:Sending Touch (ACTION_UP): 0:(491.6363,259.59372)
+:Sending Touch (ACTION_DOWN): 0:(1068.0,1613.0)
+:Sending Touch (ACTION_UP): 0:(1068.3481,1618.3009)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Trackball (ACTION_MOVE): 0:(1.0,-3.0)
+:Sending Touch (ACTION_DOWN): 0:(1045.0,1798.0)
+:Sending Touch (ACTION_UP): 0:(1053.815,1794.5524)
+:Sending Trackball (ACTION_MOVE): 0:(2.0,-5.0)
+    //[calendar_time:2020-09-27 10:01:22.846  system_uptime:1388418]
+    // Sending event #200
+:Sending Touch (ACTION_DOWN): 0:(612.0,1380.0)
+:Sending Touch (ACTION_UP): 0:(562.6401,1469.1654)
+:Sending Trackball (ACTION_MOVE): 0:(1.0,-4.0)
+:Sending Touch (ACTION_DOWN): 0:(1270.0,608.0)
+:Sending Touch (ACTION_UP): 0:(1384.0702,556.14935)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Trackball (ACTION_MOVE): 0:(-3.0,-1.0)
+:Sending Touch (ACTION_DOWN): 0:(747.0,2433.0)
+:Sending Touch (ACTION_UP): 0:(751.9334,2427.652)
+:Sending Trackball (ACTION_MOVE): 0:(1.0,-5.0)
+:Sending Touch (ACTION_DOWN): 0:(61.0,1704.0)
+:Sending Touch (ACTION_UP): 0:(55.33186,1700.7758)
+    //[calendar_time:2020-09-27 10:01:23.449  system_uptime:1389021]
+    // Sending event #300
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,-1.0)
+:Sending Touch (ACTION_DOWN): 0:(857.0,24.0)
+:Sending Touch (ACTION_UP): 0:(856.911,34.7827)
+:Sending Touch (ACTION_DOWN): 0:(699.0,1546.0)
+:Sending Touch (ACTION_UP): 0:(699.02295,1548.9513)
+:Sending Touch (ACTION_DOWN): 0:(979.0,78.0)
+:Sending Touch (ACTION_UP): 0:(974.2508,75.01836)
+:Sending Touch (ACTION_DOWN): 0:(880.0,1162.0)
+:Sending Touch (ACTION_UP): 0:(878.8266,1163.446)
+:Sending Trackball (ACTION_MOVE): 0:(-3.0,2.0)
+:Sending Touch (ACTION_DOWN): 0:(1165.0,2482.0)
+:Sending Touch (ACTION_UP): 0:(1054.0133,2615.9832)
+:Sending Touch (ACTION_DOWN): 0:(953.0,1507.0)
+:Sending Touch (ACTION_UP): 0:(931.1782,1447.6715)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Touch (ACTION_DOWN): 0:(308.0,1501.0)
+:Sending Touch (ACTION_UP): 0:(306.8059,1500.656)
+:Sending Touch (ACTION_DOWN): 0:(761.0,752.0)
+:Sending Touch (ACTION_UP): 0:(792.8213,749.1544)
+:Sending Trackball (ACTION_MOVE): 0:(0.0,2.0)
+    //[calendar_time:2020-09-27 10:01:23.627  system_uptime:1389199]
+    // Sending event #400
+    // Rejecting start of Intent { cmp=com.android.settings/.deviceinfo.StorageWizardInit } in package com.android.settings
+:Sending Touch (ACTION_DOWN): 0:(1315.0,540.0)
+:Sending Touch (ACTION_UP): 0:(1314.9875,526.57007)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,2.0)
+    // Rejecting start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.google.android.calendar/com.android.calendar.AllInOneActivity } in package com.google.android.calendar
+:Sending Trackball (ACTION_MOVE): 0:(3.0,0.0)
+:Sending Trackball (ACTION_MOVE): 0:(0.0,-5.0)
+:Sending Touch (ACTION_DOWN): 0:(930.0,1353.0)
+:Sending Touch (ACTION_UP): 0:(923.4021,1349.8162)
+:Sending Touch (ACTION_DOWN): 0:(68.0,232.0)
+:Sending Touch (ACTION_UP): 0:(31.221825,192.82375)
+:Sending Touch (ACTION_DOWN): 0:(1085.0,326.0)
+:Sending Touch (ACTION_UP): 0:(1086.6489,326.26196)
+:Sending Trackball (ACTION_MOVE): 0:(-3.0,2.0)
+:Sending Trackball (ACTION_MOVE): 0:(1.0,-2.0)
+    //[calendar_time:2020-09-27 10:01:23.792  system_uptime:1389364]
+    // Sending event #500
+:Sending Trackball (ACTION_MOVE): 0:(3.0,-5.0)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,0.0)
+:Sending Touch (ACTION_DOWN): 0:(1176.0,1713.0)
+:Sending Touch (ACTION_UP): 0:(1176.2137,1704.6904)
+:Sending Touch (ACTION_DOWN): 0:(377.0,48.0)
+:Sending Touch (ACTION_UP): 0:(445.95038,0.0)
+:Sending Touch (ACTION_DOWN): 0:(1416.0,1614.0)
+:Sending Touch (ACTION_UP): 0:(1433.0253,1613.6078)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,-5.0)
+:Sending Touch (ACTION_DOWN): 0:(1185.0,414.0)
+:Sending Touch (ACTION_UP): 0:(1181.8187,394.93298)
+:Sending Trackball (ACTION_MOVE): 0:(2.0,2.0)
+:Sending Touch (ACTION_DOWN): 0:(402.0,839.0)
+:Sending Touch (ACTION_UP): 0:(437.95795,811.1141)
+:Sending Touch (ACTION_DOWN): 0:(794.0,693.0)
+:Sending Touch (ACTION_UP): 0:(809.6048,698.89923)
+:Sending Touch (ACTION_DOWN): 0:(1036.0,1137.0)
+:Sending Touch (ACTION_UP): 0:(1109.4811,1115.5345)
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] cmp=com.google.android.apps.nexuslauncher/.NexusLauncherActivity } in package com.google.android.apps.nexuslauncher
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,-5.0)
+    //[calendar_time:2020-09-27 10:01:23.939  system_uptime:1389511]
+    // Sending event #600
+:Sending Touch (ACTION_DOWN): 0:(136.0,404.0)
+:Sending Touch (ACTION_UP): 0:(149.30438,428.31882)
+:Sending Trackball (ACTION_MOVE): 0:(2.0,2.0)
+:Sending Trackball (ACTION_MOVE): 0:(3.0,-2.0)
+:Sending Flip keyboardOpen=false
+Got IOException performing flipjava.io.FileNotFoundException: /dev/input/event0: open failed: EACCES (Permission denied)
+    // Injection Failed
+:Sending Touch (ACTION_DOWN): 0:(1334.0,393.0)
+    // Rejecting start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.google.android.apps.messaging/.ui.ConversationListActivity } in package com.google.android.apps.messaging
+:Sending Touch (ACTION_UP): 0:(1387.8074,383.54108)
+:Sending Touch (ACTION_DOWN): 0:(1116.0,1688.0)
+:Sending Touch (ACTION_UP): 0:(1228.71,1603.951)
+:Sending Touch (ACTION_DOWN): 0:(1008.0,1407.0)
+    // Injection Failed
+:Sending Touch (ACTION_UP): 0:(938.71936,1455.6754)
+:Sending Trackball (ACTION_MOVE): 0:(-5.0,-5.0)
+:Sending Touch (ACTION_DOWN): 0:(181.0,1436.0)
+    //[calendar_time:2020-09-27 10:01:24.478  system_uptime:1390050]
+    // Sending event #700
+:Sending Touch (ACTION_UP): 0:(174.74844,1431.9498)
+:Sending Touch (ACTION_DOWN): 0:(1311.0,1051.0)
+:Sending Touch (ACTION_UP): 0:(1313.7836,1040.9691)
+    // Rejecting start of Intent { cmp=com.android.settings/.deviceinfo.StorageWizardInit } in package com.android.settings
+:Sending Touch (ACTION_DOWN): 0:(1410.0,2434.0)
+:Sending Touch (ACTION_UP): 0:(1412.8014,2428.3003)
+:Sending Touch (ACTION_DOWN): 0:(1024.0,1445.0)
+:Sending Touch (ACTION_UP): 0:(990.4731,1494.848)
+:Sending Trackball (ACTION_MOVE): 0:(-4.0,1.0)
+:Sending Touch (ACTION_DOWN): 0:(685.0,1823.0)
+:Sending Touch (ACTION_UP): 0:(675.4801,1835.2043)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,-4.0)
+:Sending Trackball (ACTION_MOVE): 0:(-2.0,3.0)
+:Sending Trackball (ACTION_MOVE): 0:(4.0,-5.0)
+:Sending Touch (ACTION_DOWN): 0:(220.0,964.0)
+:Sending Touch (ACTION_UP): 0:(233.64949,1029.0153)
+:Sending Touch (ACTION_DOWN): 0:(1297.0,2446.0)
+    //[calendar_time:2020-09-27 10:01:24.901  system_uptime:1390473]
+    // Sending event #800
+:Sending Touch (ACTION_UP): 0:(1288.1757,2391.5928)
+:Sending Trackball (ACTION_MOVE): 0:(2.0,-2.0)
+:Sending Touch (ACTION_DOWN): 0:(80.0,1930.0)
+:Sending Touch (ACTION_UP): 0:(44.488686,1892.7045)
+:Sending Trackball (ACTION_MOVE): 0:(1.0,-3.0)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,-1.0)
+:Sending Touch (ACTION_DOWN): 0:(744.0,775.0)
+:Sending Touch (ACTION_UP): 0:(742.9046,775.4692)
+:Sending Touch (ACTION_DOWN): 0:(1213.0,1887.0)
+:Sending Touch (ACTION_UP): 0:(1226.4242,1882.0488)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Touch (ACTION_DOWN): 0:(135.0,1319.0)
+:Sending Touch (ACTION_UP): 0:(165.57935,1358.088)
+:Sending Touch (ACTION_DOWN): 0:(530.0,1185.0)
+:Sending Touch (ACTION_UP): 0:(527.5258,1189.711)
+:Sending Trackball (ACTION_MOVE): 0:(4.0,3.0)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Touch (ACTION_DOWN): 0:(553.0,2074.0)
+:Sending Touch (ACTION_UP): 0:(561.2003,2061.1545)
+:Sending Touch (ACTION_DOWN): 0:(1276.0,311.0)
+    //[calendar_time:2020-09-27 10:01:25.172  system_uptime:1390744]
+    // Sending event #900
+:Sending Touch (ACTION_UP): 0:(1287.1753,353.09744)
+:Sending Touch (ACTION_DOWN): 0:(391.0,278.0)
+:Sending Touch (ACTION_UP): 0:(394.02573,275.81824)
+:Sending Touch (ACTION_DOWN): 0:(113.0,2365.0)
+:Sending Touch (ACTION_UP): 0:(77.48116,2350.4297)
+:Sending Trackball (ACTION_MOVE): 0:(-1.0,3.0)
+:Sending Touch (ACTION_DOWN): 0:(740.0,2573.0)
+:Sending Touch (ACTION_UP): 0:(776.06287,2504.6118)
+:Sending Trackball (ACTION_MOVE): 0:(-3.0,1.0)
+:Sending Touch (ACTION_DOWN): 0:(369.0,314.0)
+:Sending Touch (ACTION_UP): 0:(401.8,363.08142)
+:Sending Touch (ACTION_DOWN): 0:(286.0,1083.0)
+:Sending Touch (ACTION_UP): 0:(340.28317,1058.9796)
+:Sending Touch (ACTION_DOWN): 0:(386.0,1080.0)
+:Sending Touch (ACTION_UP): 0:(384.693,1070.9213)
+:Sending Touch (ACTION_DOWN): 0:(1252.0,2366.0)
+:Sending Touch (ACTION_UP): 0:(1235.4841,2365.524)
+:Sending Touch (ACTION_DOWN): 0:(1102.0,704.0)
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] cmp=com.google.android.apps.nexuslauncher/.NexusLauncherActivity } in package com.google.android.apps.nexuslauncher
+:Sending Touch (ACTION_UP): 0:(1107.6235,703.75336)
+:Sending Touch (ACTION_DOWN): 0:(1165.0,267.0)
+:Sending Touch (ACTION_UP): 0:(1162.8262,263.7651)
+:Sending Touch (ACTION_DOWN): 0:(1.0,691.0)
+:Sending Touch (ACTION_UP): 0:(10.03668,727.7326)
+:Sending Touch (ACTION_DOWN): 0:(434.0,1062.0)
+:Sending Touch (ACTION_UP): 0:(422.27545,1063.2953)
+:Sending Touch (ACTION_DOWN): 0:(276.0,1078.0)
+:Sending Touch (ACTION_UP): 0:(285.59775,1078.303)
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.harmony.livecolor/.SplashActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.harmony.livecolor/.SplashActivity } in package com.harmony.livecolor
+:Sending Trackball (ACTION_MOVE): 0:(1.0,2.0)
+Events injected: 1000
+:Sending rotation degree=0, persist=false
+:Dropped: keys=0 pointers=1 trackballs=0 flips=1 rotations=0
+## Network stats: elapsed time=3884ms (0ms mobile, 0ms wifi, 3884ms not connected)
+// Monkey finished
