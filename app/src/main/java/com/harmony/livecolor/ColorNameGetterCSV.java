@@ -190,6 +190,7 @@ public class ColorNameGetterCSV extends android.app.Application {
             //We're only adding a color to the cache if it's not already in there.
             if(colorCache.get(hex) == null) {
                 colorCache.put(hex, name);
+                Log.d("colorCache", "Added "+hex+" -> "+name);
                 ++currentCacheSize;
             }
             return true;
