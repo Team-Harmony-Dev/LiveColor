@@ -112,9 +112,8 @@ public class CreditsActivity extends AppCompatActivity{
             colorName = "Blue Nebula";
             colorHex = "#1199FF";
         } else if (name.equals("andrew")) {
-            //TODO: Get Andrew's color if possible
-            colorName = "White";
-            colorHex = "#FFFFFF";
+            colorName = "Wasabi";
+            colorHex = "#AFD77F";
         } else {
             // this else clause should never run. Without this there is an error in the startActivity
             // below. If there is an issue with tags this will
