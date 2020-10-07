@@ -73,9 +73,9 @@ public class AccentUtils {
     public static String getAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#aaffff");
+            return mPrefs.getString("accentDark", "#FB6FEA");
         }else{
-            return mPrefs.getString("accentLight", "#10246a");
+            return mPrefs.getString("accentLight", "#86357C");
         }
     }
 

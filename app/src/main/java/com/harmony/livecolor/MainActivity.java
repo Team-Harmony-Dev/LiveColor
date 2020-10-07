@@ -241,7 +241,13 @@ public class MainActivity extends AppCompatActivity
             ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, cameFromNotification);
             Log.d("COTD", "onStart: cameFromNotification: " + cameFromNotification);
             if(cameFromNotification){
-                cotdDialog.showSpecificColorOTD(date);
+                SharedPreferences myPrefs;
+                myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                if(!myPrefs.getBoolean("openedNotification", false)){
+                    myPrefs.edit().putBoolean("openedNotification", true).commit();
+                    cotdDialog.showSpecificColorOTD(date);
+                }
+                cameFromNotification = false;
             }else{
                 cotdDialog.showColorOTD();
             }
