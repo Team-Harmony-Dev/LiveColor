@@ -171,10 +171,6 @@ public class MainActivity extends AppCompatActivity
      */
     private void onLoadFragment(){
 
-        // quick fix for fragment issue
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        clearFragBackStack(fragmentManager);
-
 
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
         Log.d("DARK", "Frag pref string: " +preferences.getString("frag", "none"));
