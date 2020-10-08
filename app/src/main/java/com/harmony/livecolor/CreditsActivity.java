@@ -88,4 +88,41 @@ public class CreditsActivity extends AppCompatActivity{
         }
         startActivity(intent);
     }
+
+    public void onClickCardColor(View view) {
+        String name = view.getTag().toString();
+        String colorName;
+        String colorHex;
+        if (name.equals("daniel")) {
+            colorName = "Jedi Knight";
+            colorHex = "#041108";
+        } else if (name.equals("paige")) {
+            colorName = "Tranquil Pool";
+            colorHex = "#88DDFF";
+        } else if (name.equals("gabby")) {
+            colorName = "Ireland Green";
+            colorHex = "#006C2E";
+        } else if (name.equals("shealtiel")) {
+            colorName = "Aggressive Baby Blue";
+            colorHex = "#6FFFFF";
+        } else if (name.equals("dustin")) {
+            colorName = "Poppy Pompadour";
+            colorHex = "#6B3FA0";
+        } else if (name.equals("melanie")) {
+            colorName = "Blue Nebula";
+            colorHex = "#1199FF";
+        } else if (name.equals("andrew")) {
+            colorName = "Wasabi";
+            colorHex = "#AFD77F";
+        } else {
+            // this else clause should never run. Without this there is an error in the startActivity
+            // below. If there is an issue with tags this will
+            colorName = "White";
+            colorHex = "#FFFFFF";
+        }
+        Intent intent = new Intent(this, ColorInfoActivity.class);
+        intent.putExtra("name", colorName);
+        intent.putExtra("hex", colorHex);
+        startActivity(intent);
+    }
 }

@@ -3,40 +3,19 @@ package com.harmony.livecolor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsStartFragment extends  Fragment{
 
@@ -46,6 +25,7 @@ public class SettingsStartFragment extends  Fragment{
     ConstraintLayout constraintLayoutAppearance;
     ConstraintLayout constraintLayoutCOTD;
     ConstraintLayout constraintLayoutCredit;
+    ConstraintLayout constraintLayoutAbout;
 //    ImageButton imageButtonReset;
 //    RotateAnimation rotate;
     private WeakReference<Activity> mActivity;
@@ -99,6 +79,7 @@ public class SettingsStartFragment extends  Fragment{
         constraintLayoutAppearance = rootView.findViewById(R.id.constraintLayoutAppearanceOption);
         constraintLayoutCOTD = rootView.findViewById(R.id.constraintLayoutCOTDOption);
         constraintLayoutCredit = rootView.findViewById(R.id.constraintLayoutCreditsOption);
+        constraintLayoutAbout = rootView.findViewById(R.id.constraintLayoutLicenseOption);
 
        constraintLayoutGeneral.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -122,6 +103,12 @@ public class SettingsStartFragment extends  Fragment{
            @Override
            public  void onClick(View view){
                onClickCreditsOption(view);
+           }
+       });
+       constraintLayoutAbout.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               onClickAboutOption(view);
            }
        });
 
@@ -212,6 +199,14 @@ public class SettingsStartFragment extends  Fragment{
     public void onClickCreditsOption(View view) {
         Intent intent = new Intent(view.getContext(), CreditsActivity.class);
         startActivity(intent);
+    }
+
+    public void onClickAboutOption(View view) {
+        SettingsAboutFragment nextFrag= new SettingsAboutFragment();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace( ((ViewGroup)getView().getParent()).getId(), nextFrag, "findThisFragment")
+                .addToBackStack(null)
+                .commit();
     }
 
 

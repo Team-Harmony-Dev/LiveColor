@@ -45,6 +45,8 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
@@ -755,8 +757,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     public void openCamera() {
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("LiveColor_MM-dd-yyyy_HH-mm-ss");
+        String currentTimeStamp = dateFormat.format(new Date());
+        values.put(MediaStore.Images.Media.TITLE, currentTimeStamp);
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Taken using the Camera for the LiveColor app");
         imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);

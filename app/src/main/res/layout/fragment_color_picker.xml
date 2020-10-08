@@ -181,7 +181,7 @@
                     app:layout_constraintGuide_percent=".55" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            //below gets our HEX/RGB/HSV without labels
+            <!-- below gets our HEX/RGB/HSV without labels -->
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
