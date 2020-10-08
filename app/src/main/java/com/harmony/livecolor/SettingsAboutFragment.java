@@ -1,13 +1,17 @@
 package com.harmony.livecolor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +19,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 public class SettingsAboutFragment extends Fragment {
+
+    ImageButton imageButtonBack;
+    TextView textLibraries;
 
     public SettingsAboutFragment() {
         // Required empty public constructor
@@ -58,6 +65,27 @@ public class SettingsAboutFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings_about, container, false);
 
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
+
+        imageButtonBack = rootView.findViewById(R.id.backButton);
+        textLibraries = rootView.findViewById(R.id.librariesLink);
+
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        textLibraries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheBrows/LiveColor/blob/master/LIBRARIES.md"));
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
@@ -93,6 +121,7 @@ public class SettingsAboutFragment extends Fragment {
      */
     public void customAccent(View view){
 
+        TextView textLibraries = view.findViewById(R.id.librariesLink);
 
         int[][] states = new int[][] {
 
@@ -119,15 +148,7 @@ public class SettingsAboutFragment extends Fragment {
 
         ColorStateList  accentList = new ColorStateList(states, accent);
 
-//      switchDM.setThumbTintList(accentList);
-//      switchDM.setBackgroundTintList(accentList);
-//      switchDM.setTrackTintList(accentList);
-//      editTextAccent.setTextColor(accentList);
-//      editTextAccent.setCompoundDrawableTintList(accentList);
-//      editTextAccent.setHintTextColor(accentList);
-//      editTextAccent.setForegroundTintList(accentList);
-//      editTextAccent.setBackgroundTintList(accentList);
-
+        textLibraries.setTextColor(accentList);
     }
 
 }

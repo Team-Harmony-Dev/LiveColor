@@ -92,6 +92,9 @@ public class SettingsGeneralFragment extends  Fragment{
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings_general, container, false);
 
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
+
         rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
         rotate.setInterpolator(new LinearInterpolator());
@@ -260,7 +263,7 @@ public class SettingsGeneralFragment extends  Fragment{
      * takes a bit of elbow grease, and there maybe a better way to do this, but it works
      */
     public void customAccent(View view){
-
+        EditText editZoom = view.findViewById(R.id.editZoom);
 
         int[][] states = new int[][] {
 
@@ -287,14 +290,11 @@ public class SettingsGeneralFragment extends  Fragment{
 
         ColorStateList  accentList = new ColorStateList(states, accent);
 
-//      switchDM.setThumbTintList(accentList);
-//      switchDM.setBackgroundTintList(accentList);
-//      switchDM.setTrackTintList(accentList);
-//      editTextAccent.setTextColor(accentList);
-//      editTextAccent.setCompoundDrawableTintList(accentList);
-//      editTextAccent.setHintTextColor(accentList);
-//      editTextAccent.setForegroundTintList(accentList);
-//      editTextAccent.setBackgroundTintList(accentList);
+        editZoom.setTextColor(accentList);
+        editZoom.setCompoundDrawableTintList(accentList);
+        editZoom.setHintTextColor(accentList);
+        editZoom.setForegroundTintList(accentList);
+        editZoom.setBackgroundTintList(accentList);
 
     }
 
