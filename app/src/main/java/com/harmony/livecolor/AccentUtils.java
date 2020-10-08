@@ -1,9 +1,7 @@
 package com.harmony.livecolor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 
 import static android.content.Context.MODE_PRIVATE;
 
