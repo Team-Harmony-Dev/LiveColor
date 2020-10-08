@@ -80,7 +80,7 @@ public class SettingsGeneralFragment extends  Fragment{
         final View rootView = inflater.inflate(R.layout.fragment_settings_general, container, false);
 
         // handles customized accent
-        customAccent(rootView.findViewById(R.id.constraintLayoutSettings));
+        customAccent(rootView.findViewById(R.id.constraintLayoutSettingsGeneral));
 
         rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
