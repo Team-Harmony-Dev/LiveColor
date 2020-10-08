@@ -359,6 +359,9 @@ public class NotificationUtils {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("fromNotification", true);
         intent.putExtra("dateNotification", Calendar.getInstance().getTimeInMillis());
+        SharedPreferences myPrefs;
+        myPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        myPrefs.edit().putBoolean("openedNotification", false).commit();
 
         PendingIntent contentIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

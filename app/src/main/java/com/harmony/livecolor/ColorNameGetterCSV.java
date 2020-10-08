@@ -35,8 +35,8 @@ public class ColorNameGetterCSV extends android.app.Application {
     //Arbitrary. I don't want to eat too much memory but I'm not sure exactly how large is reasonable here.
     private static final int MAX_CACHE_SIZE = 2048;
     private static int currentCacheSize;
-    //TODO not sure about this. Arbitrary number. Could just be set to max cache size.
-    //private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
+    //Not sure this really matters.
+    private static final int INITIAL_CACHE_CAPACITY = MAX_CACHE_SIZE;
     //This might be redundant? Whatever.
     private static boolean haveAlreadyReadNames;
     //This is returned by searchForName if something goes wrong
@@ -137,7 +137,7 @@ public class ColorNameGetterCSV extends android.app.Application {
     public void readColors(){
         this.colorNames = this.read();
         this.haveAlreadyReadNames = true;
-        this.colorCache = new ConcurrentHashMap<String, String>(/*INITIAL_CACHE_CAPACITY*/);
+        this.colorCache = new ConcurrentHashMap<String, String>(INITIAL_CACHE_CAPACITY);
         this.currentCacheSize = 0;
     }
 
@@ -188,8 +188,9 @@ public class ColorNameGetterCSV extends android.app.Application {
     private static boolean addToCache(String hex, String name){
         if(MAX_CACHE_SIZE > currentCacheSize){
             //We're only adding a color to the cache if it's not already in there.
-            if(colorCache.get(hex) == null) {
+            if(! colorCache.containsKey(hex)){
                 colorCache.put(hex, name);
+                //Log.d("colorCache", "Added "+hex+" -> "+name);
                 ++currentCacheSize;
             }
             return true;
