@@ -2,7 +2,6 @@ package com.harmony.livecolor;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -29,11 +27,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.io.InputStream;
-
-import static android.graphics.Color.RGBToHSV;
 import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 import static com.harmony.livecolor.UsefulFunctions.convertRGBtoHSV;

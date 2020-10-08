@@ -1,9 +1,7 @@
 package com.harmony.livecolor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,7 +50,7 @@ public class AccentUtils {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
         if(NightModeUtils.isNightModeEnabled(context)){
-            editor.putString("accentDark", "#FB6FEA");
+            editor.putString("accentDark", "#A7A6FF");
         }else{
             editor.putString("accentLight", "#86357C");
         }
@@ -73,7 +71,7 @@ public class AccentUtils {
     public static String getAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#FB6FEA");
+            return mPrefs.getString("accentDark", "#A7A6FF");
         }else{
             return mPrefs.getString("accentLight", "#86357C");
         }

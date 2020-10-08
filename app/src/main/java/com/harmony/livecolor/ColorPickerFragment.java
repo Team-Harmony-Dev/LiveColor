@@ -757,8 +757,8 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     public void openCamera() {
         ContentValues values = new ContentValues();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("LiveColor_MM-dd-yyyy_HH-mm-ss");
-        String currentTimeStamp = dateFormat.format(new Date());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
+        String currentTimeStamp = "LiveColor_".concat(dateFormat.format(new Date()));
         values.put(MediaStore.Images.Media.TITLE, currentTimeStamp);
         values.put(MediaStore.Images.Media.DESCRIPTION, "Taken using the Camera for the LiveColor app");
         imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
