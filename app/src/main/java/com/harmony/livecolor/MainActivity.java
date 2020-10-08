@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.Context;
@@ -169,6 +170,12 @@ public class MainActivity extends AppCompatActivity
      * efficency of using prefs?
      */
     private void onLoadFragment(){
+
+        // quick fix for fragment issue
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        clearFragBackStack(fragmentManager);
+
+
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
         Log.d("DARK", "Frag pref string: " +preferences.getString("frag", "none"));
         if (preferences.getString("fragStatic", "none") == "true"){
@@ -201,6 +208,12 @@ public class MainActivity extends AppCompatActivity
     //based on what the user has tapped on
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        // quick fix for fragment issue
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        clearFragBackStack(fragmentManager);
+
+
         Fragment fragment = null;
 
         switch(menuItem.getItemId()) {
@@ -356,6 +369,25 @@ public class MainActivity extends AppCompatActivity
 
         ColorStateList myList = new ColorStateList(states, colors);
         nav.setItemIconTintList(myList);
+    }
+
+
+    /**
+     * CLEAR FRAGMENT BACK STACK
+     * ensure we aren't drawing over other fragments
+     * by clearing the back stack.
+     * this is more of a hack then a fix the current issue with saved/palettes
+     * geting drawn over settings
+     *
+     * @param fragmentManager
+     *
+     * @author Daniel
+     * This works, but is more like a bandaid
+     */
+    void clearFragBackStack(FragmentManager fragmentManager){
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+            fragmentManager.popBackStack();
+        }
     }
 
 
