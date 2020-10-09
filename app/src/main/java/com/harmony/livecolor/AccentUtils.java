@@ -50,9 +50,9 @@ public class AccentUtils {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
         if(NightModeUtils.isNightModeEnabled(context)){
-            editor.putString("accentDark", "#A7A6FF");
+            editor.putString("accentDark", "#71D5D9");
         }else{
-            editor.putString("accentLight", "#86357C");
+            editor.putString("accentLight", "#71D5D9");
         }
         editor.apply();
     }
@@ -71,9 +71,9 @@ public class AccentUtils {
     public static String getAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#A7A6FF");
+            return mPrefs.getString("accentDark", "#71D5D9");
         }else{
-            return mPrefs.getString("accentLight", "#86357C");
+            return mPrefs.getString("accentLight", "#71D5D9");
         }
     }
 
@@ -91,9 +91,9 @@ public class AccentUtils {
     public static String getOtherAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(!NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#aaffff");
+            return mPrefs.getString("accentDark", "#71D5D9");
         }else{
-            return mPrefs.getString("accentLight", "#10246a");
+            return mPrefs.getString("accentLight", "#71D5D9");
         }
     }
 
