@@ -34,5 +34,5 @@ Find us on the Google Play Store!
 
 ## Sources
 
-This app wouldn't be so wonderful without the generous open source libraries that we use! Have a look at our [Libraries]() to see what we used!
+This app wouldn't be so wonderful without the generous open source libraries that we use! Have a look at our [Libraries](https://github.com/TheBrows/LiveColor/blob/master/LIBRARIES.md) to see what we used!
 
