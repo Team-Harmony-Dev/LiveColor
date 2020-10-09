@@ -93,8 +93,8 @@ public class CreditsActivity extends AppCompatActivity{
             colorName = "Jedi Knight";
             colorHex = "#041108";
         } else if (name.equals("paige")) {
-            colorName = "Tranquil Pool";
-            colorHex = "#88DDFF";
+            colorName = "Platonic Blue";
+            colorHex = "#87C7FF";
         } else if (name.equals("gabby")) {
             colorName = "Ireland Green";
             colorHex = "#006C2E";
