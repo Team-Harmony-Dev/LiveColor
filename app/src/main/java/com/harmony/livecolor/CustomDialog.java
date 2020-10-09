@@ -168,6 +168,14 @@ public class CustomDialog implements SaveDialogRecyclerViewAdapter.OnListFragmen
         savedColorsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //This should probably be used consistently.
+                final String SAVED_COLORS_PALETTE_ID = "1";
+                //By checking this here we should avoid putting the color in the database.
+                if (colorDB.numColorsInPalette(SAVED_COLORS_PALETTE_ID) >= ColorDatabase.MAX_COLORS_PER_PALETTE) {
+                    makeToast("This palette is full", context);
+                    return;
+                }
+
                 //fetch new or existing color id for given color
                 long colorId = colorDB.addColorInfoData(name, hex, rgb, hsv);
                 Log.d("Saved Colors", "onClick: color returned as " + colorId);

@@ -2,7 +2,6 @@ package com.harmony.livecolor;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -29,11 +27,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.io.InputStream;
-
-import static android.graphics.Color.RGBToHSV;
 import static com.harmony.livecolor.ColorPickerFragment.colorToHex;
 import static com.harmony.livecolor.UsefulFunctions.convertHSVtoRGB;
 import static com.harmony.livecolor.UsefulFunctions.convertRGBtoHSV;
@@ -532,7 +525,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 colorI = getIntFromColor(newRGBValues[0], newRGBValues[1], newRGBValues[2]);
                 rgb = String.format("(%1$d, %2$d, %3$d)",newRGBValues[0],newRGBValues[1],newRGBValues[2]);
                 hex = String.format( "#%02X%02X%02X", newRGBValues[0], newRGBValues[1], newRGBValues[2] );
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //No, CustomDialog handles this.
+                //colorDB.addColorInfoData(name, hex, rgb, hsv);
             } else {
                 colorI = getIntFromColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
                 int red = seekRed.getProgress();
@@ -549,7 +543,8 @@ public class EditColorActivity extends AppCompatActivity implements SaveListener
                 hex = String.format( "#%02X%02X%02X", red, green, blue);
                 int[] hue = convertRGBtoHSV(red,green,blue);
                 hsv = String.format("(%1$d, %2$d, %3$d)",hue[0],hue[1],hue[2]);
-                colorDB.addColorInfoData(name, hex, rgb, hsv);
+                //No, CustomDialog handles this.
+                //colorDB.addColorInfoData(name, hex, rgb, hsv);
             }
             colorICB = colorI;
             CustomDialog saveDialog = new CustomDialog(EditColorActivity.this,name,hex,rgb,hsv);

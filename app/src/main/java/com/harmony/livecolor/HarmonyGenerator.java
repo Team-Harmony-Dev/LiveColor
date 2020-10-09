@@ -2,7 +2,6 @@ package com.harmony.livecolor;
 
 import android.util.Log;
 
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 

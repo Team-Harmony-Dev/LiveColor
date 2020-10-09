@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +16,7 @@ import android.widget.TextView;
 import com.harmony.livecolor.SavedColorsFragment.OnListFragmentInteractionListener;
 import com.harmony.livecolor.dummy.DummyContent.DummyItem;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the

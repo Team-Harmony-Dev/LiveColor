@@ -44,7 +44,10 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.RGBToHSV;
@@ -274,6 +277,7 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
             SharedPreferences prefs = getContext().getSharedPreferences("prefs", MODE_PRIVATE);
             imagePath = prefs.getString("image", null);
             Log.d("ColorPickerFragment", "onCreateView: currently saved image path: " + imagePath);
+            Log.d("ColorPickerFragment", "onCreateView: current imageUri: " + imageUri);
             pickingImage.setImageURI(imageUri);
             if(imagePath != null) {
                 Drawable drawable = Drawable.createFromPath(imagePath);
@@ -309,7 +313,9 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
                 imageUri = data.getData(); // only needed for gallery images
             }
             pickingImage.setImageURI(imageUri); // updates the view
+            Log.d("ColorPickerFragment", "onActivityResult: uri: " + imageUri);
             imagePath = getPath(data, this.getActivity());
+            Log.d("ColorPickerFragment", "onActivityResult: path: " + imagePath);
             if (imagePath != null) {
                 // save image path to saved prefs after updating imageview
                 SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", MODE_PRIVATE).edit();
@@ -755,8 +761,10 @@ public class ColorPickerFragment extends Fragment implements SaveListener {
 
     public void openCamera() {
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
+        String currentTimeStamp = "LiveColor_".concat(dateFormat.format(new Date()));
+        values.put(MediaStore.Images.Media.TITLE, currentTimeStamp);
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Taken using the Camera for the LiveColor app");
         imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);

@@ -23,11 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.widget.Toolbar;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.graphics.Color.RGBToHSV;

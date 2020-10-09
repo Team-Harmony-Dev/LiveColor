@@ -1,8 +1,6 @@
 package com.harmony.livecolor;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
@@ -26,10 +23,7 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;

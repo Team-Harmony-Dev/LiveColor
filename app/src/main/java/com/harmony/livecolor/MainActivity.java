@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.Context;
@@ -27,7 +27,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.harmony.livecolor.dummy.DummyContent;
 
 import java.io.InputStream;
-import java.util.Date;
 
 // MAIN ACTIVITY - COLOR PICKER
 // [See the designs on our marvel for creating and implementing UI]
@@ -169,6 +168,8 @@ public class MainActivity extends AppCompatActivity
      * efficency of using prefs?
      */
     private void onLoadFragment(){
+
+
         SharedPreferences preferences = getSharedPreferences("prefs", MODE_PRIVATE);
         Log.d("DARK", "Frag pref string: " +preferences.getString("frag", "none"));
         if (preferences.getString("fragStatic", "none") == "true"){
@@ -201,6 +202,12 @@ public class MainActivity extends AppCompatActivity
     //based on what the user has tapped on
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        // quick fix for fragment issue
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        clearFragBackStack(fragmentManager);
+
+
         Fragment fragment = null;
 
         switch(menuItem.getItemId()) {
@@ -241,7 +248,13 @@ public class MainActivity extends AppCompatActivity
             ColorOTDayDialog cotdDialog = new ColorOTDayDialog(MainActivity.this, cameFromNotification);
             Log.d("COTD", "onStart: cameFromNotification: " + cameFromNotification);
             if(cameFromNotification){
-                cotdDialog.showSpecificColorOTD(date);
+                SharedPreferences myPrefs;
+                myPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                if(!myPrefs.getBoolean("openedNotification", false)){
+                    myPrefs.edit().putBoolean("openedNotification", true).commit();
+                    cotdDialog.showSpecificColorOTD(date);
+                }
+                cameFromNotification = false;
             }else{
                 cotdDialog.showColorOTD();
             }
@@ -350,6 +363,25 @@ public class MainActivity extends AppCompatActivity
 
         ColorStateList myList = new ColorStateList(states, colors);
         nav.setItemIconTintList(myList);
+    }
+
+
+    /**
+     * CLEAR FRAGMENT BACK STACK
+     * ensure we aren't drawing over other fragments
+     * by clearing the back stack.
+     * this is more of a hack then a fix the current issue with saved/palettes
+     * geting drawn over settings
+     *
+     * @param fragmentManager
+     *
+     * @author Daniel
+     * This works, but is more like a bandaid
+     */
+    void clearFragBackStack(FragmentManager fragmentManager){
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+            fragmentManager.popBackStack();
+        }
     }
 
 
