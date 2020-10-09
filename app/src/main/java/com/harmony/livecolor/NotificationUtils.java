@@ -14,7 +14,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 
 import java.text.DateFormat;
