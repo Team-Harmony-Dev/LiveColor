@@ -74,7 +74,7 @@ public class CreditsActivity extends AppCompatActivity{
         } else if (name.equals("gabby")) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/gabriella-lindsey-8493951b0/"));
         } else if (name.equals("shealtiel")) {
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/shealtiel-mulder-6329641b0/"));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/shealtiel-mulder"));
         } else if (name.equals("dustin")) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/dustin-s-7938a394/"));
         } else if (name.equals("melanie")) {
