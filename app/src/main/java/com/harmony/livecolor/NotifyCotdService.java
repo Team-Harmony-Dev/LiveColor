@@ -1,32 +1,17 @@
 package com.harmony.livecolor;
 
-import android.app.AlarmManager;
-import android.app.Application;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.InputStream;
-import java.util.Calendar;
 
-import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationManagerCompat;
 
-import static android.content.Context.ALARM_SERVICE;
-import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.harmony.livecolor.UsefulFunctions.makeToast;
 
 public class NotifyCotdService extends JobIntentService {

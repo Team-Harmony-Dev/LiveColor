@@ -24,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;

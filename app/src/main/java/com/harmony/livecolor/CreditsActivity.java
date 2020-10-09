@@ -1,15 +1,11 @@
 package com.harmony.livecolor;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class CreditsActivity extends AppCompatActivity{
 
@@ -86,6 +82,43 @@ public class CreditsActivity extends AppCompatActivity{
             // below. If there is an issue with tags this will run and link to the LiveColor GitHub
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheBrows/LiveColor"));
         }
+        startActivity(intent);
+    }
+
+    public void onClickCardColor(View view) {
+        String name = view.getTag().toString();
+        String colorName;
+        String colorHex;
+        if (name.equals("daniel")) {
+            colorName = "Jedi Knight";
+            colorHex = "#041108";
+        } else if (name.equals("paige")) {
+            colorName = "Platonic Blue";
+            colorHex = "#87C7FF";
+        } else if (name.equals("gabby")) {
+            colorName = "Ireland Green";
+            colorHex = "#006C2E";
+        } else if (name.equals("shealtiel")) {
+            colorName = "Aggressive Baby Blue";
+            colorHex = "#6FFFFF";
+        } else if (name.equals("dustin")) {
+            colorName = "Poppy Pompadour";
+            colorHex = "#6B3FA0";
+        } else if (name.equals("melanie")) {
+            colorName = "Blue Nebula";
+            colorHex = "#1199FF";
+        } else if (name.equals("andrew")) {
+            colorName = "Wasabi";
+            colorHex = "#AFD77F";
+        } else {
+            // this else clause should never run. Without this there is an error in the startActivity
+            // below. If there is an issue with tags this will
+            colorName = "White";
+            colorHex = "#FFFFFF";
+        }
+        Intent intent = new Intent(this, ColorInfoActivity.class);
+        intent.putExtra("name", colorName);
+        intent.putExtra("hex", colorHex);
         startActivity(intent);
     }
 }

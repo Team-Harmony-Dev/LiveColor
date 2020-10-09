@@ -33,7 +33,25 @@
     <string name="daniel_blurb">I love AI and automation, so naturally I chose to help with UI on a
                                 color picking app. I very much enjoy developing with friends, even
                                 if it\'s outside of my comfort zone. My favorite color in the app is
-                                called \"Jedi Night\" a deep dark green.</string>
+                                called \"Jedi Night,\" a deep dark green.</string>
+    <string name="paige_blurb">Hi! I\'m an aspiring software developer and hobby artist whose interests
+        happened to collide into this idea that I was somehow bold enough to pitch in my software design
+        class and this happened! I live and breathe Scrum. My favorite color is \"Platonic Blue.\"</string>
+    <string name="melanie_blurb">I\'m interested in learning and applying modern technologies such as mobile
+        development and cloud computing to create meaningful experiences for users. My favorite color
+        from the app is called \"Blue Nebula.\"</string>
+    <string name="dustin_blurb">I\'m a software developer and have enjoyed learning how to create an
+        Android app with the LiveColor team. My favorite color is \"Poppy Pompadour,\" a rich purple.</string>
+    <string name="shealtiel_blurb">I enjoy creating beautiful UI experiences and using programming
+        to solve unique problems. I am very grateful for the opportunity to work on this project
+        alongside my colleagues and friends. My favorite color in the app is called \"Aggressive Baby Blue.\" What a silly name!</string>
+    <string name="gabby_blurb">I am a software engineer with a focus in data visualization and web development.
+        Working on LiveColor taught me a lot about being a member of a development team and was overall
+        a really great experience. My favorite color in the app is \"Ireland Green.\"</string>
+    <string name="andrew_blurb">I am a software engineer with interest in backend development.
+        LiveColor was the first project that I had ever worked on and the memories and experiences
+        are things that I will always cherish. I\'m thankful for everyone on this team for making this
+        application a great one. My favorite color on this app is \"Wasabi.\"</string>
     <string name="inactive_members">Inactive Members</string>
     <string name="melanie_wong">Melanie Wong</string>
     <string name="andrew_tran">Andrew Tran</string>
@@ -44,5 +62,6 @@
     <string name="accent_choice_prompt">Light Mode Accent</string>
     <string name="accent_choice">#86357C</string>
     <string name="zoom_choice_prompt">Maximum Zoom Level</string>
+    <string name="copyright_message">Version 2.0.1\nCopyright © LiveColor\nAll Rights Reserved</string>
 
 </resources>

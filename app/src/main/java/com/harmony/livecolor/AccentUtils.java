@@ -1,9 +1,7 @@
 package com.harmony.livecolor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,9 +50,9 @@ public class AccentUtils {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
         if(NightModeUtils.isNightModeEnabled(context)){
-            editor.putString("accentDark", "#FB6FEA");
+            editor.putString("accentDark", "#53D4D9");
         }else{
-            editor.putString("accentLight", "#86357C");
+            editor.putString("accentLight", "#53D4D9");
         }
         editor.apply();
     }
@@ -73,9 +71,9 @@ public class AccentUtils {
     public static String getAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#aaffff");
+            return mPrefs.getString("accentDark", "#53D4D9");
         }else{
-            return mPrefs.getString("accentLight", "#10246a");
+            return mPrefs.getString("accentLight", "#53D4D9");
         }
     }
 
@@ -93,9 +91,9 @@ public class AccentUtils {
     public static String getOtherAccent(Context context) {
         SharedPreferences mPrefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         if(!NightModeUtils.isNightModeEnabled(context)){
-            return mPrefs.getString("accentDark", "#aaffff");
+            return mPrefs.getString("accentDark", "#71D5D9");
         }else{
-            return mPrefs.getString("accentLight", "#10246a");
+            return mPrefs.getString("accentLight", "#71D5D9");
         }
     }
 

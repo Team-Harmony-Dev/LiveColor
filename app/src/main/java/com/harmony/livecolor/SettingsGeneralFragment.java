@@ -8,11 +8,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,16 +17,8 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import java.lang.ref.WeakReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -91,6 +78,9 @@ public class SettingsGeneralFragment extends  Fragment{
 
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_settings_general, container, false);
+
+        // handles customized accent
+        customAccent(rootView.findViewById(R.id.constraintLayoutSettingsGeneral));
 
         rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
@@ -260,7 +250,7 @@ public class SettingsGeneralFragment extends  Fragment{
      * takes a bit of elbow grease, and there maybe a better way to do this, but it works
      */
     public void customAccent(View view){
-
+        EditText editZoom = view.findViewById(R.id.editZoom);
 
         int[][] states = new int[][] {
 
@@ -287,14 +277,11 @@ public class SettingsGeneralFragment extends  Fragment{
 
         ColorStateList  accentList = new ColorStateList(states, accent);
 
-//      switchDM.setThumbTintList(accentList);
-//      switchDM.setBackgroundTintList(accentList);
-//      switchDM.setTrackTintList(accentList);
-//      editTextAccent.setTextColor(accentList);
-//      editTextAccent.setCompoundDrawableTintList(accentList);
-//      editTextAccent.setHintTextColor(accentList);
-//      editTextAccent.setForegroundTintList(accentList);
-//      editTextAccent.setBackgroundTintList(accentList);
+        editZoom.setTextColor(accentList);
+        editZoom.setCompoundDrawableTintList(accentList);
+        editZoom.setHintTextColor(accentList);
+        editZoom.setForegroundTintList(accentList);
+        editZoom.setBackgroundTintList(accentList);
 
     }
 
