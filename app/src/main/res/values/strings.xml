@@ -62,6 +62,6 @@
     <string name="accent_choice_prompt">Light Mode Accent</string>
     <string name="accent_choice">#86357C</string>
     <string name="zoom_choice_prompt">Maximum Zoom Level</string>
-    <string name="copyright_message">Version 2.0.1\nCopyright © LiveColor\nAll Rights Reserved</string>
+    <string name="copyright_message">Version 2.0.2\nCopyright © LiveColor\nAll Rights Reserved</string>
 
 </resources>

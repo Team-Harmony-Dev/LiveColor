@@ -22,6 +22,8 @@ public class SettingsAboutFragment extends Fragment {
 
     ImageButton imageButtonBack;
     TextView textLibraries;
+    TextView textTOS;
+    TextView textPrivacy;
 
     public SettingsAboutFragment() {
         // Required empty public constructor
@@ -70,6 +72,8 @@ public class SettingsAboutFragment extends Fragment {
 
         imageButtonBack = rootView.findViewById(R.id.backButton);
         textLibraries = rootView.findViewById(R.id.librariesLink);
+        textTOS = rootView.findViewById(R.id.tosLink);
+        textPrivacy = rootView.findViewById(R.id.privacyLink);
 
         imageButtonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,10 +82,29 @@ public class SettingsAboutFragment extends Fragment {
             }
         });
 
+        //link to open source libraries
         textLibraries.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheBrows/LiveColor/blob/master/LIBRARIES.md"));
+                startActivity(intent);
+            }
+        });
+
+        //link to terms of service
+        textTOS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheBrows/LiveColor/blob/master/TERMS_OF_SERVICE.md"));
+                startActivity(intent);
+            }
+        });
+
+        //link to privacy policy
+        textPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheBrows/LiveColor/blob/master/PRIVACY_POLICY.md"));
                 startActivity(intent);
             }
         });
@@ -122,6 +145,8 @@ public class SettingsAboutFragment extends Fragment {
     public void customAccent(View view){
 
         TextView textLibraries = view.findViewById(R.id.librariesLink);
+        TextView textTOS = view.findViewById(R.id.tosLink);
+        TextView textPrivacy = view.findViewById(R.id.privacyLink);
 
         int[][] states = new int[][] {
 
@@ -149,6 +174,8 @@ public class SettingsAboutFragment extends Fragment {
         ColorStateList  accentList = new ColorStateList(states, accent);
 
         textLibraries.setTextColor(accentList);
+        textTOS.setTextColor(accentList);
+        textPrivacy.setTextColor(accentList);
     }
 
 }
